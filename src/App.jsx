@@ -1,14 +1,23 @@
-// src/App.js
-import React from 'react';
-import './App.css';
-import LoginPage from './LoginPage.jsx';  // Update the extension to .jsx
+import React, { useState } from "react";
+import LoginPage from "./LoginPage.jsx";
+import HomePage from "./HomePage.jsx";
 
-function App() {
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = (username, password) => {
+    if ((username === "player531" && password === "Pramod") ||(username === "player526" && password === "Snehitha") ||(username === "player572" && password === "Bhavani")){
+      setIsAuthenticated(true);
+    } else {
+      alert("Invalid credentials");
+    }
+  };
+
   return (
-    <div className="App">
-      <LoginPage />
+    <div>
+      {isAuthenticated ? <HomePage /> : <LoginPage onLogin={handleLogin} />}
     </div>
   );
-}
+};
 
 export default App;

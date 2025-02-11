@@ -1,16 +1,14 @@
-// src/LoginPage.jsx
 import React, { useState } from "react";
 import "./LoginPage.css";
 import { Square, Circle, Triangle } from "lucide-react";
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add login validation or logic here.
-    alert(`Logging in as ${username}`);
+    onLogin(username, password); // Pass credentials to App.jsx
   };
 
   return (
