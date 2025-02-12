@@ -1,51 +1,70 @@
 import React, { useState } from "react";
-import "./LoginPage.css";
 import { Square, Circle, Triangle } from "lucide-react";
+import { motion } from "framer-motion";
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password); // Pass credentials to App.jsx
+    onLogin(username, password);
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="logo">
-          <Circle size={75} />
-          <Triangle size={75} />
-          <Square size={75} />
+    <div className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat px-4 sm:px-6 lg:px-8 overflow-hidden" style={{ backgroundImage: "url('/images/squid game landscape(pramod).png')" }}>
+      <div className="absolute inset-0 bg-black opacity-10 z-0"></div> {/* Transparent Overlay */}
+      <motion.div
+        initial={{ x: "100%", opacity: 0 }}
+        animate={{ x: showForm ? "0%" : "100%", opacity: showForm ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative p-6 sm:p-8 rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl text-center z-10" // Removed bg-transparent
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} // Semi-transparent black background
+      >
+        <div className="flex justify-center mb-5 space-x-2">
+          <Circle size={50} className="text-white" />
+          <Triangle size={50} className="text-white" />
+          <Square size={50} className="text-white " />
         </div>
-        <h1 className="text-red-600 font-bold text-3xl">Login to Squid Game</h1>
+        <h1 className="text-cyan-700 font-bold text-2xl sm:text-3xl mb-5">Login to Squid Game</h1>
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Username</label>
+          <div className="mb-4 text-left">
+            <label className="block mb-1 text-emerald-50 text-3xl">Username</label>
             <input
               type="text"
               placeholder="Enter username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="w-full p-2 border border-gray-700 rounded bg-gray-900 text-white focus:outline-none focus:border-red-600"
             />
           </div>
-          <div className="input-group">
-            <label>Password</label>
+          <div className="mb-4 text-left">
+            <label className="block mb-1 text-emerald-50 text-3xl">Password</label>
             <input
               type="password"
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="w-full p-2 border border-gray-700 rounded bg-gray-900 text-white focus:outline-none focus:border-red-600"
             />
           </div>
-          <button type="submit" className="login-btn">
+          <button
+            type="submit"
+            className="w-full p-2 bg-blue-400 text-black font-roboto text-lg rounded cursor-pointer hover:bg-blue-500 active:bg-blue-400"
+          >
             Login
           </button>
         </form>
-      </div>
+      </motion.div>
+      <button
+        onClick={() => setShowForm(!showForm)}
+        className="absolute bottom-10 bg-blue-400 text-black px-4 py-2 rounded cursor-pointer hover:bg-blue-500 z-10 " // Added z-index
+      >
+        {showForm ? "Hide Login" : "Show Login"}
+      </button>
     </div>
   );
 };
