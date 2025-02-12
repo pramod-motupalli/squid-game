@@ -19,13 +19,28 @@ const HomePage = () => {
           {activeTab === "about" ? (
             <div className="about-section">
               <h2>About Us</h2>
-              <p>
-                The Ultimate Squid Game Challenge!<br />
+              <p> 
+                  <b> Cresence: A National-Level Tech Fest by JNTU GV CSE 3rd Year Students</b><br/>
+
+                        Welcome to Cresence, an exciting and vibrant national-level tech fest organized by the third-year students of the Computer Science and Engineering department at JNTU Guntur (JNTU GV).
+                     This fest brings together the brightest minds from across the country to showcase their creativity, skills, and passion for technology.
+Cresence is a unique blend of tech and non-tech events that pushes the boundaries of innovation while offering fun, engaging activities for everyone.
+ From mind-bending coding challenges and hackathons to thought-provoking workshops, our tech events will test your coding, problem-solving, and collaboration skills.
+  Whether you're a budding coder, a tech enthusiast, or just looking to learn something new, there's something for you.
+But that’s not all! The non-tech events, including a thrilling Flashmob, cultural performances, and exciting competitions, ensure that you have a balanced and memorable experience.
+ It's not just about technology – it’s about teamwork, creativity, and having a blast with like-minded peers.
+
+Join us for Cresence, where innovation meets celebration, and let your talent shine in a truly electrifying environment!<br/>
+
+
+                <b>The Ultimate Squid Game Challenge!</b><br />
                 Do you have what it takes to survive the ultimate technical showdown? 
                 Brace yourself for an intense, high-stakes competition where only the sharpest minds will prevail! 
                 Inspired by the thrilling challenges of Squid Game, this event will test your debugging skills, teamwork, and coding speed.
                 With each level pushing you closer to the edge, precision and strategy are the keys to survival.
-                Think fast, code smart, and stay in the game—because only the best will make it to the final stage!
+                Think fast, code smart, and stay in the game—because only the best will make it to the final stage!<br/>
+
+                         <b>this event is designed by</b>   
               </p>
             </div>
           ) : (
