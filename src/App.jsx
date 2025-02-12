@@ -16,6 +16,7 @@ const App = () => {
   return (
     <div>
       {isAuthenticated ? <HomePage /> : <LoginPage onLogin={handleLogin} />}
+      {/* <h6 className="text-black">Squid Game</h6>    */}
     </div>
   );
 };

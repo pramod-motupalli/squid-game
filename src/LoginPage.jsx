@@ -19,7 +19,7 @@ const LoginPage = ({ onLogin }) => {
           <Triangle size={75} />
           <Square size={75} />
         </div>
-        <h1>Login to Squid Game</h1>
+        <h1 className="text-red-600 font-bold text-3xl">Login to Squid Game</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Username</label>
