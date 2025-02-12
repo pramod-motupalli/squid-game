@@ -70,9 +70,9 @@ This is your moment to prove your coding survival skills. Can you and your partn
       </div>
 
       <div className="photo-grid">
-        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Game 1" /> </div>
-        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Game 2" /> </div>
-        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Game 3" /> </div>
+        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Player531" /> </div>
+        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Player526" /> </div>
+        <div className="grid-item"> <img src="/images/SquidGame.png" alt="Player572" /> </div>
       </div>
     </div>
   );
