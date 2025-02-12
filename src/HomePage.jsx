@@ -102,6 +102,11 @@ const HomePage = () => {
         <div className="grid-item">
           <img src="/images/SquidGame.png" alt="Game 3" />
         </div>
+        <div>
+          <button type= "submit" className="button1">
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

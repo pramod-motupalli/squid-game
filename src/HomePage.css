@@ -32,7 +32,7 @@ li {
   position: absolute;
   top: 20px;
   color: white;
-  height: 65%;
+  height: 68%;
 }
 
 .tab-buttons {
@@ -63,7 +63,7 @@ li {
 }
 
 .photo-grid {
-  display: grid;
+  display: flex;
   gap: 25px;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 600px;
@@ -119,4 +119,22 @@ h2 {
 }
 b{
   color: #4b6af3;
+}
+.button1 {
+  position: flex;
+  bottom: 10px;
+  left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 20px 30px;
+  margin-left: 60px;
+  margin-top: 260px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button1:hover {
+  background-color: #0056b3;
 }
