@@ -21,7 +21,7 @@ const HomePage = () => {
             <div className="about-section">
               <h1>About Us</h1>
               <p> 
-                <b> Cresence: A National-Level Tech Fest by JNTU GV CSE 3rd Year Students</b><br/>
+                <b> Cresence2K25: A National-Level Tech Fest by JNTU GV CSE 3rd Year Students</b><br/>
                 <p></p>
                 Welcome to Cresence, an exciting and vibrant national-level tech fest organized by the third-year students of the Computer Science and Engineering department at JNTU Guntur (JNTU GV).
                 This fest brings together the brightest minds from across the country to showcase their creativity, skills, and passion for technology.
@@ -40,16 +40,16 @@ const HomePage = () => {
                 With each level pushing you closer to the edge, precision and strategy are the keys to survival.
                 Think fast, code smart, and stay in the game—because only the best will make it to the final stage!<br/>
                 <p></p>
-                <b>this event is designed by</b>  
+                <b>This event is designed by</b>  
                 <ul>
                   <li>
-                    Bhavani
+                    Bhavani Maradapu
                   </li>
                   <li>
-                    Snehtiha
+                    Snehtiha Mankena
                   </li>
                   <li>
-                    Pramod
+                    Pramod Motupalli
                   </li>
                   </ul> 
               </p>
