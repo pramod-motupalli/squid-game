@@ -6,7 +6,7 @@
   padding: 20px;
   padding-left: 120px;
   background-color: black;
-  width: 100%;
+  width: 90.8%;
   height: 100%;
   color: white;
 }
@@ -32,7 +32,7 @@ li {
   position: absolute;
   top: 20px;
   color: white;
-  height: 73%;
+  height: 65%;
 }
 
 .tab-buttons {
@@ -64,13 +64,14 @@ li {
 
 .photo-grid {
   display: grid;
+  gap: 25px;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 600px;
 }
 
 .grid-item img {
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 350px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -79,7 +80,8 @@ li {
   background: url('src/images/squid%20game%20potrait.png') no-repeat center center;
   background-size: cover;
   width: 100%;
-  height: 200px;
+  
+  height: 350px;
   border-radius: 5px;
 }
 
