@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const HomePage = () => {
+const HomePage = () => { 
   const [activeTab, setActiveTab] = useState("intro");
 
   return (
@@ -69,38 +69,38 @@ const HomePage = () => {
 
           {/* Rules Tab */}
           {activeTab === "rules" && (
-            <div className="rules-section ">
+            <div className="rules-section justify-ce">
               {/* <h2 className="text-2xl font-bold mb-4">Rules</h2> */}
-              <div className="rules-grid flex flex-wrap justify-center gap-3">
-                <div className="rule-box bg-white/10 p-4 rounded-lg shadow-md text-center border border-white/30 w-[30%]">
-                  <b className="text-lg text-blue-500">Level 1: Red Light, Green Light (Debugging Battle)</b>
-                  <ul className="text-left pl-4 mt-2">
+              <div className="rules-grid flex flex-col items-center justify-center gap-3 w-full">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 h- w-[30%]">
+                  <b className="text-lg text-blue-500 ">Level 1<h1> Red Light, Green Light (Debugging Battle)</h1></b>
+                  {/* <ul className="text-left pl-4 mt-2">
                     <li>Participants will compete in pairs from the start.</li>
                     <li>Each pair starts with 100 won.</li>
                     <li>A buggy code will be given along with an editor to fix it.</li>
                     <li>Debugging is only allowed during the green light.</li>
                     <li>If they write during the red light, 5 won is deducted.</li>
                     <li>Pairs with less than 75 won are eliminated.</li>
-                  </ul>
+                  </ul> */}
                 </div>
 
-                <div className="rule-box bg-white/10 p-4 rounded-lg shadow-md text-center border border-white/30 w-[30%]">
-                  <b className="text-lg text-blue-500">Level 2: Tug of War (Aptitude & Logic Face-off)</b>
-                  <ul className="text-left pl-4 mt-2">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 h- w-[30%]">
+                  <b className="text-lg text-blue-500">Level 2 <h1 > Tug of War (Aptitude & Logic Face-off)</h1></b>
+                  {/* <ul className="text-left pl-4 mt-2">
                     <li>The remaining pairs will be split into two teams.</li>
                     <li>Both teams receive the same set of aptitude and logical reasoning questions.</li>
                     <li>Correct answers move the virtual rope toward their team’s side.</li>
                     <li>The team that pulls the rope completely to their side wins the round.</li>
-                  </ul>
+                  </ul> */}
                 </div>
 
-                <div className="rule-box bg-white/10 p-4 rounded-lg shadow-md text-center border border-white/30 w-[30%]">
-                  <b className="text-lg text-blue-500">Level 3: Single and Mingle (Algorithmic Showdown)</b>
-                  <ul className="text-left pl-4 mt-2">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 h- w-[30%]">
+                  <b className="text-lg text-blue-500">Level 3 <h1 font->Single and Mingle (Algorithmic Showdown) </h1></b>
+                  {/* <ul className="text-left pl-4 mt-2">
                     <li>Each pair will receive an algorithm and pseudo code.</li>
                     <li>The team should predict the suitable data structure to solve it and complete the code.</li>
                     <li>The teams that correctly implement them will be declared the winners.</li>
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
               
