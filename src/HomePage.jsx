@@ -69,13 +69,9 @@ const HomePage = () => {
 
           {/* Rules Tab */}
           {activeTab === "rules" && (
-            <div className="rules-section ">
-<<<<<<< HEAD
+            <div className="rules-section">
               
-=======
-              {/* <h2 className="text-2xl font-bold mb-4">Rules</h2> */}
->>>>>>> f169c65475b8da7387984af76228830b6ea1decb
-              <div className="rules-grid flex flex-wrap justify-center gap-3">
+              <div className="rules-grid flex flex-wrap justify-center gap-4">
                 <div className="rule-box bg-white/10 p-4 rounded-lg shadow-md text-center border border-white/30 w-[30%]">
                   <b className="text-lg text-blue-500">Level 1: Red Light, Green Light (Debugging Battle)</b>
                   <ul className="text-left pl-4 mt-2">
@@ -115,9 +111,9 @@ const HomePage = () => {
 
       {/* Image Grid */}
       <div className="photo-grid flex gap-4 justify-center mt-6 w-full">
-        <div className="grid-item w-[22vw] h-[35vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
-        <div className="grid-item w-[22vw] h-[35vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
-        <div className="grid-item w-[22vw] h-[35vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
+        <div className="grid-item w-[22vw] h-[40vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
+        <div className="grid-item w-[22vw] h-[40vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
+        <div className="grid-item w-[22vw] h-[40vh] bg-[url('/images/SquidGame.png')] bg-no-repeat bg-center bg-cover rounded-md shadow-sm"></div>
       </div>
 
       {/* Next Button */}
