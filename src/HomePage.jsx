@@ -69,7 +69,7 @@ const HomePage = () => {
 
           {/* Rules Tab */}
           {activeTab === "rules" && (
-            <div className="rules-section justify-ce">
+            <div className="rules-section">
               {/* <h2 className="text-2xl font-bold mb-4">Rules</h2> */}
               <div className="rules-grid flex flex-col items-center justify-center gap-3 w-full">
                 <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 h- w-[30%]">
