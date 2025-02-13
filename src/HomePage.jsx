@@ -71,7 +71,7 @@ const HomePage = () => {
           {activeTab === "rules" && (
             <div className="rules-section">
               <div className="rules-grid flex flex-wrap justify-center gap-3">
-                <div className="rule-box bg-white/10 p-4 rounded-lg shadow-md text-center border border-white/30 w-[30%]">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-[30%]">
                   <b className="text-lg text-blue-500">Level 1: Red Light, Green Light (Debugging Battle)</b>
                   <ul className="text-left pl-4 mt-2">
                     <li>Participants will compete in pairs from the start.</li>
@@ -83,7 +83,7 @@ const HomePage = () => {
                   </ul>
                 </div>
 
-                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 w-[30%]">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-[30%]">
                   <b className="text-lg text-blue-500">Level 2: Tug of War (Aptitude & Logic Face-off)</b>
                   <ul className="text-left pl-4 mt-2">
                     <li>The remaining pairs will be split into two teams.</li>
@@ -93,7 +93,7 @@ const HomePage = () => {
                   </ul>
                 </div>
 
-                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/0 w-[30%]">
+                <div className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-[30%]">
                   <b className="text-lg text-blue-500">Level 3: Single and Mingle (Algorithmic Showdown)</b>
                   <ul className="text-left pl-4 mt-2">
                     <li>Each pair will receive an algorithm and pseudo code.</li>
