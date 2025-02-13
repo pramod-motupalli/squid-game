@@ -103,10 +103,7 @@ const HomePage = () => {
                   </ul>
                 </div>
               </div>
-              <p className="mt-4 text-center">
-                This is your moment to prove your coding survival skills.
-                Can you and your partner outthink, outcode, and outlast the competition?
-              </p>
+              
             </div>
           )}
         </div>
