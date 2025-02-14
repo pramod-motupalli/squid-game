@@ -1,20 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import backgroundImage from "D:\tech event\squid-game\src\squid-game\src\squid-game\public\images\squid_game_background.jpg"; // Add your image file path here
 
 const Level1Instructions = () => {
   const navigate = useNavigate();
 
   return (
-    <div 
-      className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4" 
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className="bg-gray-900 bg-opacity-70 p-6 rounded-lg shadow-lg text-center max-w-2xl">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4" >
+      <div className="bg-gray-900 p-6 rounded-lg shadow-lg text-center max-w-2xl">
         <h1 className="text-3xl font-bold text-white">Level 1: Red Light, Green Light (Debugging Battle)</h1>
         <p className="mt-4 text-lg">Welcome to the first level of the competition! Follow the instructions carefully:</p>
         <ul className="mt-4 text-left space-y-2">
