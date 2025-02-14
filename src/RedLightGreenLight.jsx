@@ -3,7 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 
-const squidGameMusic = "/squid-game-music.mp3";
+const squidGameMusic = "/public/images/squid game music.mp3";
 const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
 const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
 
@@ -17,11 +17,7 @@ const RedLightGreenLight = () => {
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
-  const [audio] = useState(() => {
-    const newAudio = new Audio(squidGameMusic);
-    newAudio.loop = true;
-    return newAudio;
-  });
+  const [audio] = useState(() => new Audio(squidGameMusic));
 
   const questions = [
     { 
@@ -43,39 +39,23 @@ const RedLightGreenLight = () => {
   }, [currentQuestion]);
 
   useEffect(() => {
-    const playMusic = () => {
-      audio.play().catch((error) => console.log("Audio play blocked:", error));
-      document.removeEventListener("click", playMusic);
-    };
-
-    document.addEventListener("click", playMusic);
-    return () => {
-      document.removeEventListener("click", playMusic);
-      audio.pause();
-    };
-  }, [audio]);
-
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      setGameOver(true);
-      return;
-    }
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       setIsGreenLight(false);
+      audio.play().catch((error) => console.log("Audio play blocked:", error)); // Play sound when red light starts
+
       const randomRedLightDuration = Math.floor(Math.random() * 11) + 5; // Random 5-15 sec
       setTimeout(() => {
         setIsGreenLight(true);
+        audio.pause(); // Stop sound when green light appears
+        audio.currentTime = 0; // Reset audio to start
       }, randomRedLightDuration * 1000);
     }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+
+    return () => {
+      clearInterval(interval);
+      audio.pause();
+    };
+  }, [audio]);
 
   useEffect(() => {
     if (won < 70) {
@@ -92,8 +72,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 20 && minutes >= 25) {
-        const secondsSince805PM = (minutes - 25) * 60 + seconds;
+      if (hours === 20 && minutes >= 55) {
+        const secondsSince805PM = (minutes - 55) * 60 + seconds;
         setTimeLeft(Math.max(600 - secondsSince805PM, 0));
       } else {
         setTimeLeft(600);
@@ -150,7 +130,6 @@ const RedLightGreenLight = () => {
   return (
     <div className={`flex flex-col items-center p-6 min-h-screen bg-black text-white relative w-full 
       ${!isGreenLight ? "border-8 border-red-500 animate-pulse shadow-[0px_0px_50px_rgba(255,0,0,0.8)] before:content-[''] before:absolute before:inset-0 before:bg-red-600 before:blur-[80px] before:opacity-50" : ""}`}>
-    
 
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Level 1: Red Light, Green Light (Debugging Battle)
@@ -160,7 +139,7 @@ const RedLightGreenLight = () => {
           <p className="text-lg font-bold">Question:</p>
           {!isGreenLight && (
             <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-80 z-50">
-              <img src="/images/dollred.jpg" alt="Squid Game Doll" className="w-48 md:w-96 h-48 md:h-96 animate-pulse" />
+              <img src="/images/dollred.jpg" alt="Squid Game Doll" className="w-96 md:w-96 h-48 md:h-96 animate-pulse" />
             </div>
           )}
           <pre className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base">
