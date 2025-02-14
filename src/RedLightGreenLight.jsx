@@ -48,13 +48,17 @@ const RedLightGreenLight = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsGreenLight(false);
+      setIsGreenLight(false); // Switch to red light
+      const randomRedLightDuration = Math.floor(Math.random() * (15 - 5 + 1)) + 5; // Random 5-15 sec
+  
       setTimeout(() => {
-        setIsGreenLight(true);
-      }, 10000);
-    }, 30000);
+        setIsGreenLight(true); // Switch back to green light
+      }, randomRedLightDuration * 1000); // Convert to milliseconds
+    }, 30000); // Every 30 sec, red light triggers
+  
     return () => clearInterval(interval);
   }, []);
+  
 
   useEffect(() => {
     if (won < 70) {
