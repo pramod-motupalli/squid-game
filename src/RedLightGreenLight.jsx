@@ -57,14 +57,14 @@ const RedLightGreenLight = () => {
   }, []);
 
   useEffect(() => {
-    if (won < 75) {
+    if (won < 70) {
       setGameOver(true);
     }
   }, [won]);
 
   const handleCodeChange = (value) => {
     if (!isGreenLight) {
-      setWon((prevWon) => Math.max(prevWon - 5, 0));
+      setWon((prevWon) => Math.max(prevWon - 1, 0));
     }
     setCode(value);
   };
