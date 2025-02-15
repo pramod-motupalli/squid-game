@@ -5,8 +5,8 @@ const Level3Instructions = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-900 text-white p-6">
-      <div className="w-full max-w-2xl bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-black text-white p-6">
+      <div className="w-full max-w-2xl flex flex-col  items-center bg-gray-900 p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold mb-4">Level 3: Single and Mingle (Algorithmic Showdown)</h1>
         <p className="mb-4">Welcome to the final level! Follow the instructions carefully:</p>
         <ul className="list-disc pl-5 space-y-2">
@@ -17,7 +17,7 @@ const Level3Instructions = () => {
         </ul>
         <button 
           onClick={() => navigate("/level3/game")} 
-          className="mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700 transition"
+          className="mt-6 px-6 py-3 bg-blue-500 text-white justify-center items-center font-bold rounded-lg hover:bg-blue-700 transition"
         >
           Start Level 3
         </button>

@@ -6,6 +6,7 @@ import Level1Instructions from "./level1instructions.jsx";
 import RedLightGreenLight from "./RedLightGreenLight.jsx";
 import Level2instructions from "./Level2instructions";
 import TugOfWar from "./TugOfWar.jsx";
+import Level3instructions from "./Level3instructions";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/level1/game" element={<RedLightGreenLight />} />
         <Route path="/Level2instructions" element={<Level2instructions />} /> 
         <Route path="/TugOfWar" element={<TugOfWar />} />
+        <Route path="/Level3instructions" element={<Level3instructions />} /> 
       </Routes>
     </Router>
   );
