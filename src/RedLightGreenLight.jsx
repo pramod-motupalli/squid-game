@@ -77,8 +77,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 15 && minutes >= 20) {
-        const secondsSince = (minutes - 20) * 60 + seconds;
+      if (hours === 15 && minutes >= 44) {
+        const secondsSince = (minutes - 44) * 60 + seconds;
         setTimeLeft(Math.max(600 - secondsSince, 0));
         if(Math.max(600 - secondsSince, 0)==0){
           handleTimeUp();
