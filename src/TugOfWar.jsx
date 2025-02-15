@@ -1,110 +1,116 @@
 import React, { useState, useEffect } from "react";
-
-
-const allQuestions = [
-  { question: "What is 5 + 3?", answer: "8" },
-  { question: "What comes next: 2, 4, 8, 16, ...?", answer: "32" },
-  { question: "Solve: 15 - 7", answer: "8" },
-  { question: "Find the missing number: 1, 1, 2, 3, 5, ?", answer: "8" },
-  { question: "What is 9 * 9?", answer: "81" },
-  { question: "What is the square root of 144?", answer: "12" },
-  { question: "What is 100 / 4?", answer: "25" },
-  { question: "Find the missing number: 3, 6, 9, 12, ?", answer: "15" },
-  { question: "What is 7 + 6?", answer: "13" },
-  { question: "What is 50 - 23?", answer: "27" },
-  { question: "What is 11 * 11?", answer: "121" },
-  { question: "What is the value of 2^5?", answer: "32" },
-  { question: "Find the missing number: 10, 20, 30, ?, 50", answer: "40" },
-  { question: "What is 45 + 55?", answer: "100" },
-  { question: "What is 18 / 3?", answer: "6" }
-];
+import { useNavigate } from "react-router-dom";
 
 const TugOfWar = () => {
+  const navigate = useNavigate();
+  const [ropePosition, setRopePosition] = useState(0); // 0 is center, positive values favor Team A, negative favor Team B
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [teamScores, setTeamScores] = useState({ teamA: 0, teamB: 0 });
-  const [submissionTimes, setSubmissionTimes] = useState({ teamA: [], teamB: [] });
-  const [teamAnswers, setTeamAnswers] = useState({ teamA: "", teamB: "" });
-  const [startTime, setStartTime] = useState(Date.now());
-  const [questions, setQuestions] = useState({ teamA: [], teamB: [] });
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [teamTurn, setTeamTurn] = useState("A"); // Alternates between A and B
+  const [gameOver, setGameOver] = useState(false);
+  const winThreshold = 3; // Number of correct answers needed to win
+
+  const questions = [
+    {
+      question: "What is the next number in the sequence? 2, 6, 12, 20, ?",
+      options: [28, 30, 32, 36],
+      answer: 30,
+    },
+    {
+      question: "If a train travels 60 km in 1 hour, how long does it take to travel 180 km?",
+      options: [2, 3, 4, 5],
+      answer: 3,
+    },
+    {
+      question: "A man walks 10 meters north, then 10 meters east, then 10 meters south. How far is he from his starting point?",
+      options: [0, 10, 20, 30],
+      answer: 10,
+    },
+    {
+      question: "Which shape has the most sides?",
+      options: ["Triangle", "Pentagon", "Hexagon", "Octagon"],
+      answer: "Octagon",
+    },
+  ];
 
   useEffect(() => {
-    const selectedQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
-    setQuestions({
-      teamA: [...selectedQuestions].sort(() => 0.5 - Math.random()),
-      teamB: [...selectedQuestions].sort(() => 0.5 - Math.random())
-    });
-  }, []);
-
-  const handleAnswer = (team, value) => {
-    setTeamAnswers((prev) => ({ ...prev, [team]: value }));
-  };
-
-  const navigateQuestion = (direction) => {
-    setCurrentQuestion((prev) => Math.max(0, Math.min(9, prev + direction)));
-  };
-
-  const submitAnswers = () => {
-    if (!questions.teamA.length || !questions.teamB.length) return;
-
-    const correctAnswerA = questions.teamA[currentQuestion].answer;
-    const correctAnswerB = questions.teamB[currentQuestion].answer;
-    const now = Date.now();
-    let newScores = { ...teamScores };
-    let newSubmissionTimes = { ...submissionTimes };
-
-    if (teamAnswers.teamA === correctAnswerA) {
-      newScores.teamA += 1;
-      newSubmissionTimes.teamA.push(now - startTime);
+    if (ropePosition >= winThreshold) {
+      setGameOver(true);
+      alert("Team A Wins! They qualify for the next level!");
+    } else if (ropePosition <= -winThreshold) {
+      setGameOver(true);
+      alert("Team B Wins! They qualify for the next level!");
     }
-    if (teamAnswers.teamB === correctAnswerB) {
-      newScores.teamB += 1;
-      newSubmissionTimes.teamB.push(now - startTime);
+  }, [ropePosition]);
+
+  const handleSubmit = () => {
+    if (selectedAnswer === null) return alert("Please select an answer!");
+
+    if (selectedAnswer === questions[currentQuestion].answer) {
+      setRopePosition((prev) => (teamTurn === "A" ? prev + 1 : prev - 1));
     }
 
-    setTeamScores(newScores);
-    setSubmissionTimes(newSubmissionTimes);
-
-    if (currentQuestion + 1 === 10) {
-      const teamAFastest = newSubmissionTimes.teamA.length > 0 ? Math.min(...newSubmissionTimes.teamA) : Infinity;
-      const teamBFastest = newSubmissionTimes.teamB.length > 0 ? Math.min(...newSubmissionTimes.teamB) : Infinity;
-
-      if (newScores.teamA > newScores.teamB) alert("Team A wins!");
-      else if (newScores.teamB > newScores.teamA) alert("Team B wins!");
-      else if (teamAFastest < teamBFastest) alert("Team A wins by time!");
-      else alert("Team B wins by time!");
-    }
+    setSelectedAnswer(null);
+    setTeamTurn(teamTurn === "A" ? "B" : "A");
+    setCurrentQuestion((prev) => (prev + 1) % questions.length);
   };
-
-  if (!questions.teamA.length || !questions.teamB.length) {
-    return <p>Loading questions...</p>;
-  }
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <h1 className="text-xl font-bold mb-4">Tug of War: Aptitude & Logic Face-off</h1>
-      <p className="mb-2 font-medium">{questions.teamA[currentQuestion].question}</p>
-      <div className="flex gap-4">
-        <input
-          type="text"
-          placeholder="Team A Answer"
-          className="border p-2"
-          value={teamAnswers.teamA}
-          onChange={(e) => handleAnswer("teamA", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Team B Answer"
-          className="border p-2"
-          value={teamAnswers.teamB}
-          onChange={(e) => handleAnswer("teamB", e.target.value)}
-        />
+    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
+      <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
+        Level 2: Tug of War (Aptitude & Logic Face-off)
+      </h1>
+      <p className="mt-4 text-lg text-center max-w-xl">
+        Welcome to the second level of the competition! The remaining pairs are
+        split into two teams. Both teams receive the same set of aptitude and
+        logical reasoning questions. Correct answers move the virtual rope
+        toward their team’s side. The team that pulls the rope completely to
+        their side wins the round and qualifies for the next level.
+      </p>
+      
+      <div className="my-6 w-full flex justify-center">
+        <div className="bg-gray-800 p-4 rounded-lg text-center w-1/2">
+          <p className="text-lg font-bold">{teamTurn === "A" ? "Team A's Turn" : "Team B's Turn"}</p>
+          <p className="mt-2 text-xl">{questions[currentQuestion].question}</p>
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            {questions[currentQuestion].options.map((option, index) => (
+              <button
+                key={index}
+                className={`px-4 py-2 rounded text-white ${
+                  selectedAnswer === option ? "bg-blue-600" : "bg-gray-700"
+                } hover:bg-blue-800`}
+                onClick={() => setSelectedAnswer(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <button
+            className="mt-4 px-6 py-2 bg-green-500 hover:bg-green-700 text-white rounded"
+            onClick={handleSubmit}
+            disabled={gameOver}
+          >
+            Submit
+          </button>
+        </div>
       </div>
-      <div className="flex gap-4 mt-4">
-        <button onClick={() => navigateQuestion(-1)} disabled={currentQuestion === 0}>Previous</button>
-        <button onClick={() => navigateQuestion(1)} disabled={currentQuestion === 9}>Next</button>
+
+      <div className="my-6 w-full flex justify-center">
+        <div className="relative w-2/3 h-10 bg-gray-500 rounded-full overflow-hidden">
+          <div
+            className="absolute h-full bg-yellow-500 transition-all"
+            style={{ width: `${(ropePosition + winThreshold) * (100 / (winThreshold * 2))}%` }}
+          ></div>
+        </div>
       </div>
-      {currentQuestion === 9 && (
-        <button onClick={submitAnswers} className="mt-4">Submit Answers</button>
+
+      {gameOver && (
+        <button
+          onClick={() => navigate("/Level3instructions")}
+          className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
+        >
+          Next Level
+        </button>
       )}
     </div>
   );
