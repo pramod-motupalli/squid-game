@@ -14,6 +14,7 @@ const Level2Instructions = () => {
           <li>🔹 Both teams receive the same set of aptitude and logical reasoning questions.</li>
           <li>🔹 Correct answers move the virtual rope toward their team’s side.</li>
           <li>🔹 The team that pulls the rope completely to their side wins the round.</li>
+          <li>🔹 The winning team will be qualified to next level of the game.</li>
         </ul>
         <button
           onClick={() => navigate("/level2/game")}
