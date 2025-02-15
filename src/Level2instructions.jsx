@@ -17,7 +17,7 @@ const Level2Instructions = () => {
           <li>🔹 The winning team will be qualified to next level of the game.</li>
         </ul>
         <button
-          onClick={() => navigate("/level2/game")}
+          onClick={() => navigate("/TugOfWar/game ")}
           className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-800 text-white rounded-lg text-lg"
         >
           Start Level 2

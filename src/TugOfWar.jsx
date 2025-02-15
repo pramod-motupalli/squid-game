@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import Button from "../components/Button"; // Ensure correct import
 
 const allQuestions = [
   { question: "What is 5 + 3?", answer: "8" },
@@ -25,13 +25,14 @@ const TugOfWar = () => {
   const [submissionTimes, setSubmissionTimes] = useState({ teamA: [], teamB: [] });
   const [teamAnswers, setTeamAnswers] = useState({ teamA: "", teamB: "" });
   const [startTime, setStartTime] = useState(Date.now());
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState({ teamA: [], teamB: [] });
 
   useEffect(() => {
     const selectedQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
-    const teamAQuestions = [...selectedQuestions].sort(() => 0.5 - Math.random());
-    const teamBQuestions = [...selectedQuestions].sort(() => 0.5 - Math.random());
-    setQuestions({ teamA: teamAQuestions, teamB: teamBQuestions });
+    setQuestions({
+      teamA: [...selectedQuestions].sort(() => 0.5 - Math.random()),
+      teamB: [...selectedQuestions].sort(() => 0.5 - Math.random())
+    });
   }, []);
 
   const handleAnswer = (team, value) => {
@@ -43,6 +44,8 @@ const TugOfWar = () => {
   };
 
   const submitAnswers = () => {
+    if (!questions.teamA.length || !questions.teamB.length) return;
+
     const correctAnswerA = questions.teamA[currentQuestion].answer;
     const correctAnswerB = questions.teamB[currentQuestion].answer;
     const now = Date.now();
@@ -62,47 +65,46 @@ const TugOfWar = () => {
     setSubmissionTimes(newSubmissionTimes);
 
     if (currentQuestion + 1 === 10) {
+      const teamAFastest = newSubmissionTimes.teamA.length > 0 ? Math.min(...newSubmissionTimes.teamA) : Infinity;
+      const teamBFastest = newSubmissionTimes.teamB.length > 0 ? Math.min(...newSubmissionTimes.teamB) : Infinity;
+
       if (newScores.teamA > newScores.teamB) alert("Team A wins!");
       else if (newScores.teamB > newScores.teamA) alert("Team B wins!");
-      else {
-        const teamAFastest = Math.min(...newSubmissionTimes.teamA);
-        const teamBFastest = Math.min(...newSubmissionTimes.teamB);
-        if (teamAFastest < teamBFastest) alert("Team A wins by time!");
-        else alert("Team B wins by time!");
-      }
+      else if (teamAFastest < teamBFastest) alert("Team A wins by time!");
+      else alert("Team B wins by time!");
     }
   };
+
+  if (!questions.teamA.length || !questions.teamB.length) {
+    return <p>Loading questions...</p>;
+  }
 
   return (
     <div className="flex flex-col items-center p-4">
       <h1 className="text-xl font-bold mb-4">Tug of War: Aptitude & Logic Face-off</h1>
-      {questions.teamA && questions.teamB && (
-        <>
-          <p className="mb-2 font-medium">{questions.teamA[currentQuestion].question}</p>
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Team A Answer"
-              className="border p-2"
-              value={teamAnswers.teamA}
-              onChange={(e) => handleAnswer("teamA", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Team B Answer"
-              className="border p-2"
-              value={teamAnswers.teamB}
-              onChange={(e) => handleAnswer("teamB", e.target.value)}
-            />
-          </div>
-          <div className="flex gap-4 mt-4">
-            <Button onClick={() => navigateQuestion(-1)} disabled={currentQuestion === 0}>Previous</Button>
-            <Button onClick={() => navigateQuestion(1)} disabled={currentQuestion === 9}>Next</Button>
-          </div>
-          {currentQuestion === 9 && (
-            <Button onClick={submitAnswers} className="mt-4">Submit Answers</Button>
-          )}
-        </>
+      <p className="mb-2 font-medium">{questions.teamA[currentQuestion].question}</p>
+      <div className="flex gap-4">
+        <input
+          type="text"
+          placeholder="Team A Answer"
+          className="border p-2"
+          value={teamAnswers.teamA}
+          onChange={(e) => handleAnswer("teamA", e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Team B Answer"
+          className="border p-2"
+          value={teamAnswers.teamB}
+          onChange={(e) => handleAnswer("teamB", e.target.value)}
+        />
+      </div>
+      <div className="flex gap-4 mt-4">
+        <Button onClick={() => navigateQuestion(-1)} disabled={currentQuestion === 0}>Previous</Button>
+        <Button onClick={() => navigateQuestion(1)} disabled={currentQuestion === 9}>Next</Button>
+      </div>
+      {currentQuestion === 9 && (
+        <Button onClick={submitAnswers} className="mt-4">Submit Answers</Button>
       )}
     </div>
   );
