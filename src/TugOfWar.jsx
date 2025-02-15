@@ -104,14 +104,14 @@ const TugOfWar = () => {
         </div>
       </div>
 
-      {gameOver && (
+      {/* {gameOver && ( */}
         <button
           onClick={() => navigate("/Level3instructions")}
           className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
         >
           Next Level
         </button>
-      )}
+      {/* )} */}
     </div>
   );
 };

@@ -16,7 +16,7 @@ const Level3Instructions = () => {
           <li>The teams that correctly implement them will be declared the winners.</li>
         </ul>
         <button 
-          onClick={() => navigate("/level3/game")} 
+          onClick={() => navigate("/Symbols ")} 
           className="mt-6 px-6 py-3 bg-blue-500 text-white justify-center items-center font-bold rounded-lg hover:bg-blue-700 transition"
         >
           Start Level 3

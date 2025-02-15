@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
 const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
 
-const DebuggingBattle = () => {
+const SingleAndMingle = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [code, setCode] = useState("");
@@ -15,25 +15,27 @@ const DebuggingBattle = () => {
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [completedQuestions, setCompletedQuestions] = useState([]);
-
-  const questions = [
-    { 
-      prompt: "// Fix the bug in this function\nint add(int a, int b) {\n return a - b; // Incorrect operation\n}",
-      expected: "15\n"
-    },
-    {
-      prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
-      expected: "Hello, world!\n"
-    },
-    {
-      prompt: "// Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
-      expected: "Swapped successfully\n"
-    }
-  ];
+  const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    setExpectedOutput(questions[currentQuestion].expected);
-  }, [currentQuestion]);
+    const allQuestions = [
+      { 
+        prompt: "// Fix the bug in this function\nint add(int a, int b) {\n return a - b; // Incorrect operation\n}",
+        expected: "15\n"
+      },
+      {
+        prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
+        expected: "Hello, world!\n"
+      },
+      {
+        prompt: "// Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+        expected: "Swapped successfully\n"
+      }
+    ];
+    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+    setQuestions(selectedQuestions);
+    setExpectedOutput(selectedQuestions[0].expected);
+  }, []);
 
   const handleCodeChange = (value) => {
     setCode(value);
@@ -90,6 +92,8 @@ const DebuggingBattle = () => {
     }
   };
 
+  if (questions.length === 0) return <div>Loading...</div>;
+
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white relative w-full">
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
@@ -118,13 +122,12 @@ const DebuggingBattle = () => {
         </div>
       </div>
       <button
-        onClick={() => navigate("/Level2instructions")}
-        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
+        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
       >
-        Next Level
+        Thank You!!!
       </button>
     </div>
   );
 };
 
-export default DebuggingBattle;
+export default SingleAndMingle;

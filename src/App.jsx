@@ -5,8 +5,10 @@ import HomePage from "./HomePage.jsx";
 import Level1Instructions from "./level1instructions.jsx";
 import RedLightGreenLight from "./RedLightGreenLight.jsx";
 import Level2instructions from "./Level2instructions";
-import TugOfWar from "./TugOfWar.jsx";
+import TugOfWar from "./tugofwar.jsx";
 import Level3instructions from "./Level3instructions";
+import Symbols from "./Symbols.jsx";
+import SingleAndMingle from "./SingleAndMingle.jsx";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -32,6 +34,8 @@ const App = () => {
         <Route path="/Level2instructions" element={<Level2instructions />} /> 
         <Route path="/TugOfWar" element={<TugOfWar />} />
         <Route path="/Level3instructions" element={<Level3instructions />} /> 
+        <Route path="/Symbols" element={<Symbols />} />
+        <Route path="/SingleAndMingle" element={<SingleAndMingle />} /> 
       </Routes>
     </Router>
   );
