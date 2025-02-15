@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
+import { useNavigate } from "react-router-dom";
 
 const squidGameMusic = "/public/images/squid game music.mp3";
 const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
 const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
 
+
 const RedLightGreenLight = () => {
+  const navigate = useNavigate();
   const [won, setWon] = useState(100);
   const [isGreenLight, setIsGreenLight] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
