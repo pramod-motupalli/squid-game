@@ -4,6 +4,7 @@ import LoginPage from "./LoginPage.jsx";
 import HomePage from "./HomePage.jsx";
 import Level1Instructions from "./level1instructions.jsx";
 import RedLightGreenLight from "./RedLightGreenLight.jsx";
+import Level2instructions from "./Level2instructions";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginPage onLogin={handleLogin} />} />
         <Route path="/level1-instructions" element={<Level1Instructions />} />
         <Route path="/level1/game" element={<RedLightGreenLight />} />
+        <Route path="/Level2instructions" element={<Level2instructions />} /> 
       </Routes>
     </Router>
   );
