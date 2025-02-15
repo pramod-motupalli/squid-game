@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Button from "../components/Button"; // Ensure correct import
+
 
 const allQuestions = [
   { question: "What is 5 + 3?", answer: "8" },
@@ -100,11 +100,11 @@ const TugOfWar = () => {
         />
       </div>
       <div className="flex gap-4 mt-4">
-        <Button onClick={() => navigateQuestion(-1)} disabled={currentQuestion === 0}>Previous</Button>
-        <Button onClick={() => navigateQuestion(1)} disabled={currentQuestion === 9}>Next</Button>
+        <button onClick={() => navigateQuestion(-1)} disabled={currentQuestion === 0}>Previous</button>
+        <button onClick={() => navigateQuestion(1)} disabled={currentQuestion === 9}>Next</button>
       </div>
       {currentQuestion === 9 && (
-        <Button onClick={submitAnswers} className="mt-4">Submit Answers</Button>
+        <button onClick={submitAnswers} className="mt-4">Submit Answers</button>
       )}
     </div>
   );
