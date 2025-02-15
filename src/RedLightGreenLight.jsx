@@ -77,8 +77,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 14 && minutes >= 40) {
-        const secondsSince = (minutes - 40) * 60 + seconds;
+      if (hours === 15 && minutes >= 20) {
+        const secondsSince = (minutes - 20) * 60 + seconds;
         setTimeLeft(Math.max(600 - secondsSince, 0));
         if(Math.max(600 - secondsSince, 0)==0){
           handleTimeUp();
@@ -95,7 +95,7 @@ const RedLightGreenLight = () => {
 
   const handleCodeChange = (value) => {
     if (!isGreenLight) {
-      setWon((prevWon) => Math.max(prevWon - 1, 0));
+      setWon((prevWon) => Math.max(prevWon - 2, 0));
     }
     setCode(value);
   };
