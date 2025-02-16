@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Symbols = () => {
   const [selectedSymbols, setSelectedSymbols] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const toggleSymbol = (symbol) => {
@@ -15,18 +16,27 @@ const Symbols = () => {
       }
       return prev;
     });
+    setError(""); // Clear error when user selects a symbol
+  };
+
+  const handleNext = () => {
+    if (selectedSymbols.length !== 2) {
+      setError("Please select exactly two symbols before proceeding.");
+      return;
+    }
+    navigate("/SingleAndMingle");
   };
 
   const renderSymbol = (symbol) => {
     switch (symbol) {
       case "circle":
-        return <Circle size={50} className="text-gray-900" />;
+        return <Circle size={100} className="text-green-900" />;
       case "umbrella":
-        return <Umbrella size={50} className="text-blue-900" />;
+        return <Umbrella size={100} className="text-blue-900" />;
       case "star":
-        return <Star size={50} className="text-yellow-500" />;
+        return <Star size={100} className="text-yellow-500" />;
       case "triangle":
-        return <Triangle size={50} className="text-red-500" />;
+        return <Triangle size={100} className="text-red-500" />;
       default:
         return <p className="text-gray-900 text-center">Select a symbol</p>;
     }
@@ -38,11 +48,11 @@ const Symbols = () => {
       style={{ backgroundImage: "url('public/images/SquidSymbol.jpg')" }}
     >
       <h1 className="text-2xl font-bold mb-4">
-        Choose any <b>TWO</b> Symbols that you want
+        Choose any <b>TWO</b> Symbols 
       </h1>
       <div className="flex gap-4 mb-6">
         {[
-          { name: "circle", color: "bg-gray-600 hover:bg-gray-700" },
+          { name: "circle", color: "bg-green-800 hover:bg-green-900" },
           { name: "triangle", color: "bg-red-600 hover:bg-red-700" },
           { name: "star", color: "bg-yellow-500 hover:bg-yellow-600" },
           { name: "umbrella", color: "bg-blue-600 hover:bg-blue-700" },
@@ -50,9 +60,9 @@ const Symbols = () => {
           <button
             key={name}
             onClick={() => toggleSymbol(name)}
-            className={`${color} px-4 py-2 rounded ${selectedSymbols.includes(name) ? "border-2 border-white" : ""}`}
+            className={`${color} px-4 py-2 rounded w-31 h-18 ${selectedSymbols.includes(name) ? "border-2 border-white" : ""}`}
           >
-            {name.charAt(0).toUpperCase() + name.slice(1)}
+            <b><p className="text-lg">{name.charAt(0).toUpperCase() + name.slice(1)}</p></b>
           </button>
         ))}
       </div>
@@ -64,10 +74,10 @@ const Symbols = () => {
           {renderSymbol(selectedSymbols[1])}
         </div>
       </div>
+      {error && <b><p className="text-black mt-4">{error}</p></b>}
       <button
-        onClick={() => navigate("/SingleAndMingle")}
+        onClick={handleNext}
         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
-        disabled={selectedSymbols.length !== 2} // Ensures exactly two symbols are selected
       >
         Next Level
       </button>

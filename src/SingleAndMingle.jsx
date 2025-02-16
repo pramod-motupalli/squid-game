@@ -4,6 +4,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
+const squidGameMusic = "/public/images/SingleAndMingle.mp3";
 const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
 const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
 
@@ -18,21 +19,27 @@ const SingleAndMingle = () => {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
+    const audio = new Audio(squidGameMusic);
+    audio.loop = true;
+    audio.play().catch((error) => console.error("Audio playback failed:", error));
+  }, []);
+
+  useEffect(() => {
     const allQuestions = [
       { 
-        prompt: "// Fix the bug in this function\nint add(int a, int b) {\n return a - b; // Incorrect operation\n}",
+        prompt: " Fix the bug in this function\nint add(int a, int b) {\n return c - b; // Incorrect operation\n}",
         expected: "15\n"
       },
       { 
-        prompt: "// Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
+        prompt: " Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
         expected: "0 1 1 2 3 5 8 13 21 34\n"
       },
       {
-        prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
+        prompt: " Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
         expected: "Hello, world!\n"
       },
       {
-        prompt: "// Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+        prompt: " Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
         expected: "Swapped successfully\n"
       }
     ];

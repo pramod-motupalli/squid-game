@@ -4,7 +4,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
-const squidGameMusic = "/public/images/squid game music.mp3";
+const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
 const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
 
@@ -188,7 +188,7 @@ const RedLightGreenLight = () => {
 
   return (
     <div className={`flex flex-col items-center p-6 min-h-screen bg-black text-white relative w-full 
-      ${!isGreenLight ? "border-8 border-red-500 animate-pulse shadow-[0px_0px_50px_rgba(255,0,0,0.8)] before:content-[''] before:absolute before:inset-0 before:bg-red-600 before:blur-[80px] before:opacity-50" : ""}`} >
+      ${!isGreenLight ? "border-8 border-red-500 animate-pulse shadow-[0px_0px_50px_rgba(255,0,0,0.8)] before:content-[''] before:absolute before:inset-0 before:bg-red-600 before:blur-[80px] before:opacity-50" : ""}`}>
 
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Level 1: Red Light, Green Light (Debugging Battle)

@@ -100,7 +100,7 @@ const HomePage = () => {
       </div>
 
       {/* Increased Height Photo Grid Section */}
-      <div className="photo-grid grid grid-cols-1 flex sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center mt-6 w-full max-w-screen-lg">
+      <div className="photo-grid grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center mt-6 w-full max-w-screen-lg">
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
