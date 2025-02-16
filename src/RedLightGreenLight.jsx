@@ -188,7 +188,7 @@ const RedLightGreenLight = () => {
 
   return (
     <div className={`flex flex-col items-center p-6 min-h-screen bg-black text-white relative w-full 
-      ${!isGreenLight ? "border-8 border-red-500 animate-pulse shadow-[0px_0px_50px_rgba(255,0,0,0.8)] before:content-[''] before:absolute before:inset-0 before:bg-red-600 before:blur-[80px] before:opacity-50" : ""}`}>
+      ${!isGreenLight ? "border-8 border-red-500 animate-pulse shadow-[0px_0px_50px_rgba(255,0,0,0.8)] before:content-[''] before:absolute before:inset-0 before:bg-red-600 before:blur-[80px] before:opacity-50" : ""}`} >
 
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Level 1: Red Light, Green Light (Debugging Battle)
@@ -197,7 +197,7 @@ const RedLightGreenLight = () => {
         <div className="w-full lg:w-1/2 relative">
           <p className="text-lg font-bold">Question:</p>
           {!isGreenLight && (
-            <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-80  z-50">
+            <div className="absolute inset-0 flex justify-center items-center  bg-black bg-opacity-80  z-50">
               <img src="/images/dollred.jpg" alt="Squid Game Doll" className="w-96 md:w-96 h-48 md:h-96 animate-pulse" />
             </div>
           )}

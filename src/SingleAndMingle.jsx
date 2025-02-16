@@ -23,6 +23,10 @@ const SingleAndMingle = () => {
         prompt: "// Fix the bug in this function\nint add(int a, int b) {\n return a - b; // Incorrect operation\n}",
         expected: "15\n"
       },
+      { 
+        prompt: "// Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
+        expected: "0 1 1 2 3 5 8 13 21 34\n"
+      },
       {
         prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
         expected: "Hello, world!\n"
