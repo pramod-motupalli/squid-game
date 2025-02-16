@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Umbrella, Star, Codesandbox } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 const Symbols = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const navigate = useNavigate();
+
   const renderSymbol = () => {
     switch (selectedSymbol) {
       case "umbrella":
@@ -18,8 +20,18 @@ const Symbols = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-2xl font-bold mb-4">Choose a Symbol that you <b> DON'T</b> want</h1>
+    <div
+      className="flex flex-col items-center justify-center min-h-screen p-6 text-white"
+      style={{
+        backgroundImage: "url(/SquidSymbol.png)", // Change this to your actual image path
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <h1 className="text-2xl font-bold mb-4">
+        Choose a Symbol that you <b> DON'T</b> want
+      </h1>
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => setSelectedSymbol("umbrella")}
@@ -40,15 +52,15 @@ const Symbols = () => {
           Codesandbox
         </button>
       </div>
-      <div className="flex items-center justify-center border border-gray-600 p-4 rounded-lg w-40 h-40">
+      <div className="flex items-center justify-center border border-gray-600 p-4 rounded-lg w-40 h-40 bg-black/50">
         {renderSymbol()}
       </div>
       <button
-          onClick={() => navigate("/SingleAndMingle ")}
-          className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
-        >
-          Next Level
-        </button>
+        onClick={() => navigate("/SingleAndMingle")}
+        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
+      >
+        Next Level
+      </button>
     </div>
   );
 };
