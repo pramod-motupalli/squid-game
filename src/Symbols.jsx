@@ -15,14 +15,18 @@ const Symbols = () => {
       case "codesandbox":
         return <Codesandbox size={50} className="text-red-500" />;
       default:
-        return <p className="text-gray-500">Select a symbol to display</p>;
+        return (
+          <div className="text-gray-500 text-center">
+            <p>Select a symbol to display</p>
+          </div>
+        ); // Wrapped in a div to ensure visibility
     }
   };
 
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen text-white p-6 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/SquidSymbol.jpg')" }} // Ensure background.jpg is in the public folder
+      style={{ backgroundImage: "url('/background.jpg')" }} // Background image added
     >
       <h1 className="text-2xl font-bold mb-4">
         Choose a Symbol that you <b> DON'T</b> want
