@@ -21,13 +21,8 @@ const Symbols = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-screen p-6 text-white"
-      style={{
-        backgroundImage: "url(/SquidSymbol.png)", // Change this to your actual image path
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      className="flex flex-col items-center justify-center min-h-screen text-white p-6 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/SquidSymbol.jpg')" }} // Ensure background.jpg is in the public folder
     >
       <h1 className="text-2xl font-bold mb-4">
         Choose a Symbol that you <b> DON'T</b> want
