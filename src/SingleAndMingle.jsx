@@ -5,8 +5,7 @@ import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
 const squidGameMusic = "/public/images/SingleAndMingle.mp3";
-const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
-const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
+const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual backend URL
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
@@ -32,11 +31,11 @@ const SingleAndMingle = () => {
       },
       { 
         prompt: " Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
-        expected: "0 1 1 2 3 5 8 13 21 34\n"
+        expected: "0 1 1 2 3 5 8 13 21 34"
       },
       {
         prompt: " Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
-        expected: "Hello, world!\n"
+        expected: "Hello, World!"
       },
       {
         prompt: " Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
@@ -44,8 +43,10 @@ const SingleAndMingle = () => {
       }
     ];
     const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+    console.log(selectedQuestions)
     setQuestions(selectedQuestions);
     setExpectedOutput(selectedQuestions[0].expected);
+    console.log(expectedOutput)
   }, []);
 
   const handleCodeChange = (value) => {
@@ -71,16 +72,13 @@ const SingleAndMingle = () => {
   const handleCompileRun = async () => {
     setCompiling(true);
     try {
-      const response = await fetch(COMPILERX_API_URL, {
+      const response = await fetch(BACKEND_API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": COMPILERX_API_KEY,
         },
         body: JSON.stringify({
-          language: "c",
           code: code,
-          stdin: "",
         }),
       });
       const result = await response.json();
