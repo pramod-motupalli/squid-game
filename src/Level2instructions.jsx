@@ -5,8 +5,8 @@ const Level2Instructions = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black  text-white p-4"  style={{ backgroundImage: "url('public/images/Tug_of_War.PNG.webp')"}}>
-      <div className="bg-gray-900 p-6 rounded-lg shadow-lg text-center max-w-2xl">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4" style={{ backgroundImage: "url('public/images/Tugofwarbg.jpg')" ,backgroundRepeat:"no-repeat",backgroundSize:"cover"}}>
+      <div className="border-gray-900  bg-black/50 p-6 rounded-lg shadow-lg text-center max-w-2xl">
         <h1 className="text-3xl font-bold text-white">Level 2: Tug of War (Aptitude & Logic Face-off)</h1>
         <p className="mt-4 text-lg">Welcome to the Second level of the competition! Follow the instructions carefully:</p>
         <ul className="mt-4 text-left space-y-2">
