@@ -1,33 +1,66 @@
 import React, { useState } from "react";
 import { Square, Circle, Triangle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showForm, setShowForm] = useState(false);
-
-  const handleSubmit = (e) => {
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+ const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onLogin(username, password);
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+
+      if (data) {
+        setMessage(`✅ Welcome, ${data.user.username}!`);
+        navigate("/level1instructions")
+        // onLogin(data.user); // Pass user data to parent component if needed
+      } else {
+        setMessage(`❌ ${data.message}`);
+      }
+    } catch (error) {
+      setMessage("❌ Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat px-4 sm:px-6 lg:px-8 overflow-hidden" style={{ backgroundImage: "url('/images/squid game landscape(pramod).png')" }}>
-      <div className="absolute inset-0 bg-black opacity-10 z-0"></div> {/* Transparent Overlay */}
+    <div
+      className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={{ backgroundImage: "url('/images/squid game landscape(pramod).png')" }}
+    >
+      <div className="absolute inset-0 bg-black opacity-10 z-0"></div>
+
       <motion.div
         initial={{ x: "100%", opacity: 0 }}
         animate={{ x: showForm ? "0%" : "100%", opacity: showForm ? 1 : 0 }}
         transition={{ duration: 0.5 }}
-        className="relative p-6 sm:p-8 rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl text-center z-10" // Removed bg-transparent
-        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} // Semi-transparent black background
+        className="relative p-6 sm:p-8 rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl text-center z-10"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       >
         <div className="flex justify-center mb-5 space-x-2">
           <Circle size={50} className="text-white" />
           <Triangle size={50} className="text-white" />
-          <Square size={50} className="text-white " />
+          <Square size={50} className="text-white" />
         </div>
         <h1 className="text-cyan-700 font-bold text-2xl sm:text-3xl mb-5">Login to Squid Game</h1>
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-left">
             <label className="block mb-1 text-emerald-50 text-3xl">Username</label>
@@ -54,14 +87,18 @@ const LoginPage = ({ onLogin }) => {
           <button
             type="submit"
             className="w-full p-2 bg-blue-400 text-black font-roboto text-lg rounded cursor-pointer hover:bg-blue-500 active:bg-blue-400"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        {message && <p className="mt-4 text-white">{message}</p>}
       </motion.div>
+
       <button
         onClick={() => setShowForm(!showForm)}
-        className="absolute bottom-10 bg-blue-400 text-black px-4 py-2 rounded cursor-pointer hover:bg-blue-500 z-10 " // Added z-index
+        className="absolute bottom-10 bg-blue-400 text-black px-4 py-2 rounded cursor-pointer hover:bg-blue-500 z-10"
       >
         {showForm ? "Hide Login" : "Show Login"}
       </button>

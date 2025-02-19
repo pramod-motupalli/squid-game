@@ -40,6 +40,21 @@ const RedLightGreenLight = () => {
   useEffect(() => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
+useEffect(() => {
+  localStorage.setItem("won", won.toString());
+}, [won]);
+
+useEffect(() => {
+  localStorage.setItem("currentQuestion", currentQuestion.toString());
+}, [currentQuestion]);
+
+useEffect(() => {
+  localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
+}, [completedQuestions]);
+
+useEffect(() => {
+  localStorage.setItem("code", code);
+}, [code]);
 
   useEffect(() => {
     const interval = setInterval(() => {
