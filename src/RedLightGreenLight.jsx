@@ -5,9 +5,7 @@ import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
 const squidGameMusic = "/public/images/squid game music.mpeg";
-const COMPILERX_API_URL = "https://compilerx-api-url.com"; // Replace with actual URL
-const COMPILERX_API_KEY = "your-api-key"; // Replace with actual API key
-
+const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 const RedLightGreenLight = () => {
   const navigate = useNavigate();
@@ -26,16 +24,16 @@ const RedLightGreenLight = () => {
 
   const questions = [
     { 
-      prompt: "// Fix the bug in this function\nint add(int a, int b) {\n return a - b; // Incorrect operation\n}",
-      expected: "15\n"
+      prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n}",
+      expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello"
     },
     {
-      prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
+      prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") \n  return 0;\n}",
       expected: "Hello, world!\n"
     },
     {
-      prompt: "// Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
-      expected: "Swapped successfully\n"
+      prompt: "// Fix the bug in this function\n#include <stdio.h>\nint main() {\\n  int temp\n  \nprintf('%d','hello') \n}",
+      expected: "hello\n"
     }
   ];
 
@@ -77,8 +75,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 15 && minutes >= 50) {
-        const secondsSince = (minutes - 50) * 60 + seconds;
+      if (hours === 23 && minutes >= 35) {
+        const secondsSince = (minutes - 35) * 60 + seconds;
         setTimeLeft(Math.max(600 - secondsSince, 0));
         if(Math.max(600 - secondsSince, 0)==0){
           handleTimeUp();
@@ -121,7 +119,7 @@ const RedLightGreenLight = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": COMPILERX_API_KEY,
+          
         },
         body: JSON.stringify({
           language: "c",
@@ -149,7 +147,7 @@ const RedLightGreenLight = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-api-key": COMPILERX_API_KEY,
+                
             },
             body: JSON.stringify({
                 language: "c",
@@ -170,20 +168,21 @@ const RedLightGreenLight = () => {
     }
 };
 
-  const handleSubmit = () => {
-    if (output.trim() === expectedOutput.trim()) {
-        setWon((prevWon) => prevWon + 10);
-        alert("Correct! You earned 10 Won!");
-
-        // Add the current question to completedQuestions if not already added
-        if (!completedQuestions.includes(currentQuestion)) {
-            setCompletedQuestions([...completedQuestions, currentQuestion]);
-        }
+const handleSubmit = () => {
+  if (output.trim() === expectedOutput.trim()) {
+    if (!completedQuestions.includes(currentQuestion)) {
+      setWon((prevWon) => prevWon + 10);
+      setCompletedQuestions([...completedQuestions, currentQuestion]);
+      alert("Correct! You earned 10 Won!");
     } else {
-        setWon((prevWon) => Math.max(prevWon - 10, 0));
-        alert("Incorrect output. You lost 10 Won!");
+      alert("You've already completed this question. Move to the next one!");
     }
+  } else {
+    setWon((prevWon) => Math.max(prevWon - 10, 0));
+    alert("Incorrect output. You lost 10 Won!");
+  }
 };
+
 
 
   return (
@@ -213,6 +212,7 @@ const RedLightGreenLight = () => {
           <div className="flex space-x-4 mt-4">
         <button onClick={handlePreviousQuestion} className="px-4 py-2 bg-blue-700 hover:bg-blue-900 text-white rounded" disabled={currentQuestion === 0}>Previous</button>
         <button onClick={handleNextQuestion} className="px-4 py-2 bg-green-500 hover:bg-emerald-700 text-white rounded" disabled={currentQuestion === questions.length - 1}>Next</button>
+          
       </div>
         </div>
         <div className="w-full lg:w-1/2">
@@ -230,7 +230,7 @@ const RedLightGreenLight = () => {
       
       <p className="text-lg mt-4">IST Timer: <span className="font-bold text-red-400">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span></p>
       <p className="text-lg">Current Won: <span className="font-bold text-yellow-400">{won} Won</span></p>
-      {/* <button
+     <button
   onClick={() => navigate("/Level2instructions")}
   className={`mt-6 px-6 py-3 text-lg font-bold rounded ${
     completedQuestions.length === questions.length
@@ -240,13 +240,13 @@ const RedLightGreenLight = () => {
   disabled={completedQuestions.length !== questions.length} // Disable until all questions are completed
 >
   Next Level
-</button> */}
-<button
+</button>
+{/* <button
   onClick={() => navigate("/Level2instructions")}
   className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
 >
   Next Level
-</button>
+</button> */}
     </div>
   );
 };

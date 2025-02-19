@@ -73,7 +73,7 @@ const TugOfWar = () => {
           </div>
           <div className="mt-4 flex justify-between">
             <button
-              className="px-6 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded"
+              className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded"
               onClick={() => setCurrentQuestion((prev) => Math.max(prev - 1, 0))}
               disabled={currentQuestion === 0}
             >
@@ -81,7 +81,7 @@ const TugOfWar = () => {
             </button>
             {currentQuestion === totalQuestions - 1 && (
               <button
-                className="px-6 py-2 bg-green-500 hover:bg-green-700 text-white rounded"
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
                 onClick={handleSubmit}
                 disabled={gameOver}
               >
@@ -89,21 +89,21 @@ const TugOfWar = () => {
               </button>
             )}
             <button
-              className="px-6 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
               onClick={() => setCurrentQuestion((prev) => Math.min(prev + 1, totalQuestions - 1))}
               disabled={currentQuestion === totalQuestions - 1}
             >
               Next
             </button>
           </div>
-          {gameOver && (
+          {/*{gameOver && (*/}
             <button
               onClick={() => navigate("/Level3instructions")}
               className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
             >
               Next Level
             </button>
-          )}
+          {/* )} */}
         </div>
       </div>
     </div>

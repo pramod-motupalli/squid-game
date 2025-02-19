@@ -5,7 +5,7 @@ const Level3Instructions = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4" style={{ backgroundImage: "url('public/images/Level3insbg.jpg')" ,backgroundRepeat:"no-repeat",backgroundSize:"cover"}}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4" style={{ backgroundImage: "url('/images/Level3insbg.jpg')" ,backgroundRepeat:"no-repeat",backgroundSize:"cover"}}>
       <div className="border-gray-900  bg-black/50 p-6 rounded-lg shadow-lg text-center max-w-2xl">
         <h1 className="text-3xl font-bold text-white">Level 3: Single and Mingle (Algorithmic Showdown)</h1>
         <p className="mt-4 text-lg">Welcome to the final level! Follow the instructions carefully:</p>
