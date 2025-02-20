@@ -197,6 +197,35 @@ const handleSubmit = () => {
     alert("Incorrect output. You lost 10 Won!");
   }
 };
+const markLevel1Complete = async () => {
+  const username = localStorage.getItem("username"); // Retrieve username from localStorage
+
+  if (!username) {
+    console.error("No username found in localStorage");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/updatelevel", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, level1: true }),
+    });
+
+    const data = await response.json();
+    if (data) {
+      console.log("Level 1 marked as completed:", data);
+      navigate("/Level2instructions")
+
+    } else {
+      console.error("Error updating level:", data.message);
+    }
+  } catch (error) {
+    console.error("Request failed:", error);
+  }
+};
 
 
 
@@ -245,8 +274,8 @@ const handleSubmit = () => {
       
       <p className="text-lg mt-4">IST Timer: <span className="font-bold text-red-400">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span></p>
       <p className="text-lg">Current Won: <span className="font-bold text-yellow-400">{won} Won</span></p>
-     <button
-  onClick={() => navigate("/Level2instructions")}
+     {/* <button
+  onClick={() => markLevel1Complete()}
   className={`mt-6 px-6 py-3 text-lg font-bold rounded ${
     completedQuestions.length === questions.length
       ? "bg-green-500 hover:bg-green-700 text-white"
@@ -255,13 +284,15 @@ const handleSubmit = () => {
   disabled={completedQuestions.length !== questions.length} // Disable until all questions are completed
 >
   Next Level
-</button>
-{/* <button
-  onClick={() => navigate("/Level2instructions")}
+</button> */}
+
+<button
+  onClick={() => markLevel1Complete()}
   className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
 >
   Next Level
-</button> */}
+</button>
+
     </div>
   );
 };

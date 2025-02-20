@@ -24,10 +24,33 @@ const LoginPage = () => {
 
       const data = await response.json();
       console.log(data);
-
-
+      const handleLogin = async (username, password) => {
+        try {
+          const response = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+      
+          const data = await response.json();
+      
+          if (data) {
+            localStorage.setItem("username", username); // Store username in localStorage
+            console.log("Login successful:", data);
+          } else {
+            console.error("Login failed:", data.message);
+          }
+        } catch (error) {
+          console.error("Request failed:", error);
+        }
+      };
+    
       if (data) {
         setMessage(`✅ Welcome, ${data.user.username}!`);
+        handleLogin(username, password);
+
         navigate("/level1instructions")
         // onLogin(data.user); // Pass user data to parent component if needed
       } else {
@@ -39,7 +62,7 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div
       className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat px-4 sm:px-6 lg:px-8 overflow-hidden"

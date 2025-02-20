@@ -32,6 +32,37 @@ app.post("/users", async (req, res) => {
     res.status(500).json({ error: "Error creating user", details: error });
   }
 });
+// Update Level 1 as completed for a specific user
+app.post("/updatelevel", async (req, res) => {
+  const { username, level1 } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { username }, // Find user by username
+      { level1 },   // Update level1 status
+      { new: true } // Return updated user
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Level 1 updated successfully", user });
+  } catch (error) {
+    console.error("Error updating level:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/users-with-level1-true", async (req, res) => {
+  try {
+    const users = await User.find({ level1: true }, "username"); // Fetch users with level1 as true, only returning username
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error while fetching users." });
+  }
+});
 
 app.post("/login", async (req, res) => {
     try {
