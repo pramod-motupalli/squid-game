@@ -28,8 +28,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginPage onLogin={handleLogin} />} />
-        <Route path="/level1-instructions" element={<Level1Instructions />} />
+        <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginPage />} />
+        <Route path="/level1instructions" element={<Level1Instructions />} />
         <Route path="/level1/game" element={<RedLightGreenLight />} />
         <Route path="/Level2instructions" element={<Level2instructions />} /> 
         <Route path="/TugOfWar" element={<TugOfWar />} />

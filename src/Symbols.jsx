@@ -45,7 +45,7 @@ const Symbols = () => {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen text-black p-6 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('public/images/SquidSymbol.jpg')" }}
+      style={{ backgroundImage: "url('/images/SquidSymbol.jpg')" }}
     >
       <h1 className="text-2xl font-bold mb-4">
         Choose any <b>TWO</b> Symbols 

@@ -4,7 +4,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
-const squidGameMusic = "/public/images/SingleAndMingle.mp3";
+const squidGameMusic = "/images/SingleAndMingle.mp3";
 const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual backend URL
 
 const SingleAndMingle = () => {

@@ -127,6 +127,7 @@ const TugOfWar = () => {
               </button>
             ))}
           </div>
+<<<<<<< HEAD
 
           <button
             className="mt-4 px-6 py-2 bg-green-500 hover:bg-green-700 text-white rounded"
@@ -135,6 +136,41 @@ const TugOfWar = () => {
           >
             Submit
           </button>
+=======
+          <div className="mt-4 flex justify-between">
+            <button
+              className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded"
+              onClick={() => setCurrentQuestion((prev) => Math.max(prev - 1, 0))}
+              disabled={currentQuestion === 0}
+            >
+              Previous
+            </button>
+            {currentQuestion === totalQuestions - 1 && (
+              <button
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+                onClick={handleSubmit}
+                disabled={gameOver}
+              >
+                Submit
+              </button>
+            )}
+            <button
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+              onClick={() => setCurrentQuestion((prev) => Math.min(prev + 1, totalQuestions - 1))}
+              disabled={currentQuestion === totalQuestions - 1}
+            >
+              Next
+            </button>
+          </div>
+          {/*{gameOver && (*/}
+            <button
+              onClick={() => navigate("/Level3instructions")}
+              className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
+            >
+              Next Level
+            </button>
+          {/* )} */}
+>>>>>>> 4dc728a41dfa97850343bc4b6aa037e7d627ab58
         </div>
       </div>
     </div>
