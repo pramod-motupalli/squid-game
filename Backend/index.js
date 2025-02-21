@@ -53,6 +53,11 @@ app.post("/updatelevel", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+app.post("/saveSubmitTime", async (req, res) => {
+  const { question, answer, marks, submitTime } = req.body;
+  await db.collection("submissions").insertOne({ question, answer, marks, submitTime });
+  res.status(200).send("Submit time saved.");
+});
 
 app.get("/users-with-level1-true", async (req, res) => {
   try {

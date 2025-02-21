@@ -51,7 +51,7 @@ const LoginPage = () => {
         setMessage(`✅ Welcome, ${data.user.username}!`);
         handleLogin(username, password);
 
-        navigate("/level1instructions")
+        navigate("/HomePage")
         // onLogin(data.user); // Pass user data to parent component if needed
       } else {
         setMessage(`❌ ${data.message}`);

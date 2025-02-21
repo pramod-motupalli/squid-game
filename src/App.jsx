@@ -13,23 +13,14 @@ import SingleAndMingle from "./SingleAndMingle.jsx";
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogin = (username, password) => {
-    if (
-      (username === "player531" && password === "Pramod") ||
-      (username === "player526" && password === "Snehitha") ||
-      (username === "player572" && password === "Bhavani")
-    ) {
-      setIsAuthenticated(true);
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+  
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginPage />} />
-        <Route path="/level1instructions" element={<Level1Instructions />} />
+        <Route path="/HomePage" element={<HomePage />} />
+        <Route path="/level1-instructions" element={<Level1Instructions />} />
         <Route path="/level1/game" element={<RedLightGreenLight />} />
         <Route path="/Level2instructions" element={<Level2instructions />} /> 
         <Route path="/TugOfWar" element={<TugOfWar />} />

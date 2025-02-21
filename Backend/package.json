@@ -20,6 +20,5 @@
     "react-scripts": "latest"
   },
   "devDependencies": {},
-  "private": true,
-  "nodemon": "^3.1.9"
+  "private": true
 }
