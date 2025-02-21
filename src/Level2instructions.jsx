@@ -55,7 +55,7 @@ const Level2Instructions = () => {
 
     console.log("Paired Teams:", teams);
     if (soloPlayer) {
-      // console.log("Solo Player:", soloPlayer);
+       console.log("Solo Player:", soloPlayer);
     }
 
     return { teams, soloPlayer };
