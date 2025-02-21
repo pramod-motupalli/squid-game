@@ -1,10 +1,10 @@
 {
-<<<<<<< HEAD
   "name": "squid-game",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
+    "dev": "nodemon index.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -20,26 +20,6 @@
     "react-scripts": "latest"
   },
   "devDependencies": {},
-  "private": true
-=======
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "child_process": "^1.0.2",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "fs": "^0.0.1-security",
-    "mongoose": "^8.10.1",
-    "nodemon": "^3.1.9",
-    "path": "^0.12.7",
-    "url": "^0.11.4"
-  }
->>>>>>> 4dc728a41dfa97850343bc4b6aa037e7d627ab58
+  "private": true,
+  "nodemon": "^3.1.9"
 }

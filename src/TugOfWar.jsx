@@ -127,16 +127,6 @@ const TugOfWar = () => {
               </button>
             ))}
           </div>
-<<<<<<< HEAD
-
-          <button
-            className="mt-4 px-6 py-2 bg-green-500 hover:bg-green-700 text-white rounded"
-            onClick={handleSubmit}
-            disabled={gameOver}
-          >
-            Submit
-          </button>
-=======
           <div className="mt-4 flex justify-between">
             <button
               className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded"
@@ -170,7 +160,6 @@ const TugOfWar = () => {
               Next Level
             </button>
           {/* )} */}
->>>>>>> 4dc728a41dfa97850343bc4b6aa037e7d627ab58
         </div>
       </div>
     </div>
