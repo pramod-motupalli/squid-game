@@ -10,9 +10,8 @@ const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual b
 const SingleAndMingle = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [code, setCode] = useState("");
+  const [userCode, setUserCode] = useState({}); // Stores code for each question
   const [output, setOutput] = useState("");
-  const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -25,50 +24,56 @@ const SingleAndMingle = () => {
 
   useEffect(() => {
     const allQuestions = [
-      { 
-        prompt: " Fix the bug in this function\nint add(int a, int b) {\n return c - b; // Incorrect operation\n}",
-        expected: "15\n"
-      },
-      { 
-        prompt: " Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
-        expected: "0 1 1 2 3 5 8 13 21 34"
+      {
+        prompt:
+          " Fix the bug in this function\nint add(int a, int b) {\n return c - b; // Incorrect operation\n}",
+        expected: "15\n",
       },
       {
-        prompt: " Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf(\"Hello, world!\") // Missing closing parenthesis\n  return 0;\n}",
-        expected: "Hello, World!"
+        prompt:
+          " Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
+        expected: "0 1 1 2 3 5 8 13 21 34",
       },
       {
-        prompt: " Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
-        expected: "Swapped successfully\n"
-      }
+        prompt:
+          ' Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf("Hello, world!") // Missing closing parenthesis\n  return 0;\n}',
+        expected: "Hello, World!",
+      },
+      {
+        prompt:
+          " Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+        expected: "Swapped successfully\n",
+      },
     ];
     const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
-    console.log(selectedQuestions)
     setQuestions(selectedQuestions);
-    setExpectedOutput(selectedQuestions[0].expected);
-    console.log(expectedOutput)
   }, []);
 
+  useEffect(() => {
+    if (questions.length > 0) {
+      setOutput(""); // Clear output when switching questions
+    }
+  }, [currentQuestion, questions]);
+
   const handleCodeChange = (value) => {
-    setCode(value);
+    setUserCode((prevCode) => ({
+      ...prevCode,
+      [currentQuestion]: value, // Store code per question
+    }));
   };
-  
+
   const handleNextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setCode("");
-      setOutput("");
+      setCurrentQuestion((prev) => prev + 1);
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      setCode("");
-      setOutput("");
+      setCurrentQuestion((prev) => prev - 1);
     }
   };
-  
+
   const handleCompileRun = async () => {
     setCompiling(true);
     try {
@@ -78,7 +83,7 @@ const SingleAndMingle = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          code: code,
+          code: userCode[currentQuestion] || "", // Send saved code
         }),
       });
       const result = await response.json();
@@ -89,9 +94,10 @@ const SingleAndMingle = () => {
     }
     setCompiling(false);
   };
-  
+
   const handleSubmit = () => {
-    if (output.trim() === expectedOutput.trim()) {
+    const expectedOutput = questions[currentQuestion].expected;
+    if ((output || "").trim() === expectedOutput.trim()) {
       alert("Correct! You passed this challenge!");
       if (!completedQuestions.includes(currentQuestion)) {
         setCompletedQuestions([...completedQuestions, currentQuestion]);
@@ -115,24 +121,51 @@ const SingleAndMingle = () => {
             {questions[currentQuestion].prompt}
           </pre>
           <div className="flex space-x-4 mt-4">
-            <button onClick={handlePreviousQuestion} className="px-4 py-2 bg-blue-700 hover:bg-blue-900 text-white rounded" disabled={currentQuestion === 0}>Previous</button>
-            <button onClick={handleNextQuestion} className="px-4 py-2 bg-green-500 hover:bg-emerald-700 text-white rounded" disabled={currentQuestion === questions.length - 1}>Next</button>
+            <button
+              onClick={handlePreviousQuestion}
+              className="px-4 py-2 bg-blue-700 hover:bg-blue-900 text-white rounded"
+              disabled={currentQuestion === 0}
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNextQuestion}
+              className="px-4 py-2 bg-green-500 hover:bg-emerald-700 text-white rounded"
+              disabled={currentQuestion === questions.length - 1}
+            >
+              Next
+            </button>
           </div>
         </div>
         <div className="w-full lg:w-1/2">
-          <CodeMirror value={code} height="400px" width="100%" extensions={[cpp()]} theme={dracula} onChange={handleCodeChange} />
+          <CodeMirror
+            value={userCode[currentQuestion] || ""} // Load saved code
+            height="400px"
+            width="100%"
+            extensions={[cpp()]}
+            theme={dracula}
+            onChange={handleCodeChange}
+          />
           <div className="flex mt-2 space-x-2">
-            <button onClick={handleCompileRun} className="px-4 py-2 bg-green-500 hover:bg-green-800 text-white rounded">Run</button>
-            <button onClick={handleSubmit} className="px-4 py-2 bg-yellow-500 hover:bg-amber-600 text-white rounded">Submit</button>
+            <button
+              onClick={handleCompileRun}
+              className="px-4 py-2 bg-green-500 hover:bg-green-800 text-white rounded"
+            >
+              Run
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-yellow-500 hover:bg-amber-600 text-white rounded"
+            >
+              Submit
+            </button>
           </div>
           <pre className="bg-gray-800 p-4 rounded-md w-full overflow-auto mt-4 text-sm md:text-base">
             Output: {compiling ? "Compiling..." : output}
           </pre>
         </div>
       </div>
-      <button
-        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
-      >
+      <button className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white">
         Thank You!!!
       </button>
     </div>
