@@ -54,10 +54,15 @@ app.post("/updatelevel", async (req, res) => {
   }
 });
 app.post("/saveSubmitTime", async (req, res) => {
-  const { question, answer, marks, submitTime } = req.body;
-  await db.collection("submissions").insertOne({ question, answer, marks, submitTime });
-  res.status(200).send("Submit time saved.");
-});
+  try {
+      const { question, answer, marks, submitTime } = req.body;
+      await db.collection("submissions").insertOne({ question, answer, marks, submitTime });
+      res.status(200).send("Submission saved successfully");
+    } catch (err) {
+      console.error("Failed to save submission:", err);
+      res.status(500).send("Failed to save submission");
+    }
+  });
 
 app.get("/users-with-level1-true", async (req, res) => {
   try {
@@ -66,6 +71,33 @@ app.get("/users-with-level1-true", async (req, res) => {
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Server error while fetching users." });
+  }
+});
+const submissions = {};
+
+app.post("/submitTugOfWar", async (req, res) => {
+  const { question, answer, marks, submitTime, score, timeLeft } = req.body;
+
+  console.log("Received data:", req.body);
+
+  if (!question || !answer || !marks || !submitTime || score === undefined || timeLeft === undefined) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const result = await db.collection("submissions").insertOne({
+      question,
+      answer,
+      marks,
+      submitTime,
+      score,
+      timeLeft,
+    });
+
+    res.status(201).json({ message: "Data submitted successfully", data: result });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Failed to submit data" });
   }
 });
 
