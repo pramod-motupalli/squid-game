@@ -42,6 +42,7 @@ const RedLightGreenLight = () => {
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [audio] = useState(() => new Audio(squidGameMusic));
+  // Change completedQuestions to an array to track solved question indexes
   const [completedQuestions, setCompletedQuestions] = useState([]);
 
   const questions = [
@@ -83,10 +84,7 @@ const RedLightGreenLight = () => {
   }, [currentQuestion]);
 
   useEffect(() => {
-    localStorage.setItem(
-      "completedQuestions",
-      JSON.stringify(completedQuestions)
-    );
+    localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
   // Manage red/green light transitions and audio playback
@@ -120,13 +118,14 @@ const RedLightGreenLight = () => {
     const updateISTTime = () => {
       const now = new Date();
       const utcOffset = now.getTimezoneOffset() * 60000;
+      // Change the IST hour/minute condition as needed; here using 16:37 as example
       const istTime = new Date(now.getTime() + utcOffset + 19800000);
       const hours = istTime.getHours();
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 16 && minutes >= 23) {
-        const secondsSince = (minutes - 23) * 60 + seconds;
+      if (hours === 16 && minutes >= 39) {
+        const secondsSince = (minutes - 39) * 60 + seconds;
         const newTimeLeft = Math.max(600 - secondsSince, 0);
         setTimeLeft(newTimeLeft);
         if (newTimeLeft === 0) {
@@ -197,7 +196,7 @@ const RedLightGreenLight = () => {
     }
   };
 
-  // Updated handleSubmit to use a functional update for completedQuestions
+  // Updated handleSubmit to use a functional update for completedQuestions (an array)
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
       setCompletedQuestions((prevCompleted) => {
