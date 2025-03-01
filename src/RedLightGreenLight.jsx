@@ -2,10 +2,30 @@ import React, { useState, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
+import { EditorView } from "@codemirror/view";
 import { useNavigate } from "react-router-dom";
 
-const squidGameMusic = "/public/images/squid game music.mpeg";
+const squidGameMusic = "/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
+
+// Create an extension to intercept and block both copy and cut events
+const noCopyCutExtension = EditorView.domEventHandlers({
+  copy: (event) => {
+    event.preventDefault();
+    return true;
+  },
+  cut: (event) => {
+    event.preventDefault();
+    return true;
+  },
+});
+
+// Create a theme extension to disable text selection in the editor's content
+const noSelectTheme = EditorView.theme({
+  ".cm-content": {
+    userSelect: "none",
+  },
+});
 
 const RedLightGreenLight = () => {
   const navigate = useNavigate();
@@ -95,7 +115,11 @@ const RedLightGreenLight = () => {
     }
   }, [won]);
 
+<<<<<<< HEAD
   // Update the IST timer; when time reaches 00:00, call handleTimeUp
+=======
+  // Timer update effect: checks every second and updates the timer
+>>>>>>> 68ed1a6b29404562f511c01154e6dcd5a54725d2
   useEffect(() => {
     const updateISTTime = () => {
       const now = new Date();
@@ -105,8 +129,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 23 && minutes >= 35) {
-        const secondsSince = (minutes - 35) * 60 + seconds;
+      if (hours === 16 && minutes >= 23) {
+        const secondsSince = (minutes - 23) * 60 + seconds;
         const newTimeLeft = Math.max(600 - secondsSince, 0);
         setTimeLeft(newTimeLeft);
         if (newTimeLeft === 0) {
@@ -186,43 +210,31 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
+  // When timer reaches 0, check if all questions are completed and if won > 70.
+  // If yes, allow to proceed to the next level; otherwise, alert elimination.
   const handleTimeUp = async () => {
-    if (completedQuestions.length < questions.length) {
-      alert("Failed! You did not complete all questions.");
-      return;
-    }
-
-    try {
-      const response = await fetch(COMPILERX_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: "c",
-          code: codeMap[currentQuestion] || "",
-          stdin: "",
-        }),
-      });
-      const result = await response.json();
-      if (result.output.trim() === expectedOutput.trim() && won > 70) {
-        alert("Success! You passed the challenge!");
-      } else {
-        alert("Failed! Better luck next time.");
-      }
-    } catch (error) {
-      console.error("Error compiling:", error);
-      alert("Failed! Compilation Error.");
+    console.log("Completed Questions: ", completedQuestions.length);
+    if (completedQuestions.length === questions.length && won > 70) {
+      alert("Time's up! You passed this level.");
+      navigate("/Level2instructions");
+    } else {
+      alert("Time's up! You are eliminated.");
     }
   };
 
+  // Updated handleSubmit to use a functional update for completedQuestions
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
-      if (!completedQuestions.includes(currentQuestion)) {
-        setWon((prevWon) => prevWon + 10);
-        setCompletedQuestions([...completedQuestions, currentQuestion]);
-        alert("Correct! You earned 10 Won!");
-      } else {
-        alert("You've already completed this question. Move to the next one!");
-      }
+      setCompletedQuestions((prevCompleted) => {
+        if (!prevCompleted.includes(currentQuestion)) {
+          setWon((prevWon) => prevWon + 10);
+          alert("Correct! You earned 10 Won!");
+          return [...prevCompleted, currentQuestion];
+        } else {
+          alert("You've already completed this question. Move to the next one!");
+          return prevCompleted;
+        }
+      });
     } else {
       setWon((prevWon) => Math.max(prevWon - 10, 0));
       alert("Incorrect output. You lost 10 Won!");
@@ -283,13 +295,13 @@ const RedLightGreenLight = () => {
             value={codeMap[currentQuestion] || ""}
             height="400px"
             width="100%"
-            extensions={[cpp()]}
+            extensions={[cpp(), noCopyCutExtension, noSelectTheme]}
             theme={dracula}
             onChange={handleCodeChange}
           />
           <div className="flex mt-2 space-x-2">
             <button
-              onClick={() => handleCompileRun(true)}
+              onClick={handleCompileRun}
               className="px-4 py-2 bg-green-500 hover:bg-green-800 text-white rounded"
             >
               Run

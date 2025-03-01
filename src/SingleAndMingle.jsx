@@ -39,7 +39,7 @@ const SingleAndMingle = () => {
         },
         {
           prompt:
-            "Write a C program to print the first 10 terms of the Fibonacci series using both loops and recursion.",
+            "Write a C program to print the first 10 terms of the Fibonacci \n  series using both loops and recursion.",
           expected: "0 1 1 2 3 5 8 13 21 34",
         },
         {

@@ -7,10 +7,13 @@ const Level2Instructions = () => {
 
   const fetchLevel1CompletedUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/users-with-level1-true", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        "http://localhost:5000/users-with-level1-true",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       const data = await response.json();
 
       if (data) {
@@ -86,14 +89,25 @@ const Level2Instructions = () => {
           Level 2: Tug of War (Aptitude & Logic Face-off)
         </h1>
         <p className="mt-4 text-lg">
-          Welcome to the Second level of the competition! Follow the instructions carefully:
+          Welcome to the Second level of the competition! Follow the
+          instructions carefully:
         </p>
         <ul className="mt-4 text-left space-y-2">
           <li>🔹 The remaining pairs will be split into two teams.</li>
-          <li>🔹 Both teams receive the same set of aptitude and logical reasoning questions.</li>
-          <li>🔹 Correct answers move the virtual rope toward their team’s side.</li>
-          <li>🔹 The team that pulls the rope completely to their side wins the round.</li>
-          <li>🔹 The winning team will be qualified to the next level of the game.</li>
+          <li>
+            🔹 Both teams receive the same set of aptitude and logical reasoning
+            questions.
+          </li>
+          <li>
+            🔹 Correct answers move the virtual rope toward their team’s side.
+          </li>
+          <li>
+            🔹 The team that pulls the rope completely to their side wins the
+            round.
+          </li>
+          <li>
+            🔹 The winning team will be qualified to the next level of the game.
+          </li>
         </ul>
       </div>
     </div>
