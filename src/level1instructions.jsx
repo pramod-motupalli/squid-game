@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Level1Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(2 * 60); // 2 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(10); // 2 minutes in seconds
   const [buttonEnabled, setButtonEnabled] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,8 @@ const Level1Instructions = () => {
           Level 1: Red Light, Green Light (Debugging Battle)
         </h1>
         <p className="mt-4 text-lg">
-          Welcome to the first level of the competition! Follow the instructions carefully:
+          Welcome to the first level of the competition! Follow the instructions
+          carefully:
         </p>
         <ul className="mt-4 text-left space-y-2">
           <li>🔹 Participants will compete in pairs from the start.</li>
