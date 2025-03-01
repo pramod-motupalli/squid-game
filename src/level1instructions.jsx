@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 const Level1Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(10); // 2 minutes in seconds
-  const [buttonEnabled, setButtonEnabled] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setButtonEnabled(true); // Enable button when time is up
+          navigate("/Level1/game"); // Navigate when time is up
           return 0;
         }
         return prev - 1;
@@ -19,7 +18,7 @@ const Level1Instructions = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [navigate]);
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -58,18 +57,6 @@ const Level1Instructions = () => {
           <li>🔹 If they write during the red light, 1 won is deducted.</li>
           <li>🔹 Pairs with less than 70 won are eliminated.</li>
         </ul>
-
-        <button
-          onClick={() => navigate("/level1/game")}
-          className={`mt-6 px-6 py-3 rounded-lg text-lg transition-all duration-300 ${
-            buttonEnabled
-              ? "bg-blue-600 hover:bg-blue-800 text-white"
-              : "bg-gray-600 text-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!buttonEnabled}
-        >
-          Start Level 1
-        </button>
       </div>
     </div>
   );

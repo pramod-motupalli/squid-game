@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 const Level3Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(10); // 2 minutes in seconds
-  const [buttonEnabled, setButtonEnabled] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setButtonEnabled(true); // Enable button when timer reaches 0
+          navigate("/Symbols"); // Navigate to the next level and green light page when time is up
           return 0;
         }
         return prev - 1;
@@ -19,7 +18,7 @@ const Level3Instructions = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [navigate]);
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -54,24 +53,13 @@ const Level3Instructions = () => {
           <li>
             🔹 The team should predict the suitable data structure to solve it.
           </li>
-          <li>🔹 The team must analyze and complete the given pseudo code.</li>
           <li>
-            🔹 The teams that correctly implement them will be declared the
-            winners.
+            🔹 The team must analyze and complete the given pseudo code.
+          </li>
+          <li>
+            🔹 The teams that correctly implement them will be declared the winners.
           </li>
         </ul>
-
-        <button
-          onClick={() => navigate("/Symbols")}
-          className={`mt-6 px-6 py-3 rounded-lg text-lg transition-all duration-300 ${
-            buttonEnabled
-              ? "bg-blue-600 hover:bg-blue-800 text-white"
-              : "bg-gray-600 text-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!buttonEnabled}
-        >
-          Start Level 3
-        </button>
       </div>
     </div>
   );
