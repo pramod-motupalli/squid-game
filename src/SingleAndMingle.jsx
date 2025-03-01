@@ -19,7 +19,9 @@ const SingleAndMingle = () => {
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
-    audio.play().catch((error) => console.error("Audio playback failed:", error));
+    audio
+      .play()
+      .catch((error) => console.error("Audio playback failed:", error));
   }, []);
 
   useEffect(() => {
@@ -45,7 +47,9 @@ const SingleAndMingle = () => {
         expected: "Swapped successfully\n",
       },
     ];
-    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+    const selectedQuestions = allQuestions
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
     setQuestions(selectedQuestions);
   }, []);
 
