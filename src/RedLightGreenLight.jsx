@@ -34,14 +34,13 @@ const RedLightGreenLight = () => {
       prompt:
         "// Fix the bug in this function\n #include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
       expected: "15",
-},
-
+    },
     {
       prompt:
         "// Fix the bug in this function\n Swapping of two number without using third variable\n #include<studio.h>\n void main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a+b;\n printf('a= d b= %d',a,b);}",
       expected: "a=10 b=5",
     },
-  ]; 
+  ];
 
   // Update expected output when current question changes
   useEffect(() => {
@@ -96,6 +95,7 @@ const RedLightGreenLight = () => {
     }
   }, [won]);
 
+  // Update the IST timer; when time reaches 00:00, call handleTimeUp
   useEffect(() => {
     const updateISTTime = () => {
       const now = new Date();
@@ -121,6 +121,27 @@ const RedLightGreenLight = () => {
     const interval = setInterval(updateISTTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // NEW: Auto-navigation function for Level2instructions
+  // Only navigates if all questions have been completed and won is 70 or more
+  const autoNavigateToLevel2 = () => {
+    if (completedQuestions.length === questions.length && won >= 70) {
+      navigate("/Level2instructions");
+    } else {
+      console.log("Auto-navigation conditions not met:", {
+        completed: completedQuestions.length,
+        total: questions.length,
+        won,
+      });
+    }
+  };
+
+  // Trigger auto-navigation when timer reaches 00:00
+  useEffect(() => {
+    if (timeLeft === 0) {
+      autoNavigateToLevel2();
+    }
+  }, [timeLeft]);
 
   // Update code for the current question without clearing previous entries
   const handleCodeChange = (value) => {
@@ -205,30 +226,6 @@ const RedLightGreenLight = () => {
     } else {
       setWon((prevWon) => Math.max(prevWon - 10, 0));
       alert("Incorrect output. You lost 10 Won!");
-    }
-  };
-
-  const markLevel1Complete = async () => {
-    const username = localStorage.getItem("username");
-    if (!username) {
-      console.error("No username found in localStorage");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:5000/updatelevel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, level1: true }),
-      });
-      const data = await response.json();
-      if (data) {
-        navigate("/Level2instructions");
-      } else {
-        console.error("Error updating level:", data.message);
-      }
-    } catch (error) {
-      console.error("Request failed:", error);
     }
   };
 
@@ -320,23 +317,6 @@ const RedLightGreenLight = () => {
         Current Won:{" "}
         <span className="font-bold text-yellow-400">{won} Won</span>
       </p>
-      {/* <button
-  onClick={() => markLevel1Complete()}
-  className={`mt-6 px-6 py-3 text-lg font-bold rounded ${
-    completedQuestions.length === questions.length
-      ? "bg-green-500 hover:bg-green-700 text-white"
-      : "bg-gray-500 text-gray-300 cursor-not-allowed"
-  }`}
-  disabled={completedQuestions.length !== questions.length} // Disable until all questions are completed
->
-  Next Level
-</button> */}
-      <button
-        onClick={markLevel1Complete}
-        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
-      >
-        Next Level
-      </button>
     </div>
   );
 };
