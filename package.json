@@ -15,6 +15,7 @@
     "@uiw/codemirror-theme-dracula": "^4.23.8",
     "@uiw/react-codemirror": "^4.23.8",
     "axios": "^1.7.9",
+    "codemirror": "^6.0.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "framer-motion": "^12.4.5",
