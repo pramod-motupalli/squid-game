@@ -115,11 +115,7 @@ const RedLightGreenLight = () => {
     }
   }, [won]);
 
-<<<<<<< HEAD
-  // Update the IST timer; when time reaches 00:00, call handleTimeUp
-=======
   // Timer update effect: checks every second and updates the timer
->>>>>>> 68ed1a6b29404562f511c01154e6dcd5a54725d2
   useEffect(() => {
     const updateISTTime = () => {
       const now = new Date();
@@ -129,8 +125,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 16 && minutes >= 23) {
-        const secondsSince = (minutes - 23) * 60 + seconds;
+      if (hours === 16 && minutes >= 43) {
+        const secondsSince = (minutes - 43) * 60 + seconds;
         const newTimeLeft = Math.max(600 - secondsSince, 0);
         setTimeLeft(newTimeLeft);
         if (newTimeLeft === 0) {
