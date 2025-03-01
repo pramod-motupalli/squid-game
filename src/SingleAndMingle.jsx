@@ -10,55 +10,67 @@ const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual b
 const SingleAndMingle = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [userCode, setUserCode] = useState({}); // Stores code for each question
+  const [userCode, setUserCode] = useState({});
   const [output, setOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
 
+  // Play background music on load
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
-    audio.play().catch((error) => console.error("Audio playback failed:", error));
+    audio.play().catch((error) =>
+      console.error("Audio playback failed:", error)
+    );
   }, []);
 
+  // Load questions from localStorage or select them once and store them
   useEffect(() => {
-    const allQuestions = [
-      {
-        prompt:
-          " Fix the bug in this function\nint add(int a, int b) {\n return c - b; // Incorrect operation\n}",
-        expected: "15\n",
-      },
-      {
-        prompt:
-          " Write a C program to print the first\n 10 terms of the Fibonacci series using both loops\n and recursion.\n}",
-        expected: "0 1 1 2 3 5 8 13 21 34",
-      },
-      {
-        prompt:
-          ' Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf("Hello, world!") // Missing closing parenthesis\n  return 0;\n}',
-        expected: "Hello, World!",
-      },
-      {
-        prompt:
-          " Fix the bug in this function\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
-        expected: "Swapped successfully\n",
-      },
-    ];
-    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
-    setQuestions(selectedQuestions);
+    const storedQuestions = localStorage.getItem("singleAndMingleQuestions");
+    if (storedQuestions) {
+      setQuestions(JSON.parse(storedQuestions));
+    } else {
+      const allQuestions = [
+        {
+          prompt:
+            "Fix the bug in this function:\nint add(int a, int b) {\n  return c - b; // Incorrect operation\n}",
+          expected: "15\n",
+        },
+        {
+          prompt:
+            "Write a C program to print the first 10 terms of the Fibonacci series using both loops and recursion.",
+          expected: "0 1 1 2 3 5 8 13 21 34",
+        },
+        {
+          prompt:
+            'Fix the bug in this function:\n#include <stdio.h>\nint main() {\n  printf("Hello, world!"); // Missing closing parenthesis fixed\n  return 0;\n}',
+          expected: "Hello, world!",
+        },
+        {
+          prompt:
+            "Fix the bug in this function:\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+          expected: "Swapped successfully\n",
+        },
+      ];
+      // Randomize once, then persist the selected questions (for example, pick 2)
+      const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+      setQuestions(selectedQuestions);
+      localStorage.setItem("singleAndMingleQuestions", JSON.stringify(selectedQuestions));
+    }
   }, []);
 
+  // Clear output when switching questions
   useEffect(() => {
     if (questions.length > 0) {
-      setOutput(""); // Clear output when switching questions
+      setOutput("");
     }
   }, [currentQuestion, questions]);
 
   const handleCodeChange = (value) => {
     setUserCode((prevCode) => ({
       ...prevCode,
-      [currentQuestion]: value, // Store code per question
+      [currentQuestion]: value,
     }));
   };
 
@@ -79,11 +91,9 @@ const SingleAndMingle = () => {
     try {
       const response = await fetch(BACKEND_API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          code: userCode[currentQuestion] || "", // Send saved code
+          code: userCode[currentQuestion] || "",
         }),
       });
       const result = await response.json();
@@ -110,12 +120,13 @@ const SingleAndMingle = () => {
   if (questions.length === 0) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white relative w-full">
+    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full">
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Debugging Battle
       </h1>
-      <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-4 lg:space-y-0 lg:space-x-4 relative">
-        <div className="w-full lg:w-1/2 relative">
+      <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-4 lg:space-y-0 lg:space-x-4">
+        {/* Question Section */}
+        <div className="w-full lg:w-1/2">
           <p className="text-lg font-bold">Question:</p>
           <pre className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none">
             {questions[currentQuestion].prompt}
@@ -137,9 +148,10 @@ const SingleAndMingle = () => {
             </button>
           </div>
         </div>
+        {/* Code Editor Section */}
         <div className="w-full lg:w-1/2">
           <CodeMirror
-            value={userCode[currentQuestion] || ""} // Load saved code
+            value={userCode[currentQuestion] || ""}
             height="400px"
             width="100%"
             extensions={[cpp()]}
@@ -165,7 +177,10 @@ const SingleAndMingle = () => {
           </pre>
         </div>
       </div>
-      <button className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white">
+      <button
+        onClick={() => navigate("/thank-you")}
+        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
+      >
         Thank You!!!
       </button>
     </div>
