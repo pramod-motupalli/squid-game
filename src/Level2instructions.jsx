@@ -3,40 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 const Level2Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(10); // 2 minutes in seconds
-  const [buttonEnabled, setButtonEnabled] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setButtonEnabled(true); // Enable button when timer reaches 0
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Format time as MM:SS
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-  };
+  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
 
   const fetchLevel1CompletedUsers = async () => {
-    if (!buttonEnabled) return; // Prevent API call before timer ends
-
     try {
       const response = await fetch("http://localhost:5000/users-with-level1-true", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-
       const data = await response.json();
 
       if (data) {
@@ -68,8 +42,30 @@ const Level2Instructions = () => {
     console.log("Paired Teams:", teams);
     if (soloPlayer) console.log("Solo Player:", soloPlayer);
 
-    navigate("/TugOfWar");
+    navigate("/TugOfWar"); // Navigate to the level2 and green light page
   };
+
+  // Format time as MM:SS
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          fetchLevel1CompletedUsers(); // Trigger API call when timer ends
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div
@@ -82,9 +78,13 @@ const Level2Instructions = () => {
     >
       <div className="border-gray-900 bg-black/50 p-6 rounded-lg shadow-lg text-center max-w-2xl">
         {/* Countdown Timer */}
-        <div className="text-2xl font-bold text-red-500">Time Left: {formatTime(timeLeft)}</div>
+        <div className="text-2xl font-bold text-red-500">
+          Time Left: {formatTime(timeLeft)}
+        </div>
 
-        <h1 className="text-3xl font-bold text-white mt-4">Level 2: Tug of War (Aptitude & Logic Face-off)</h1>
+        <h1 className="text-3xl font-bold text-white mt-4">
+          Level 2: Tug of War (Aptitude & Logic Face-off)
+        </h1>
         <p className="mt-4 text-lg">
           Welcome to the Second level of the competition! Follow the instructions carefully:
         </p>
@@ -95,18 +95,6 @@ const Level2Instructions = () => {
           <li>🔹 The team that pulls the rope completely to their side wins the round.</li>
           <li>🔹 The winning team will be qualified to the next level of the game.</li>
         </ul>
-
-        <button
-          onClick={fetchLevel1CompletedUsers}
-          className={`mt-6 px-6 py-3 rounded-lg text-lg transition-all duration-300 ${
-            buttonEnabled
-              ? "bg-blue-600 hover:bg-blue-800 text-white"
-              : "bg-gray-600 text-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!buttonEnabled}
-        >
-          Start Level 2
-        </button>
       </div>
     </div>
   );
