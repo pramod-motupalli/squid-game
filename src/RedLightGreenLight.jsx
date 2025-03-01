@@ -30,15 +30,12 @@ const RedLightGreenLight = () => {
         "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n}",
       expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello",
     },
+    
     {
       prompt:
-        '// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  printf("Hello, world!") \n  return 0;\n}',
-      expected: "Hello, world!\n",
-    },
-    {
-      prompt:
-        "// Fix the bug in this function\n#include <stdio.h>\nint main() {\\n  int temp\n  \nprintf('%d','hello') \n}",
-      expected: "hello\n",
+        "// Fix the bug in this function\n Swapping of two number without using third variable\n #include<studio.h>\n void main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a+b;\n printf("a= d  b=  %d",a,b);}",
+
+        expected: "a=10 b=5",
     },
   ];
 
