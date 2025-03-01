@@ -17,7 +17,7 @@ const RedLightGreenLight = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
-  const [code, setCode] = useState("");
+  const [codeMap, setCodeMap] = useState({}); // Store code per question
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
@@ -39,22 +39,19 @@ const RedLightGreenLight = () => {
     },
   ];
 
+  // Update expected output when current question changes
   useEffect(() => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
 
   useEffect(() => {
     const w = localStorage.getItem("won");
-    console.log(w);
-    console.log("there");
     if (w) {
       setWon(Number(w));
     }
   }, []);
 
   useEffect(() => {
-    console.log("here");
-    console.log("won", won);
     localStorage.setItem("won", won.toString());
   }, [won]);
 
@@ -69,20 +66,17 @@ const RedLightGreenLight = () => {
     );
   }, [completedQuestions]);
 
-  useEffect(() => {
-    localStorage.setItem("code", code);
-  }, [code]);
-
+  // Manage red/green light transitions and audio playback
   useEffect(() => {
     const interval = setInterval(() => {
       setIsGreenLight(false);
-      audio.play().catch((error) => console.log("Audio play blocked:", error)); // Play sound when red light starts
+      audio.play().catch((error) => console.log("Audio play blocked:", error));
 
       const randomRedLightDuration = Math.floor(Math.random() * 11) + 5; // Random 5-15 sec
       setTimeout(() => {
         setIsGreenLight(true);
-        audio.pause(); // Stop sound when green light appears
-        audio.currentTime = 0; // Reset audio to start
+        audio.pause();
+        audio.currentTime = 0;
       }, randomRedLightDuration * 1000);
     }, 30000);
 
@@ -109,8 +103,9 @@ const RedLightGreenLight = () => {
 
       if (hours === 23 && minutes >= 35) {
         const secondsSince = (minutes - 35) * 60 + seconds;
-        setTimeLeft(Math.max(600 - secondsSince, 0));
-        if (Math.max(600 - secondsSince, 0) == 0) {
+        const newTimeLeft = Math.max(600 - secondsSince, 0);
+        setTimeLeft(newTimeLeft);
+        if (newTimeLeft === 0) {
           handleTimeUp();
         }
       } else {
@@ -123,16 +118,17 @@ const RedLightGreenLight = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Update code for the current question without clearing previous entries
   const handleCodeChange = (value) => {
     if (!isGreenLight) {
       setWon((prevWon) => Math.max(prevWon - 2, 0));
     }
-    setCode(value);
+    setCodeMap((prev) => ({ ...prev, [currentQuestion]: value }));
   };
+
   const handleNextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setCode("");
       setOutput("");
     }
   };
@@ -140,25 +136,22 @@ const RedLightGreenLight = () => {
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setCode("");
       setOutput("");
     }
   };
-  const handleCompileRun = async (isRun) => {
+
+  const handleCompileRun = async () => {
     setCompiling(true);
     try {
       const response = await fetch(COMPILERX_API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           language: "c",
-          code: code,
+          code: codeMap[currentQuestion] || "",
           stdin: "",
         }),
       });
-
       const result = await response.json();
       setOutput(result.output || "Error in execution");
     } catch (error) {
@@ -167,6 +160,7 @@ const RedLightGreenLight = () => {
     }
     setCompiling(false);
   };
+
   const handleTimeUp = async () => {
     if (completedQuestions.length < questions.length) {
       alert("Failed! You did not complete all questions.");
@@ -176,16 +170,13 @@ const RedLightGreenLight = () => {
     try {
       const response = await fetch(COMPILERX_API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           language: "c",
-          code: code,
+          code: codeMap[currentQuestion] || "",
           stdin: "",
         }),
       });
-
       const result = await response.json();
       if (result.output.trim() === expectedOutput.trim() && won > 70) {
         alert("Success! You passed the challenge!");
@@ -212,9 +203,9 @@ const RedLightGreenLight = () => {
       alert("Incorrect output. You lost 10 Won!");
     }
   };
-  const markLevel1Complete = async () => {
-    const username = localStorage.getItem("username"); // Retrieve username from localStorage
 
+  const markLevel1Complete = async () => {
+    const username = localStorage.getItem("username");
     if (!username) {
       console.error("No username found in localStorage");
       return;
@@ -223,15 +214,11 @@ const RedLightGreenLight = () => {
     try {
       const response = await fetch("http://localhost:5000/updatelevel", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, level1: true }),
       });
-
       const data = await response.json();
       if (data) {
-        console.log("Level 1 marked as completed:", data);
         navigate("/Level2instructions");
       } else {
         console.error("Error updating level:", data.message);
@@ -257,7 +244,7 @@ const RedLightGreenLight = () => {
         <div className="w-full lg:w-1/2 relative">
           <p className="text-lg font-bold">Question:</p>
           {!isGreenLight && (
-            <div className="absolute inset-0 flex justify-center items-center  bg-black bg-opacity-80  z-50">
+            <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-80 z-50">
               <img
                 src="/images/dollred.jpg"
                 alt="Squid Game Doll"
@@ -267,13 +254,12 @@ const RedLightGreenLight = () => {
           )}
           <pre
             className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none"
-            onContextMenu={(e) => e.preventDefault()} // Disable right-click
-            onCopy={(e) => e.preventDefault()} // Disable copy
-            style={{ userSelect: "none", cursor: "default" }} // Prevent selection & cursor interaction
+            onContextMenu={(e) => e.preventDefault()}
+            onCopy={(e) => e.preventDefault()}
+            style={{ userSelect: "none", cursor: "default" }}
           >
             {questions[currentQuestion].prompt}
           </pre>
-
           <div className="flex space-x-4 mt-4">
             <button
               onClick={handlePreviousQuestion}
@@ -293,7 +279,7 @@ const RedLightGreenLight = () => {
         </div>
         <div className="w-full lg:w-1/2">
           <CodeMirror
-            value={code}
+            value={codeMap[currentQuestion] || ""}
             height="400px"
             width="100%"
             extensions={[cpp()]}
@@ -319,7 +305,6 @@ const RedLightGreenLight = () => {
           </pre>
         </div>
       </div>
-
       <p className="text-lg mt-4">
         IST Timer:{" "}
         <span className="font-bold text-red-400">
@@ -342,9 +327,8 @@ const RedLightGreenLight = () => {
 >
   Next Level
 </button> */}
-
       <button
-        onClick={() => markLevel1Complete()}
+        onClick={markLevel1Complete}
         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
       >
         Next Level
