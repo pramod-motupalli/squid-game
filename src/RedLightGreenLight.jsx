@@ -124,8 +124,8 @@ const RedLightGreenLight = () => {
       const minutes = istTime.getMinutes();
       const seconds = istTime.getSeconds();
 
-      if (hours === 16 && minutes >= 39) {
-        const secondsSince = (minutes - 39) * 60 + seconds;
+      if (hours === 16 && minutes >= 23) {
+        const secondsSince = (minutes - 23) * 60 + seconds;
         const newTimeLeft = Math.max(600 - secondsSince, 0);
         setTimeLeft(newTimeLeft);
         if (newTimeLeft === 0) {
@@ -140,6 +140,27 @@ const RedLightGreenLight = () => {
     const interval = setInterval(updateISTTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // NEW: Auto-navigation function for Level2instructions
+  // Only navigates if all questions have been completed and won is 70 or more
+  const autoNavigateToLevel2 = () => {
+    if (completedQuestions.length === questions.length && won >= 70) {
+      navigate("/Level2instructions");
+    } else {
+      console.log("Auto-navigation conditions not met:", {
+        completed: completedQuestions.length,
+        total: questions.length,
+        won,
+      });
+    }
+  };
+
+  // Trigger auto-navigation when timer reaches 00:00
+  useEffect(() => {
+    if (timeLeft === 0) {
+      autoNavigateToLevel2();
+    }
+  }, [timeLeft]);
 
   // Update code for the current question without clearing previous entries
   const handleCodeChange = (value) => {
