@@ -154,31 +154,17 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
-  const handleTimeUp = async () => {
+  // Updated handleTimeUp: After timer reaches 00:00, check if team submitted all questions and scored >= 70.
+  const handleTimeUp = () => {
     if (completedQuestions.length < questions.length) {
-      alert("Failed! You did not complete all questions.");
+      alert("Not qualified! You did not complete all questions.");
       return;
     }
-
-    try {
-      const response = await fetch(COMPILERX_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: "c",
-          code: codeMap[currentQuestion] || "",
-          stdin: "",
-        }),
-      });
-      const result = await response.json();
-      if (result.output.trim() === expectedOutput.trim() && won > 70) {
-        alert("Success! You passed the challenge!");
-      } else {
-        alert("Failed! Better luck next time.");
-      }
-    } catch (error) {
-      console.error("Error compiling:", error);
-      alert("Failed! Compilation Error.");
+    if (won >= 70) {
+      alert("Success! You passed the challenge!");
+      navigate("/Level2instructions");
+    } else {
+      alert("Not qualified! You did not score enough Won.");
     }
   };
 
