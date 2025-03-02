@@ -2,30 +2,26 @@ import React, { useState, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
-import { EditorView } from "@codemirror/view";
 import { useNavigate } from "react-router-dom";
+import { EditorView } from "@codemirror/view";
 
-const squidGameMusic = "/images/squid game music.mpeg";
+const disableCopyPaste = EditorView.domEventHandlers({
+  copy: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  cut: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  paste: (event, view) => {
+    event.preventDefault();
+    return true;
+  }
+});
+
+const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
-
-// Create an extension to intercept and block both copy and cut events
-const noCopyCutExtension = EditorView.domEventHandlers({
-  copy: (event) => {
-    event.preventDefault();
-    return true;
-  },
-  cut: (event) => {
-    event.preventDefault();
-    return true;
-  },
-});
-
-// Create a theme extension to disable text selection in the editor's content
-const noSelectTheme = EditorView.theme({
-  ".cm-content": {
-    userSelect: "none",
-  },
-});
 
 const RedLightGreenLight = () => {
   const navigate = useNavigate();
@@ -36,13 +32,12 @@ const RedLightGreenLight = () => {
   const [isGreenLight, setIsGreenLight] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const [codeMap, setCodeMap] = useState({}); // Store code per question
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [audio] = useState(() => new Audio(squidGameMusic));
-  // Change completedQuestions to an array to track solved question indexes
   const [completedQuestions, setCompletedQuestions] = useState([]);
 
   const questions = [
@@ -87,6 +82,22 @@ const RedLightGreenLight = () => {
     localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
+  // Countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else {
+          clearInterval(timer);
+          handleTimeUp();
+          return 0;
+        }
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Manage red/green light transitions and audio playback
   useEffect(() => {
     const interval = setInterval(() => {
@@ -112,55 +123,6 @@ const RedLightGreenLight = () => {
       setGameOver(true);
     }
   }, [won]);
-
-  // Timer update effect: checks every second and updates the timer
-  useEffect(() => {
-    const updateISTTime = () => {
-      const now = new Date();
-      const utcOffset = now.getTimezoneOffset() * 60000;
-      // Change the IST hour/minute condition as needed; here using 16:37 as example
-      const istTime = new Date(now.getTime() + utcOffset + 19800000);
-      const hours = istTime.getHours();
-      const minutes = istTime.getMinutes();
-      const seconds = istTime.getSeconds();
-
-      if (hours === 16 && minutes >= 23) {
-        const secondsSince = (minutes - 23) * 60 + seconds;
-        const newTimeLeft = Math.max(600 - secondsSince, 0);
-        setTimeLeft(newTimeLeft);
-        if (newTimeLeft === 0) {
-          handleTimeUp();
-        }
-      } else {
-        setTimeLeft(600);
-      }
-    };
-
-    updateISTTime();
-    const interval = setInterval(updateISTTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // NEW: Auto-navigation function for Level2instructions
-  // Only navigates if all questions have been completed and won is 70 or more
-  const autoNavigateToLevel2 = () => {
-    if (completedQuestions.length === questions.length && won >= 70) {
-      navigate("/Level2instructions");
-    } else {
-      console.log("Auto-navigation conditions not met:", {
-        completed: completedQuestions.length,
-        total: questions.length,
-        won,
-      });
-    }
-  };
-
-  // Trigger auto-navigation when timer reaches 00:00
-  useEffect(() => {
-    if (timeLeft === 0) {
-      autoNavigateToLevel2();
-    }
-  }, [timeLeft]);
 
   // Update code for the current question without clearing previous entries
   const handleCodeChange = (value) => {
@@ -205,34 +167,57 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
-  // When timer reaches 0, check if all questions are completed and if won > 70.
-  // If yes, allow to proceed to the next level; otherwise, alert elimination.
-  const handleTimeUp = async () => {
-    console.log("Completed Questions: ", completedQuestions.length);
-    if (completedQuestions.length === questions.length && won > 70) {
-      alert("Time's up! You passed this level.");
+  // Updated handleTimeUp
+  const handleTimeUp = () => {
+    if (completedQuestions.length < questions.length) {
+      alert("Not qualified! You did not complete all questions.");
+      return;
+    }
+    if (won >= 70) {
+      alert("Success! You passed the challenge!");
       navigate("/Level2instructions");
     } else {
-      alert("Time's up! You are eliminated.");
+      alert("Not qualified! You did not score enough Won.");
     }
   };
 
-  // Updated handleSubmit to use a functional update for completedQuestions (an array)
+  // Updated handleSubmit to track completed questions
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
-      setCompletedQuestions((prevCompleted) => {
-        if (!prevCompleted.includes(currentQuestion)) {
-          setWon((prevWon) => prevWon + 10);
-          alert("Correct! You earned 10 Won!");
-          return [...prevCompleted, currentQuestion];
-        } else {
-          alert("You've already completed this question. Move to the next one!");
-          return prevCompleted;
-        }
-      });
+      if (!completedQuestions.includes(currentQuestion)) {
+        setWon((prevWon) => prevWon + 10);
+        setCompletedQuestions([...completedQuestions, currentQuestion]);
+        alert("Correct! You earned 10 Won!");
+      } else {
+        alert("You've already completed this question. Move to the next one!");
+      }
     } else {
       setWon((prevWon) => Math.max(prevWon - 10, 0));
       alert("Incorrect output. You lost 10 Won!");
+    }
+  };
+
+  const markLevel1Complete = async () => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      console.error("No username found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/updatelevel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, level1: true }),
+      });
+      const data = await response.json();
+      if (data) {
+        navigate("/Level2instructions");
+      } else {
+        console.error("Error updating level:", data.message);
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
     }
   };
 
@@ -290,13 +275,13 @@ const RedLightGreenLight = () => {
             value={codeMap[currentQuestion] || ""}
             height="400px"
             width="100%"
-            extensions={[cpp(), noCopyCutExtension, noSelectTheme]}
+            extensions={[cpp(), disableCopyPaste]}
             theme={dracula}
             onChange={handleCodeChange}
           />
           <div className="flex mt-2 space-x-2">
             <button
-              onClick={handleCompileRun}
+              onClick={() => handleCompileRun(true)}
               className="px-4 py-2 bg-green-500 hover:bg-green-800 text-white rounded"
             >
               Run
@@ -324,6 +309,12 @@ const RedLightGreenLight = () => {
         Current Won:{" "}
         <span className="font-bold text-yellow-400">{won} Won</span>
       </p>
+      <button
+        onClick={markLevel1Complete}
+        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
+      >
+        Next Level
+      </button>
     </div>
   );
 };
