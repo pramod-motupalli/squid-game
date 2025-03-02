@@ -153,6 +153,7 @@ const TugOfWar = () => {
     ]
   );
 
+  // Calculate minutes and seconds for the timer (logic remains intact)
   const minutes = Math.floor(timeLeft / 60);
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
@@ -165,12 +166,18 @@ const TugOfWar = () => {
       <p className="text-lg text-center max-w-xl mb-4">
         Answer all questions! The team with the highest score wins. If scores are tied, the fastest team wins!
       </p>
-      <p className="text-xl font-bold mb-4">Time Left: {minutes}:{seconds}</p>
-      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-
+      
+      {/* Hidden timer element */}
+      <p className="text-xl font-bold mb-4" style={{ display: "none" }}>
+        Time Left: {minutes}:{seconds}
+      </p>
+      
+      {/* Total Marks information moved above the animation */}
+      <p className="text-xl font-bold mb-4">Total Marks: 10</p>
+      
       {/* Tug-of-War Animation */}
       <motion.div
-        className="relative w-2/3 h-40 flex justify-between items-center mt-4"
+        className="relative w-1/2 h-40 flex justify-between items-center mt-4"
         animate={tugWarControls}
       >
         <motion.img
@@ -199,7 +206,6 @@ const TugOfWar = () => {
       <div className="my-6 w-1/2 flex justify-center">
         <div className="bg-gray-800 p-4 rounded-lg text-center w-full">
           <p className="mt-2 text-xl">{questions[currentQuestion]?.question}</p>
-          <p className="mt-2 text-md">Marks: {questions[currentQuestion]?.marks}</p>
           <div className="mt-4 grid grid-cols-2 gap-4">
             {questions[currentQuestion]?.options.map((option, index) => (
               <button

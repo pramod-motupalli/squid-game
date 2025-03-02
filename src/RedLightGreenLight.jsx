@@ -16,7 +16,7 @@ const RedLightGreenLight = () => {
   const [isGreenLight, setIsGreenLight] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const [codeMap, setCodeMap] = useState({}); // Store code per question
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
@@ -34,14 +34,13 @@ const RedLightGreenLight = () => {
       prompt:
         "// Fix the bug in this function\n #include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
       expected: "15",
-},
-
+    },
     {
       prompt:
         "// Fix the bug in this function\n Swapping of two number without using third variable\n #include<studio.h>\n void main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a+b;\n printf('a= d b= %d',a,b);}",
       expected: "a=10 b=5",
     },
-  ]; 
+  ];
 
   // Update expected output when current question changes
   useEffect(() => {
@@ -70,6 +69,22 @@ const RedLightGreenLight = () => {
     );
   }, [completedQuestions]);
 
+  // Countdown timer: updates every second and calls handleTimeUp when time reaches 0.
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else {
+          clearInterval(timer);
+          handleTimeUp();
+          return 0;
+        }
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Manage red/green light transitions and audio playback
   useEffect(() => {
     const interval = setInterval(() => {
@@ -95,32 +110,6 @@ const RedLightGreenLight = () => {
       setGameOver(true);
     }
   }, [won]);
-
-  useEffect(() => {
-    const updateISTTime = () => {
-      const now = new Date();
-      const utcOffset = now.getTimezoneOffset() * 60000;
-      const istTime = new Date(now.getTime() + utcOffset + 19800000);
-      const hours = istTime.getHours();
-      const minutes = istTime.getMinutes();
-      const seconds = istTime.getSeconds();
-
-      if (hours === 23 && minutes >= 35) {
-        const secondsSince = (minutes - 35) * 60 + seconds;
-        const newTimeLeft = Math.max(600 - secondsSince, 0);
-        setTimeLeft(newTimeLeft);
-        if (newTimeLeft === 0) {
-          handleTimeUp();
-        }
-      } else {
-        setTimeLeft(600);
-      }
-    };
-
-    updateISTTime();
-    const interval = setInterval(updateISTTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Update code for the current question without clearing previous entries
   const handleCodeChange = (value) => {
@@ -320,17 +309,6 @@ const RedLightGreenLight = () => {
         Current Won:{" "}
         <span className="font-bold text-yellow-400">{won} Won</span>
       </p>
-      {/* <button
-  onClick={() => markLevel1Complete()}
-  className={`mt-6 px-6 py-3 text-lg font-bold rounded ${
-    completedQuestions.length === questions.length
-      ? "bg-green-500 hover:bg-green-700 text-white"
-      : "bg-gray-500 text-gray-300 cursor-not-allowed"
-  }`}
-  disabled={completedQuestions.length !== questions.length} // Disable until all questions are completed
->
-  Next Level
-</button> */}
       <button
         onClick={markLevel1Complete}
         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
