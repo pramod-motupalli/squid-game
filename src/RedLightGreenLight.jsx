@@ -3,6 +3,22 @@ import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
+import { EditorView } from "@codemirror/view";
+
+const disableCopyPaste = EditorView.domEventHandlers({
+  copy: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  cut: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  paste: (event, view) => {
+    event.preventDefault();
+    return true;
+  }
+});
 
 const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
@@ -80,7 +96,11 @@ const RedLightGreenLight = () => {
     localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
+<<<<<<< HEAD
   // Countdown timer with persistence to localStorage
+=======
+  // Countdown timer
+>>>>>>> 841e692ff1a33b9c8fc5f9f23c53d9dc9fcff5c8
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -167,7 +187,7 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
-  // Updated handleTimeUp: After timer reaches 00:00, check if team submitted all questions and scored >= 70.
+  // Updated handleTimeUp
   const handleTimeUp = () => {
     if (completedQuestions.length < questions.length) {
       alert("Not qualified! You did not complete all questions.");
@@ -181,6 +201,7 @@ const RedLightGreenLight = () => {
     }
   };
 
+  // Updated handleSubmit to track completed questions
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
       if (!completedQuestions.includes(currentQuestion)) {
@@ -274,7 +295,7 @@ const RedLightGreenLight = () => {
             value={codeMap[currentQuestion] || ""}
             height="400px"
             width="100%"
-            extensions={[cpp()]}
+            extensions={[cpp(), disableCopyPaste]}
             theme={dracula}
             onChange={handleCodeChange}
           />
