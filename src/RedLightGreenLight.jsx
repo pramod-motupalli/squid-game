@@ -47,13 +47,27 @@ const RedLightGreenLight = () => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
 
+  // Retrieve stored values on mount
   useEffect(() => {
-    const w = localStorage.getItem("won");
-    if (w) {
-      setWon(Number(w));
+    const storedWon = localStorage.getItem("won");
+    if (storedWon) {
+      setWon(Number(storedWon));
+    }
+    const storedTime = localStorage.getItem("timeLeft");
+    if (storedTime) {
+      setTimeLeft(Number(storedTime));
+    }
+    const storedCurrentQuestion = localStorage.getItem("currentQuestion");
+    if (storedCurrentQuestion) {
+      setCurrentQuestion(Number(storedCurrentQuestion));
+    }
+    const storedCompleted = localStorage.getItem("completedQuestions");
+    if (storedCompleted) {
+      setCompletedQuestions(JSON.parse(storedCompleted));
     }
   }, []);
 
+  // Persist state changes in localStorage
   useEffect(() => {
     localStorage.setItem("won", won.toString());
   }, [won]);
@@ -63,18 +77,17 @@ const RedLightGreenLight = () => {
   }, [currentQuestion]);
 
   useEffect(() => {
-    localStorage.setItem(
-      "completedQuestions",
-      JSON.stringify(completedQuestions)
-    );
+    localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
-  // Countdown timer: updates every second and calls handleTimeUp when time reaches 0.
+  // Countdown timer with persistence to localStorage
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
-          return prevTime - 1;
+          const newTime = prevTime - 1;
+          localStorage.setItem("timeLeft", newTime.toString());
+          return newTime;
         } else {
           clearInterval(timer);
           handleTimeUp();
@@ -267,7 +280,7 @@ const RedLightGreenLight = () => {
           />
           <div className="flex mt-2 space-x-2">
             <button
-              onClick={() => handleCompileRun(true)}
+              onClick={handleCompileRun}
               className="px-4 py-2 bg-green-500 hover:bg-green-800 text-white rounded"
             >
               Run

@@ -5,7 +5,7 @@ import HomePage from "./HomePage.jsx";
 import Level1Instructions from "./level1instructions.jsx";
 import RedLightGreenLight from "./RedLightGreenLight.jsx";
 import Level2instructions from "./Level2instructions";
-import TugOfWar from "./tugofwar.jsx";
+import TugOfWar from "./TugOfWar.jsx";
 import Level3instructions from "./Level3instructions";
 import Symbols from "./Symbols.jsx";
 import SingleAndMingle from "./SingleAndMingle.jsx";
