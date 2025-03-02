@@ -44,7 +44,8 @@ const RedLightGreenLight = () => {
   });
   const [timeLeft, setTimeLeft] = useState(() => {
     const stored = localStorage.getItem("timeLeft");
-    return stored ? Number(stored) : 600;
+    return stored ? 300 : 600;
+    // return stored ? {/*Number(stored)*/} 300 : 600;
   });
   const [currentQuestion, setCurrentQuestion] = useState(() => {
     const stored = localStorage.getItem("currentQuestion");
@@ -114,13 +115,16 @@ const RedLightGreenLight = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-navigate when timeLeft reaches 0 and conditions are met.
+  // Auto-navigate when timeLeft reaches 0.
+  // If conditions are met, navigate to the next level.
+  // Otherwise, mark gameOver true (so the UI can display a game over message).
   useEffect(() => {
     if (timeLeft === 0) {
       if (completedQuestions.length === questions.length && won >= 70) {
         navigate("/Level2instructions");
       } else {
-        alert("Not qualified! Either not all questions are completed or you did not score enough Won.");
+        setGameOver(true);
+        alert("Game over! You did not qualify. Please relogin to try again.");
       }
     }
   }, [timeLeft, completedQuestions, won, navigate, questions.length]);
@@ -146,6 +150,7 @@ const RedLightGreenLight = () => {
   }, [audio]);
 
   useEffect(() => {
+    // Optionally, if you want to mark game over when won is below a threshold.
     if (won < 70) {
       setGameOver(true);
     }
@@ -233,6 +238,16 @@ const RedLightGreenLight = () => {
       console.error("Request failed:", error);
     }
   };
+
+  // Render a game over message if the game is over.
+  if (gameOver) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+        <h1 className="text-3xl font-bold mb-4">Game Over</h1>
+        <p className="mb-4">Your time has ended. Please relogin to try again.</p>
+      </div>
+    );
+  }
 
   return (
     <div
