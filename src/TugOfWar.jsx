@@ -61,10 +61,7 @@ const TugOfWar = () => {
   const handleAnswerSubmission = useCallback(
     async (isFinal = false) => {
       if (isSubmitting) return;
-      if (!isFinal && selectedAnswer === null) {
-        alert("Please select an answer!");
-        return;
-      }
+      // Removed alert for no answer selection.
       setIsSubmitting(true);
       setErrorMessage("");
 
@@ -191,7 +188,7 @@ const TugOfWar = () => {
           transition={{ type: "spring", stiffness: 100 }}
         />
         <motion.div
-          className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-2/3 h-2 bg-yellow-800"
+          className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-full h-2 bg-yellow-800"
           style={{ zIndex: 1 }}
           animate={{ x: ropePosition }}
           transition={{ type: "spring", stiffness: 100 }}
