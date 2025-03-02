@@ -61,10 +61,7 @@ const TugOfWar = () => {
   const handleAnswerSubmission = useCallback(
     async (isFinal = false) => {
       if (isSubmitting) return;
-      if (!isFinal && selectedAnswer === null) {
-        alert("Please select an answer!");
-        return;
-      }
+      // Removed alert for no answer selection.
       setIsSubmitting(true);
       setErrorMessage("");
 
@@ -162,7 +159,9 @@ const TugOfWar = () => {
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
       <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">Tug of War Challenge</h1>
-      <p className="mb-2">Question {currentQuestion + 1} of {totalQuestions}</p>
+      <p className="mb-2">
+        Question {currentQuestion + 1} of {totalQuestions}
+      </p>
       <p className="text-lg text-center max-w-xl mb-4">
         Answer all questions! The team with the highest score wins. If scores are tied, the fastest team wins!
       </p>
@@ -170,7 +169,10 @@ const TugOfWar = () => {
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
 
       {/* Tug-of-War Animation */}
-      <motion.div className="relative w-1/2 h-40 flex justify-between items-center mt-4" animate={tugWarControls}>
+      <motion.div
+        className="relative w-2/3 h-40 flex justify-between items-center mt-4"
+        animate={tugWarControls}
+      >
         <motion.img
           src="/images/TeamA.png"
           alt="Team A"
@@ -179,7 +181,7 @@ const TugOfWar = () => {
           transition={{ type: "spring", stiffness: 100 }}
         />
         <motion.div
-          className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-2/3 h-2 bg-yellow-800"
+          className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-full h-2 bg-yellow-800"
           style={{ zIndex: 1 }}
           animate={{ x: ropePosition }}
           transition={{ type: "spring", stiffness: 100 }}
