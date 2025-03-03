@@ -22,6 +22,8 @@ app.use(express.json());
 connectDB();
 
 // ✅ CRUD Operations
+
+// Create a new user
 app.post("/users", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -32,59 +34,95 @@ app.post("/users", async (req, res) => {
     res.status(500).json({ error: "Error creating user", details: error });
   }
 });
-// Update Level 1 as completed for a specific user
-app.post("/updatelevel", async (req, res) => {
-  const { username, level1 } = req.body;
-
+app.post("/updategamestate", async (req, res) => {
+  const { username, currentQuestion, completedQuestions } = req.body;
   try {
     const user = await User.findOneAndUpdate(
-      { username }, // Find user by username
-      { level1 },   // Update level1 status
-      { new: true } // Return updated user
+      { username },
+      { currentQuestion, completedQuestions },
+      { new: true }
     );
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    res.status(200).json({ message: "Game state updated successfully", user });
+  } catch (err) {
+    console.error("Error updating game state:", err);
+    res.status(500).json({ message: "Error updating game state", error: err });
+  }
+});
 
+
+// Update Level 1 as completed for a specific user
+app.post("/updatelevel", async (req, res) => {
+  const { username, level1 } = req.body;
+  try {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { level1 },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json({ message: "Level 1 updated successfully", user });
   } catch (error) {
     console.error("Error updating level:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// ✅ New Endpoint: Update the user's won value
+app.post("/updatewon", async (req, res) => {
+  const { username, won } = req.body;
+  try {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { won },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "Won updated successfully", won: user.won });
+  } catch (error) {
+    console.error("Error updating won:", error);
+    res.status(500).json({ error: "Error updating won" });
+  }
+});
+
+// Save submission time endpoint
 app.post("/saveSubmitTime", async (req, res) => {
   try {
-      const { question, answer, marks, submitTime } = req.body;
-      await db.collection("submissions").insertOne({ question, answer, marks, submitTime });
-      res.status(200).send("Submission saved successfully");
-    } catch (err) {
-      console.error("Failed to save submission:", err);
-      res.status(500).send("Failed to save submission");
-    }
-  });
+    const { question, answer, marks, submitTime } = req.body;
+    // Use the native MongoDB collection via Mongoose's connection
+    const db = mongoose.connection.db;
+    await db.collection("submissions").insertOne({ question, answer, marks, submitTime });
+    res.status(200).send("Submission saved successfully");
+  } catch (err) {
+    console.error("Failed to save submission:", err);
+    res.status(500).send("Failed to save submission");
+  }
+});
 
+// Get users with level1 set to true (only usernames)
 app.get("/users-with-level1-true", async (req, res) => {
   try {
-    const users = await User.find({ level1: true }, "username"); // Fetch users with level1 as true, only returning username
+    const users = await User.find({ level1: true }, "username");
     res.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Server error while fetching users." });
   }
 });
-const submissions = {};
 
+// Submit Tug Of War endpoint
 app.post("/submitTugOfWar", async (req, res) => {
   const { question, answer, marks, submitTime, score, timeLeft } = req.body;
-
   console.log("Received data:", req.body);
-
   if (!question || !answer || !marks || !submitTime || score === undefined || timeLeft === undefined) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-
   try {
+    const db = mongoose.connection.db;
     const result = await db.collection("submissions").insertOne({
       question,
       answer,
@@ -93,7 +131,6 @@ app.post("/submitTugOfWar", async (req, res) => {
       score,
       timeLeft,
     });
-
     res.status(201).json({ message: "Data submitted successfully", data: result });
   } catch (err) {
     console.error("Database error:", err);
@@ -101,25 +138,23 @@ app.post("/submitTugOfWar", async (req, res) => {
   }
 });
 
+// Login endpoint
 app.post("/login", async (req, res) => {
-    try {
-      const { username, password } = req.body;
-  
-      // Check if user exists
-      const user = await User.findOne({ username });
-      console.log(user);
-  
-      if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
-  
-      res.status(200).json({ message: "Login successful", user });
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
+  try {
+    const { username, password } = req.body;
+    // Check if user exists
+    const user = await User.findOne({ username });
+    console.log(user);
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-  });
-  
-  
+    res.status(200).json({ message: "Login successful", user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+// Get all users
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -129,6 +164,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
+// Get a specific user by username
 app.get("/users/:username", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
@@ -139,6 +175,7 @@ app.get("/users/:username", async (req, res) => {
   }
 });
 
+// Update user password
 app.put("/users/:username", async (req, res) => {
   try {
     const { newPassword } = req.body;
@@ -154,6 +191,7 @@ app.put("/users/:username", async (req, res) => {
   }
 });
 
+// Delete a user
 app.delete("/users/:username", async (req, res) => {
   try {
     const user = await User.findOneAndDelete({ username: req.params.username });
@@ -170,28 +208,24 @@ if (!fs.existsSync(CODE_DIR)) {
   fs.mkdirSync(CODE_DIR, { recursive: true });
 }
 
-// ✅ C++ Compilation Route
+// C++ Compilation Route
 app.post("/compile", (req, res) => {
   const { code } = req.body;
   if (!code) {
     return res.status(400).json({ error: "No code provided" });
   }
-
   const fileName = `program_${Date.now()}.cpp`;
   const filePath = path.join(CODE_DIR, fileName);
   const outputFile = filePath.replace(".cpp", "");
-
   fs.writeFile(filePath, code, (writeErr) => {
     if (writeErr) {
       return res.status(500).json({ error: "Error writing file" });
     }
-
     exec(`g++ "${filePath}" -o "${outputFile}" && "${outputFile}"`, (error, stdout, stderr) => {
       if (error) {
         return res.json({ output: stderr || "Compilation failed" });
       }
       res.json({ output: stdout || "Execution successful" });
-
       // Cleanup temp files
       setTimeout(() => {
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath);

@@ -49,6 +49,7 @@ const LoginPage = () => {
     
       if (data) {
         setMessage(`✅ Welcome, ${data.user.username}!`);
+        localStorage.setItem("username", data.user.username);
         handleLogin(username, password);
 
         navigate("/HomePage")

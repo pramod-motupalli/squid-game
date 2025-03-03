@@ -23,39 +23,30 @@ const disableCopyPaste = EditorView.domEventHandlers({
 const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
+// Admin-provided start time and game duration (in seconds)
+const adminStartTime = new Date("2025-03-03T15:18:00"); // Replace with admin-provided timestamp
+const gameDuration = 600; // Game duration in seconds
+const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
+
 const RedLightGreenLight = () => {
   const navigate = useNavigate();
 
-  // On a new login (detected via localStorage flag "newLogin"), reset game state.
+  // Reset state on new login (except for the timer which is fixed by admin)
   useEffect(() => {
     if (localStorage.getItem("newLogin") === "true") {
-      localStorage.setItem("won", "100");
-      localStorage.setItem("timeLeft", "600");
-      localStorage.setItem("currentQuestion", "0");
-      localStorage.setItem("completedQuestions", JSON.stringify([]));
+      // We no longer persist game state in localStorage;
+      // instead, it is immediately updated in the DB.
       localStorage.removeItem("newLogin");
     }
   }, []);
 
-  // Initialize state using localStorage values (or default if not set)
-  const [won, setWon] = useState(() => {
-    const stored = localStorage.getItem("won");
-    return stored ? Number(stored) : 100;
-  });
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const stored = localStorage.getItem("timeLeft");
-    return stored ? 300 : 600;
-    // return stored ? {/*Number(stored)*/} 300 : 600;
-  });
-  const [currentQuestion, setCurrentQuestion] = useState(() => {
-    const stored = localStorage.getItem("currentQuestion");
-    return stored ? Number(stored) : 0;
-  });
-  const [completedQuestions, setCompletedQuestions] = useState(() => {
-    const stored = localStorage.getItem("completedQuestions");
-    return stored ? JSON.parse(stored) : [];
-  });
-  
+  // Won value comes from the database, default to 0
+  const [won, setWon] = useState(100);
+  const [timeLeft, setTimeLeft] = useState(() =>
+    Math.max(Math.floor((targetTime - Date.now()) / 1000), 0)
+  );
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [completedQuestions, setCompletedQuestions] = useState([]);
   const [isGreenLight, setIsGreenLight] = useState(true);
   const [gameOver, setGameOver] = useState(false);
   const [codeMap, setCodeMap] = useState({});
@@ -87,79 +78,117 @@ const RedLightGreenLight = () => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
 
-  // Persist state changes in localStorage
+  // Fetch won from the DB
   useEffect(() => {
-    localStorage.setItem("won", won.toString());
-  }, [won]);
-
-  useEffect(() => {
-    localStorage.setItem("currentQuestion", currentQuestion.toString());
-  }, [currentQuestion]);
-
-  useEffect(() => {
-    localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
-  }, [completedQuestions]);
-
-  // Countdown timer: update timeLeft every second and persist it.
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime > 0) {
-          const newTime = prevTime - 1;
-          localStorage.setItem("timeLeft", newTime.toString());
-          return newTime;
-        }
-        return 0;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+    const username = localStorage.getItem("username");
+    if (username) {
+      fetch(`http://localhost:5000/user/${username}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.won !== undefined) {
+            setWon(data.won);
+          } else {
+            setWon(100);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching won:", err);
+          setWon(100);
+        });
+    } else {
+      setWon(100);
+    }
   }, []);
 
-  // Auto-navigate when timeLeft reaches 0.
-  // If conditions are met, navigate to the next level.
-  // Otherwise, mark gameOver true (so the UI can display a game over message).
+  // Load the won value again when the component mounts.
   useEffect(() => {
-    if (timeLeft === 0) {
-      if (completedQuestions.length === questions.length && won >= 70) {
-        navigate("/Level2instructions");
-      } else {
-        setGameOver(true);
-        alert("Game over! You did not qualify. Please relogin to try again.");
-      }
+    const username = localStorage.getItem("username");
+    if (username) {
+      fetch(`http://localhost:5000/user/${username}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.won !== undefined) {
+            setWon(data.won);
+          }
+        })
+        .catch((err) => console.error("Error fetching won:", err));
     }
-  }, [timeLeft, completedQuestions, won, navigate, questions.length]);
+  }, []);
 
-  // Manage red/green light transitions and audio playback
+  // Update game state in the database whenever currentQuestion or completedQuestions change.
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+    fetch("http://localhost:5000/updategamestate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, currentQuestion, completedQuestions })
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("Game state updated in DB:", data))
+      .catch((err) => console.error("Error updating game state:", err));
+  }, [currentQuestion, completedQuestions]);
+
+  // Real-time timer sync using admin-provided targetTime.
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      const newTimeLeft = Math.max(Math.floor((targetTime - Date.now()) / 1000), 0);
+      setTimeLeft(newTimeLeft);
+      if (newTimeLeft === 0) {
+        clearInterval(timerInterval);
+        if (completedQuestions.length === questions.length && won >= 70) {
+          navigate("/Level2instructions");
+        } else {
+          setGameOver(true);
+          alert("Game over! You did not qualify. Please relogin to try again.");
+        }
+      }
+    }, 1000);
+    return () => clearInterval(timerInterval);
+  }, [completedQuestions, questions.length, won, navigate]);
+
+  // Manage red/green light transitions and audio playback.
   useEffect(() => {
     const interval = setInterval(() => {
       setIsGreenLight(false);
       audio.play().catch((error) => console.log("Audio play blocked:", error));
-
-      const randomRedLightDuration = Math.floor(Math.random() * 11) + 5; // Random 5-15 sec
+      const randomRedLightDuration = Math.floor(Math.random() * 11) + 5; // 5-15 sec
       setTimeout(() => {
         setIsGreenLight(true);
         audio.pause();
         audio.currentTime = 0;
       }, randomRedLightDuration * 1000);
     }, 30000);
-
     return () => {
       clearInterval(interval);
       audio.pause();
     };
   }, [audio]);
 
-  useEffect(() => {
-    // Optionally, if you want to mark game over when won is below a threshold.
-    if (won < 70) {
-      setGameOver(true);
-    }
-  }, [won]);
+  // (Removed the useEffect that triggered game over when won < 70)
 
-  // Update code for the current question without clearing previous entries
+  // Update the won value in the database.
+  const updateWonInDB = (newWon) => {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+    fetch("http://localhost:5000/updatewon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, won: newWon }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("Won updated in DB:", data))
+      .catch((err) => console.error("Error updating won:", err));
+  };
+
+  // Update code for the current question. Deduct 2 won if not green light.
   const handleCodeChange = (value) => {
     if (!isGreenLight) {
-      setWon((prevWon) => Math.max(prevWon - 2, 0));
+      setWon((prevWon) => {
+        const newWon = Math.max(prevWon - 2, 0);
+        updateWonInDB(newWon);
+        return newWon;
+      });
     }
     setCodeMap((prev) => ({ ...prev, [currentQuestion]: value }));
   };
@@ -199,18 +228,22 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
-  // On submission, update won and mark the current question as completed.
+  // On submission, update won via the database and mark the question as completed.
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
       if (!completedQuestions.includes(currentQuestion)) {
-        setWon((prevWon) => prevWon + 10);
+        const newWon = won + 10;
+        setWon(newWon);
+        updateWonInDB(newWon);
         setCompletedQuestions((prev) => [...prev, currentQuestion]);
         alert(`Correct! You earned 10 Won! Completed Questions: ${completedQuestions.length + 1}`);
       } else {
         alert("You've already completed this question. Move to the next one!");
       }
     } else {
-      setWon((prevWon) => Math.max(prevWon - 10, 0));
+      const newWon = Math.max(won - 10, 0);
+      setWon(newWon);
+      updateWonInDB(newWon);
       alert("Incorrect output. You lost 10 Won!");
     }
   };
@@ -221,7 +254,6 @@ const RedLightGreenLight = () => {
       console.error("No username found in localStorage");
       return;
     }
-
     try {
       const response = await fetch("http://localhost:5000/updatelevel", {
         method: "POST",
@@ -239,7 +271,6 @@ const RedLightGreenLight = () => {
     }
   };
 
-  // Render a game over message if the game is over.
   if (gameOver) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
