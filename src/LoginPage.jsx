@@ -90,7 +90,7 @@ const LoginPage = () => {
             <label className="block mb-1 text-emerald-50 text-3xl">Username</label>
             <input
               type="text"
-              placeholder="Enter username"
+              placeholder="Enter E-mail"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
