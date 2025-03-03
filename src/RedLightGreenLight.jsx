@@ -17,14 +17,18 @@ const disableCopyPaste = EditorView.domEventHandlers({
   paste: (event, view) => {
     event.preventDefault();
     return true;
-  }
+  },
 });
 
 const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
+<<<<<<< HEAD
 const adminStartTime = new Date("2025-03-03T16:15:52"); // Replace with admin-provided timestamp
+=======
+const adminStartTime = new Date("2025-03-03T23:56:00"); // Replace with admin-provided timestamp
+>>>>>>> 1fd12371377c04d676e50b14a754cb8ee469ff8f
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -84,14 +88,16 @@ const RedLightGreenLight = () => {
       const username = localStorage.getItem("username");
       if (username) {
         try {
-          const response = await fetch(`http://localhost:5000/users/${username}`);
+          const response = await fetch(
+            `http://localhost:5000/users/${username}`
+          );
           const data = await response.json();
-          console.log(response)
-          console.log(data)
+          console.log(response);
+          console.log(data);
           if (data.won) {
             setWon(data.won);
-            console.log("heolo")
-            console.log(data.won)
+            console.log("heolo");
+            console.log(data.won);
           } else {
             setWon(100);
           }
@@ -113,7 +119,7 @@ const RedLightGreenLight = () => {
     fetch("http://localhost:5000/updategamestate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, currentQuestion, completedQuestions })
+      body: JSON.stringify({ username, currentQuestion, completedQuestions }),
     })
       .then((res) => res.json())
       .then((data) => console.log("Game state updated in DB:", data))
@@ -123,7 +129,10 @@ const RedLightGreenLight = () => {
   // Real-time timer sync using admin-provided targetTime.
   useEffect(() => {
     const timerInterval = setInterval(() => {
-      const newTimeLeft = Math.max(Math.floor((targetTime - Date.now()) / 1000), 0);
+      const newTimeLeft = Math.max(
+        Math.floor((targetTime - Date.now()) / 1000),
+        0
+      );
       setTimeLeft(newTimeLeft);
       if (newTimeLeft === 0) {
         clearInterval(timerInterval);
@@ -225,7 +234,11 @@ const RedLightGreenLight = () => {
         setWon(newWon);
         updateWonInDB(newWon);
         setCompletedQuestions((prev) => [...prev, currentQuestion]);
-        alert(`Correct! You earned 10 Won! Completed Questions: ${completedQuestions.length + 1}`);
+        alert(
+          `Correct! You earned 10 Won! Completed Questions: ${
+            completedQuestions.length + 1
+          }`
+        );
       } else {
         alert("You've already completed this question. Move to the next one!");
       }
@@ -264,7 +277,9 @@ const RedLightGreenLight = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
         <h1 className="text-3xl font-bold mb-4">Game Over</h1>
-        <p className="mb-4">Your time has ended. Please relogin to try again.</p>
+        <p className="mb-4">
+          Your time has ended. Please relogin to try again.
+        </p>
       </div>
     );
   }
