@@ -24,7 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-03T15:18:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025-03-03T16:23:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -40,7 +40,7 @@ const RedLightGreenLight = () => {
     }
   }, []);
 
-  // Won value comes from the database, default to 0
+  // Won value comes from the database, default to 100
   const [won, setWon] = useState(100);
   const [timeLeft, setTimeLeft] = useState(() =>
     Math.max(Math.floor((targetTime - Date.now()) / 1000), 0)
@@ -78,41 +78,32 @@ const RedLightGreenLight = () => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
 
-  // Fetch won from the DB
+  // Retrieve the won value from the backend
   useEffect(() => {
-    const username = localStorage.getItem("username");
-    if (username) {
-      fetch(`http://localhost:5000/user/${username}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.won !== undefined) {
+    const fetchWon = async () => {
+      const username = localStorage.getItem("username");
+      if (username) {
+        try {
+          const response = await fetch(`http://localhost:5000/users/${username}`);
+          const data = await response.json();
+          console.log(response)
+          console.log(data)
+          if (data.won) {
             setWon(data.won);
+            console.log("heolo")
+            console.log(data.won)
           } else {
             setWon(100);
           }
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error("Error fetching won:", err);
           setWon(100);
-        });
-    } else {
-      setWon(100);
-    }
-  }, []);
-
-  // Load the won value again when the component mounts.
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    if (username) {
-      fetch(`http://localhost:5000/user/${username}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.won !== undefined) {
-            setWon(data.won);
-          }
-        })
-        .catch((err) => console.error("Error fetching won:", err));
-    }
+        }
+      } else {
+        setWon(100);
+      }
+    };
+    fetchWon();
   }, []);
 
   // Update game state in the database whenever currentQuestion or completedQuestions change.
@@ -164,8 +155,6 @@ const RedLightGreenLight = () => {
       audio.pause();
     };
   }, [audio]);
-
-  // (Removed the useEffect that triggered game over when won < 70)
 
   // Update the won value in the database.
   const updateWonInDB = (newWon) => {
