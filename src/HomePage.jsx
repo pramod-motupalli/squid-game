@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const HomePage = () => { 
+const HomePage = () => {
   const [activeTab, setActiveTab] = useState("intro");
   const navigate = useNavigate();
+  const [playerId, setPlayerId] = useState(null);
+
+  // Fetch the player ID from the database via an API call
+  useEffect(() => {
+    const fetchPlayerId = async () => {
+      try {
+        const response = await fetch("/api/player"); // Replace with your actual endpoint
+        if (!data) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        // Assuming your API returns { playerId: "Player123" }
+        console.log("fgj")
+        setPlayerId(data.playerId);
+      } catch (error) {
+        console.error("Error fetching player ID:", error);
+      }
+    };
+
+    fetchPlayerId();
+  }, []);
 
   return (
-    <div className="home-container flex flex-col items-center justify-center p-4 bg-black w-full min-h-screen text-white">
+    <div className="home-container flex flex-col items-center justify-center p-4 bg-black w-full min-h-screen text-white relative">
+      {/* Player ID Display (Top-Left Corner) */}
+      <div className="absolute top-4 left-4 bg-blue-800 text-white px-3 py-1 rounded-md text-sm sm:text-lg shadow-md">
+        Player ID: {playerId || "Loading..."}
+      </div>
+
       {/* Main Content Box */}
       <div className="slider w-full max-w-screen-lg bg-white/20 p-6 rounded-lg shadow-lg text-center h-auto flex flex-col justify-between">
         {/* Tab Buttons */}
         <div className="tab-buttons flex flex-wrap justify-center gap-3 w-full">
-          {["intro", "about", "rules"].map(tab => (
+          {["intro", "about", "rules"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -32,8 +58,8 @@ const HomePage = () => {
               <p>
                 <b className="text-blue-500">Get ready for an electrifying experience!</b>
                 <br />
-                Cresence 2K25 is more than just a tech fest—it’s a celebration of innovation, competition, and creativity.  
-                Organized by the third-year students of JNTU GV's CSE department, this national-level fest brings together  
+                Cresence 2K25 is more than just a tech fest—it’s a celebration of innovation, competition, and creativity.
+                Organized by the third-year students of JNTU GV's CSE department, this national-level fest brings together
                 some of the sharpest minds from across the country.
               </p>
             </div>
@@ -100,7 +126,7 @@ const HomePage = () => {
       </div>
 
       {/* Increased Height Photo Grid Section */}
-      <div className="photo-grid grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center mt-6 w-full max-w-screen-lg">
+      <div className="photo-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center mt-6 w-full max-w-screen-lg">
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
