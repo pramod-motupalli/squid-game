@@ -25,20 +25,44 @@ const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 const RedLightGreenLight = () => {
   const navigate = useNavigate();
+
+  // On a new login (detected via localStorage flag "newLogin"), reset game state.
+  useEffect(() => {
+    if (localStorage.getItem("newLogin") === "true") {
+      localStorage.setItem("won", "100");
+      localStorage.setItem("timeLeft", "600");
+      localStorage.setItem("currentQuestion", "0");
+      localStorage.setItem("completedQuestions", JSON.stringify([]));
+      localStorage.removeItem("newLogin");
+    }
+  }, []);
+
+  // Initialize state using localStorage values (or default if not set)
   const [won, setWon] = useState(() => {
     const stored = localStorage.getItem("won");
     return stored ? Number(stored) : 100;
   });
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const stored = localStorage.getItem("timeLeft");
+    return stored ? 300 : 600;
+    // return stored ? {/*Number(stored)*/} 300 : 600;
+  });
+  const [currentQuestion, setCurrentQuestion] = useState(() => {
+    const stored = localStorage.getItem("currentQuestion");
+    return stored ? Number(stored) : 0;
+  });
+  const [completedQuestions, setCompletedQuestions] = useState(() => {
+    const stored = localStorage.getItem("completedQuestions");
+    return stored ? JSON.parse(stored) : [];
+  });
+  
   const [isGreenLight, setIsGreenLight] = useState(true);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
-  const [codeMap, setCodeMap] = useState({}); // Store code per question
+  const [codeMap, setCodeMap] = useState({});
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [audio] = useState(() => new Audio(squidGameMusic));
-  const [completedQuestions, setCompletedQuestions] = useState([]);
 
   const questions = [
     {
@@ -63,26 +87,6 @@ const RedLightGreenLight = () => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
 
-  // Retrieve stored values on mount
-  useEffect(() => {
-    const storedWon = localStorage.getItem("won");
-    if (storedWon) {
-      setWon(Number(storedWon));
-    }
-    const storedTime = localStorage.getItem("timeLeft");
-    if (storedTime) {
-      setTimeLeft(Number(storedTime));
-    }
-    const storedCurrentQuestion = localStorage.getItem("currentQuestion");
-    if (storedCurrentQuestion) {
-      setCurrentQuestion(Number(storedCurrentQuestion));
-    }
-    const storedCompleted = localStorage.getItem("completedQuestions");
-    if (storedCompleted) {
-      setCompletedQuestions(JSON.parse(storedCompleted));
-    }
-  }, []);
-
   // Persist state changes in localStorage
   useEffect(() => {
     localStorage.setItem("won", won.toString());
@@ -96,7 +100,7 @@ const RedLightGreenLight = () => {
     localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
-  // Countdown timer
+  // Countdown timer: update timeLeft every second and persist it.
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -104,15 +108,26 @@ const RedLightGreenLight = () => {
           const newTime = prevTime - 1;
           localStorage.setItem("timeLeft", newTime.toString());
           return newTime;
-        } else {
-          clearInterval(timer);
-          handleTimeUp();
-          return 0;
         }
+        return 0;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Auto-navigate when timeLeft reaches 0.
+  // If conditions are met, navigate to the next level.
+  // Otherwise, mark gameOver true (so the UI can display a game over message).
+  useEffect(() => {
+    if (timeLeft === 0) {
+      if (completedQuestions.length === questions.length && won >= 70) {
+        navigate("/Level2instructions");
+      } else {
+        setGameOver(true);
+        alert("Game over! You did not qualify. Please relogin to try again.");
+      }
+    }
+  }, [timeLeft, completedQuestions, won, navigate, questions.length]);
 
   // Manage red/green light transitions and audio playback
   useEffect(() => {
@@ -135,6 +150,7 @@ const RedLightGreenLight = () => {
   }, [audio]);
 
   useEffect(() => {
+    // Optionally, if you want to mark game over when won is below a threshold.
     if (won < 70) {
       setGameOver(true);
     }
@@ -183,27 +199,13 @@ const RedLightGreenLight = () => {
     setCompiling(false);
   };
 
-  // Updated handleTimeUp
-  const handleTimeUp = () => {
-    if (completedQuestions.length < questions.length) {
-      alert("Not qualified! You did not complete all questions.");
-      return;
-    }
-    if (won >= 70) {
-      alert("Success! You passed the challenge!");
-      navigate("/Level2instructions");
-    } else {
-      alert("Not qualified! You did not score enough Won.");
-    }
-  };
-
-  // Updated handleSubmit to track completed questions
+  // On submission, update won and mark the current question as completed.
   const handleSubmit = () => {
     if (output.trim() === expectedOutput.trim()) {
       if (!completedQuestions.includes(currentQuestion)) {
         setWon((prevWon) => prevWon + 10);
-        setCompletedQuestions([...completedQuestions, currentQuestion]);
-        alert("Correct! You earned 10 Won!");
+        setCompletedQuestions((prev) => [...prev, currentQuestion]);
+        alert(`Correct! You earned 10 Won! Completed Questions: ${completedQuestions.length + 1}`);
       } else {
         alert("You've already completed this question. Move to the next one!");
       }
@@ -236,6 +238,16 @@ const RedLightGreenLight = () => {
       console.error("Request failed:", error);
     }
   };
+
+  // Render a game over message if the game is over.
+  if (gameOver) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+        <h1 className="text-3xl font-bold mb-4">Game Over</h1>
+        <p className="mb-4">Your time has ended. Please relogin to try again.</p>
+      </div>
+    );
+  }
 
   return (
     <div
