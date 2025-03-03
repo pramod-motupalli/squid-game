@@ -1,0 +1,22 @@
+/* app.css or index.css */
+
+/* Target the path elements in your SVG overlay */
+svg path {
+    /* Use a thinner stroke so the lines appear "fine" */
+    stroke-width: 1px !important;
+  
+    /* Make it dotted or dashed to appear as multiple small segments */
+    stroke-dasharray: 2, 4;
+  
+    /* Ensure rounded ends for a smoother dotted effect */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  
+    /* If needed, override the color (red) and remove fill */
+    stroke: red !important;
+    fill: none;
+  
+    /* Add a soft glow or shadow around the dotted path */
+    filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.6));
+  }
+  
