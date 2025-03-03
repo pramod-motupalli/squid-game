@@ -96,11 +96,7 @@ const RedLightGreenLight = () => {
     localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
   }, [completedQuestions]);
 
-<<<<<<< HEAD
-  // Countdown timer with persistence to localStorage
-=======
   // Countdown timer
->>>>>>> 841e692ff1a33b9c8fc5f9f23c53d9dc9fcff5c8
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
