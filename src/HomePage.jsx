@@ -5,21 +5,63 @@ const HomePage = () => {
   const [activeTab, setActiveTab] = useState("intro");
   const navigate = useNavigate();
   const [playerId, setPlayerId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Fetch the player ID from the database via an API call
+  // Fetch the player ID from the API endpoint
+
   useEffect(() => {
     const fetchPlayerId = async () => {
+      const username = localStorage.getItem("username");
+      if (!username) {
+        setError("Username not found in localStorage");
+        setLoading(false);
+        return;
+      }
+
+      console.log(username);
+
       try {
-        const response = await fetch("/api/player"); // Replace with your actual endpoint
-        if (!data) {
-          throw new Error("Network response was not ok");
+        // Send a POST request with the username in the request body
+        const response = await fetch(`http://localhost:5000/api/player`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error("Network response was not ok: " + text);
         }
-        const data = await response.json();
-        // Assuming your API returns { playerId: "Player123" }
-        console.log("fgj")
-        setPlayerId(data.playerId);
-      } catch (error) {
-        console.error("Error fetching player ID:", error);
+
+        const contentType = response.headers.get("content-type");
+        let data;
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          // If content type is not JSON, attempt to parse the raw text
+          const rawText = await response.text();
+          try {
+            data = JSON.parse(rawText);
+          } catch (parseError) {
+            throw new Error(
+              "Failed to parse JSON from response: " + parseError.message
+            );
+          }
+        }
+
+        if (data && data.playerId) {
+          setPlayerId(data.playerId);
+        } else {
+          throw new Error("Invalid data format received");
+        }
+      } catch (err) {
+        console.error("Error fetching player ID:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,7 +72,7 @@ const HomePage = () => {
     <div className="home-container flex flex-col items-center justify-center p-4 bg-black w-full min-h-screen text-white relative">
       {/* Player ID Display (Top-Left Corner) */}
       <div className="absolute top-4 left-4 bg-blue-800 text-white px-3 py-1 rounded-md text-sm sm:text-lg shadow-md">
-        Player ID: {playerId || "Loading..."}
+        Player ID: {playerId || "N/A"}
       </div>
 
       {/* Main Content Box */}
@@ -45,40 +87,57 @@ const HomePage = () => {
                 activeTab === tab ? "bg-blue-900" : "hover:bg-blue-900"
               }`}
             >
-              {tab === "intro" ? "Introduction" : tab === "about" ? "About Us" : "Rules"}
+              {tab === "intro"
+                ? "Introduction"
+                : tab === "about"
+                ? "About Us"
+                : "Rules"}
             </button>
           ))}
         </div>
 
         {/* Tab Content */}
         <div className="tab-content flex-grow overflow-y-auto mt-4 text-sm sm:text-lg">
-          {activeTab === "intro" && (
+          {loading && <div>Loading...</div>}
+          {error && <div className="text-red-500">{error}</div>}
+          {!loading && !error && activeTab === "intro" && (
             <div className="intro-section">
-              <h1 className="text-2xl sm:text-3xl font-bold mb-4">Welcome to Cresence 2K25</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+                Welcome to Cresence 2K25
+              </h1>
               <p>
-                <b className="text-blue-500">Get ready for an electrifying experience!</b>
+                <b className="text-blue-500">
+                  Get ready for an electrifying experience!
+                </b>
                 <br />
-                Cresence 2K25 is more than just a tech fest—it’s a celebration of innovation, competition, and creativity.
-                Organized by the third-year students of JNTU GV's CSE department, this national-level fest brings together
-                some of the sharpest minds from across the country.
+                Cresence 2K25 is more than just a tech fest—it’s a celebration
+                of innovation, competition, and creativity. Organized by the
+                third-year students of JNTU GV's CSE department, this
+                national-level fest brings together some of the sharpest minds
+                from across the country.
               </p>
             </div>
           )}
 
-          {activeTab === "about" && (
+          {!loading && !error && activeTab === "about" && (
             <div className="about-section">
               <h1 className="text-2xl sm:text-3xl font-bold mb-4">About Us</h1>
               <p>
-                <b className="text-blue-500">Cresence2K25: A National-Level Tech Fest</b>
+                <b className="text-blue-500">
+                  Cresence2K25: A National-Level Tech Fest
+                </b>
                 <br />
-                Organized by JNTU GV's CSE department, this event unites tech enthusiasts nationwide.
+                Organized by JNTU GV's CSE department, this event unites tech
+                enthusiasts nationwide.
               </p>
             </div>
           )}
 
-          {activeTab === "rules" && (
+          {!loading && !error && activeTab === "rules" && (
             <div className="rules-section">
-              <h1 className="text-2xl sm:text-3xl font-bold mb-4">Game Rules</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+                Game Rules
+              </h1>
               <div className="rules-grid flex flex-wrap justify-center gap-4">
                 {[
                   {
@@ -89,8 +148,8 @@ const HomePage = () => {
                       "•A buggy code will be given along with an editor to fix it.",
                       "•Debugging is only allowed during the green light.",
                       "•If they write during the red light, 5 won is deducted.",
-                      "•Pairs with less than 75 won are eliminated."
-                    ]
+                      "•Pairs with less than 75 won are eliminated.",
+                    ],
                   },
                   {
                     title: "Level 2: Tug of War (Aptitude & Logic Face-off)",
@@ -98,19 +157,22 @@ const HomePage = () => {
                       "•The remaining pairs will be split into two teams.",
                       "•Both teams receive the same set of aptitude and logical reasoning questions.",
                       "•Correct answers move the virtual rope toward their team’s side.",
-                      "•The team that pulls the rope completely to their side wins the round."
-                    ]
+                      "•The team that pulls the rope completely to their side wins the round.",
+                    ],
                   },
                   {
                     title: "Level 3: Single and Mingle (Algorithmic Showdown)",
                     rules: [
                       "•Each pair will receive an algorithm and pseudo code.",
                       "•The team should predict the suitable data structure to solve it and complete the code.",
-                      "•The teams that correctly implement them will be declared the winners."
-                    ]
-                  }
+                      "•The teams that correctly implement them will be declared the winners.",
+                    ],
+                  },
                 ].map((level, index) => (
-                  <div key={index} className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-full sm:w-[30%]">
+                  <div
+                    key={index}
+                    className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-full sm:w-[30%]"
+                  >
                     <b className="text-lg text-blue-500">{level.title}</b>
                     <ul className="text-left pl-4 mt-2">
                       {level.rules.map((rule, i) => (
@@ -125,7 +187,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Increased Height Photo Grid Section */}
+      {/* Photo Grid Section */}
       <div className="photo-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center mt-6 w-full max-w-screen-lg">
         {[...Array(3)].map((_, index) => (
           <div
