@@ -4,7 +4,7 @@ import { Schema, model } from "mongoose";
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  playerid: { type: Number },                         // Added playerid field
+  playerid: { type: String },                         // Added playerid field
   eliminated: { type: Boolean, default: false },       // Added eliminated field with default false
   won: { type: Number, default: 100 },                 // Added won field with default value 100
   level1: { type: Boolean, default: false },           // Tracks Level 1 completion

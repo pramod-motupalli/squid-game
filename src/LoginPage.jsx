@@ -87,10 +87,10 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-left">
-            <label className="block mb-1 text-emerald-50 text-3xl">Username</label>
+            <label className="block mb-1 text-emerald-50 text-3xl">Email</label>
             <input
               type="text"
-              placeholder="Enter username"
+              placeholder="Enter email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
