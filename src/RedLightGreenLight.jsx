@@ -24,11 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-<<<<<<< HEAD
-const adminStartTime = new Date("2025-03-04T23:56:00"); // Replace with admin-provided timestamp
-=======
 const adminStartTime = new Date("2025-03-04T23:56:00"); //Replace with admin-provid2ed timest3amp
->>>>>>> 63e7a9e7ffdc255cec04cdfb1a164d96ba388c71
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -289,7 +285,7 @@ const RedLightGreenLight = () => {
           : ""
       }`}
     >
-      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
         Player ID: {localStorage.getItem("playerid") || "Guest"}
       </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
