@@ -285,7 +285,7 @@ const RedLightGreenLight = () => {
           : ""
       }`}
     >
-      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
         Player ID: {localStorage.getItem("playerid") || "Guest"}
       </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">

@@ -257,7 +257,7 @@ const TugOfWar = () => {
   return (
     <div className="relative flex flex-col items-center p-6 min-h-screen bg-black text-white">
       {/* Player ID at top left corner */}
-      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
         Player ID: {playerId}
       </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
