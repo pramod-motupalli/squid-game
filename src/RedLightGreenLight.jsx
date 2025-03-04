@@ -24,7 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-03T23:56:00"); //Replace with admin-provid2ed timest3amp
+const adminStartTime = new Date("2025-03-04T23:56:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -63,12 +63,12 @@ const RedLightGreenLight = () => {
     },
     {
       prompt:
-        "// Fix the bug in this function\n #include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
+        "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
       expected: "15",
     },
     {
       prompt:
-        "// Fix the bug in this function\n Swapping of two number without using third variable\n #include<studio.h>\n void main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a+b;\n printf('a= d b= %d',a,b);}",
+        "// Fix the bug in this function\nSwapping of two numbers without using a third variable\n#include<studio.h>\nvoid main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a-b;\n printf('a=10 b=5');}",
       expected: "a=10 b=5",
     },
   ];
@@ -88,12 +88,8 @@ const RedLightGreenLight = () => {
             `http://localhost:5000/users/${username}`
           );
           const data = await response.json();
-          console.log(response);
-          console.log(data);
           if (data.won) {
             setWon(data.won);
-            console.log("heolo");
-            console.log(data.won);
           } else {
             setWon(100);
           }
@@ -289,6 +285,9 @@ const RedLightGreenLight = () => {
           : ""
       }`}
     >
+      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {localStorage.getItem("playerid") || "Guest"}
+      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Level 1: Red Light, Green Light (Debugging Battle)
       </h1>
