@@ -61,15 +61,22 @@ const RedLightGreenLight = () => {
         "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n}",
       expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello",
     },
+    // {
+    //   prompt:
+    //   "// Fix the bug in this code\n#include <stdio.h>\nvoid Fib(int n) {\n int f1= 0, f2 = 1, next;\nprintf('Fibonacci Series: %d %d', f1,f2);\nfor (int i = 2,i < n, i++) {\nnext = f1 + f2;\nprintf('%lld', next);\nf1 = f2;\nf2 = next;\n}\nprintf(''\n'');\n}\nint main() {\nint n = 10;\nFib(n);\nreturn 0;\n }",
+    //   expected: "Fibonacci Series:0 112358132134",
+    // },
     {
       prompt:
-        "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
-      expected: "15",
+        "// Fix the bug in this code\n#include <stdoi.h>\nint isPrime(int n) {\n if (n < 2) return 0\nfor (int i = 2, i * i <= n; i++) {\nif (n % i == 0) return 0;}\nreturn 1;\n}\nint main() {\nint num = 483187726;\nprintf(%d is %s prime number., num, isPrime(num) ? '''   ''' : 'not a ');\nreturn 0;\n}",
+
+      expected: "483187726 is not a prime number",
     },
     {
       prompt:
-        "// Fix the bug in this function\nSwapping of two numbers without using a third variable\n#include<studio.h>\nvoid main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a-b;\n printf('a=10 b=5');}",
-      expected: "a=10 b=5",
+        "// Fix the bug in this code\n#include <stdio.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhile (n > 0)\n{\nsum += n % 10; \nn =n/10; \n}\nreturn s;\nint main() {\nint num = 30213468; \n printf('Sum of digits of %d is %d', num, sumOfDigits(num));\n return 0,\n}",
+
+      expected: "9",
     },
   ];
 
