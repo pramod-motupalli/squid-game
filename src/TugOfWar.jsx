@@ -8,6 +8,7 @@ const TugOfWar = () => {
   // For demonstration, assume the username comes from login or context.
   const username = "testuser";
   
+  const [playerId, setPlayerId] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   // answers array holds answers for questions 1 to 10.
   const [answers, setAnswers] = useState(Array(10).fill(null));
@@ -26,21 +27,67 @@ const TugOfWar = () => {
   // Hardcoded questions array for Level2.
   const questions = [
     { question: "What is 5 + 3?", options: [6, 7, 8, 9], answer: 8, marks: 10 },
-    { question: "Which number is prime?", options: [9, 10, 11, 12], answer: 11, marks: 10 },
-    { question: "What is 7 x 6?", options: [40, 42, 44, 48], answer: 42, marks: 10 },
-    { question: "Find the missing number: 2, 4, ?, 8, 10", options: [5, 6, 7, 9], answer: 6, marks: 10 },
-    { question: "What is the square root of 64?", options: [6, 7, 8, 9], answer: 8, marks: 10 },
-    { question: "If x = 5, what is x^2?", options: [10, 15, 20, 25], answer: 25, marks: 10 },
+    {
+      question: "Which number is prime?",
+      options: [9, 10, 11, 12],
+      answer: 11,
+      marks: 10,
+    },
+    {
+      question: "What is 7 x 6?",
+      options: [40, 42, 44, 48],
+      answer: 42,
+      marks: 10,
+    },
+    {
+      question: "Find the missing number: 2, 4, ?, 8, 10",
+      options: [5, 6, 7, 9],
+      answer: 6,
+      marks: 10,
+    },
+    {
+      question: "What is the square root of 64?",
+      options: [6, 7, 8, 9],
+      answer: 8,
+      marks: 10,
+    },
+    {
+      question: "If x = 5, what is x^2?",
+      options: [10, 15, 20, 25],
+      answer: 25,
+      marks: 10,
+    },
     { question: "Solve: 15 - 7", options: [6, 7, 8, 9], answer: 8, marks: 10 },
-    { question: "Which is an even number?", options: [11, 13, 16, 19], answer: 16, marks: 10 },
-    { question: "What is 4! (4 factorial)?", options: [12, 24, 36, 48], answer: 24, marks: 10 },
-    { question: "Which shape has 6 sides?", options: ["Triangle", "Pentagon", "Hexagon", "Octagon"], answer: "Hexagon", marks: 10 },
+    {
+      question: "Which is an even number?",
+      options: [11, 13, 16, 19],
+      answer: 16,
+      marks: 10,
+    },
+    {
+      question: "What is 4! (4 factorial)?",
+      options: [12, 24, 36, 48],
+      answer: 24,
+      marks: 10,
+    },
+    {
+      question: "Which shape has 6 sides?",
+      options: ["Triangle", "Pentagon", "Hexagon", "Octagon"],
+      answer: "Hexagon",
+      marks: 10,
+    },
   ];
   
   // State to store the level start time (retrieved from DB).
   const [levelStartTime, setLevelStartTime] = useState(null);
 
-  // On mount, load stored Level2 status (answers, score, and level2StartTime).
+  // Set player id on mount
+  useEffect(() => {
+    const username = localStorage.getItem("playerid");
+    setPlayerId(username || "Guest");
+  }, []);
+
+  // Timer: counts down and auto-submits the current question when time runs out.
   useEffect(() => {
     axios.get("http://localhost:5000/level2status", { params: { username } })
       .then((res) => {
@@ -94,72 +141,98 @@ const TugOfWar = () => {
     oscillate();
   }, [gameOver, tugWarControls]);
 
-  // When an option is selected, update local state and save to DB immediately.
-  const handleOptionSelect = async (option) => {
-    setSelectedAnswer(option);
-    setAnswers((prev) => {
-      const newAnswers = [...prev];
-      newAnswers[currentQuestion] = option;
-      return newAnswers;
-    });
-    try {
-      await axios.post("http://localhost:5000/updateLevel2Answer", {
-        username,
-        questionIndex: currentQuestion + 1,
-        answer: option,
+  // Process answer submission for the current question.
+  // When isFinal is true (last question or overall time out), perform final submission.
+  const handleAnswerSubmission = useCallback(
+    async (isFinal = false) => {
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      setErrorMessage("");
+
+      let localScore = score;
+      let localRopePosition = ropePosition;
+      const currentQ = questions[currentQuestion];
+
+      if (selectedAnswer === currentQ.answer) {
+        localScore += currentQ.marks;
+        localRopePosition += 50;
+      } else {
+        localRopePosition -= 50;
+      }
+
+      setScore(localScore);
+      setRopePosition(localRopePosition);
+
+      tugWarControls.start({
+        x: localRopePosition,
+        transition: { type: "spring", stiffness: 100 },
       });
-    } catch (error) {
-      console.error("Failed to update answer:", error);
     }
-  };
+       catch(error) {
+       console.error("Failed to update answer:", error);
+     }
+  
+};
 
   // When navigating between questions, preload stored answer.
   useEffect(() => {
     setSelectedAnswer(answers[currentQuestion]);
   }, [currentQuestion, answers]);
 
-  // Navigate to next question (if not final).
-  const handleNext = async () => {
-    if (selectedAnswer === null) return;
-    const currentQ = questions[currentQuestion];
-    let localScore = score;
-    let localRopePosition = ropePosition;
-    if (selectedAnswer === currentQ.answer) {
-      localScore += currentQ.marks;
-      localRopePosition += 50;
-    } else {
-      localRopePosition -= 50;
-    }
-    setScore(localScore);
-    setRopePosition(localRopePosition);
-    tugWarControls.start({
-      x: localRopePosition,
-      transition: { type: "spring", stiffness: 100 },
-    });
-    if (currentQuestion < totalQuestions - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-    }
-  };
+      if (isFinal || currentQuestion === totalQuestions - 1) {
+        const submitTime = new Date().toISOString();
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/submitTugOfWar",
+            {
+              pairId: "pair1",
+              playerId: "player1",
+              score: localScore,
+              timeRemaining: timeLeft,
+              submitTime,
+            },
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
-  // Final submission on 10th question.
-  const handleFinalSubmit = async () => {
-    if (selectedAnswer === null) return;
-    setIsSubmitting(true);
-    try {
-      await axios.post("http://localhost:5000/updateLevel2Answer", {
-        username,
-        questionIndex: currentQuestion + 1,
-        answer: selectedAnswer,
-      });
-    } catch (error) {
-      console.error("Error updating final answer:", error);
-    }
-    let finalScore = 0;
-    answers.forEach((ans, idx) => {
-      if (ans === questions[idx].answer) {
-        finalScore += questions[idx].marks;
+          const data = response.data;
+          console.log("Server response:", data);
+
+          if (data.winner) {
+            if (data.winner === "player1") {
+              alert("You won this round!");
+            } else if (data.winner === "player2") {
+              alert("Your opponent won this round. Better luck next time!");
+            } else {
+              alert("It's a tie! Proceed to the next round.");
+            }
+            navigate("/Level3instructions", { state: { score: localScore } });
+          } else {
+            alert("Submission received. Waiting for your opponent's response.");
+          }
+        } catch (error) {
+          if (error.response) {
+            console.error("Server error:", error.response.data);
+            setErrorMessage(
+              error.response.data.message || "Server error occurred."
+            );
+          } else if (error.request) {
+            console.error("No response:", error.request);
+            setErrorMessage("No response from server. Please try again later.");
+          } else {
+            console.error("Request error:", error.message);
+            setErrorMessage("Error in request. Please try again.");
+          }
+        } finally {
+          setIsSubmitting(false);
+          setGameOver(true);
+        }
+      } else {
+        setCurrentQuestion((prev) => prev + 1);
+        setIsSubmitting(false);
       }
-    });
+    ;
     const responseTime = Math.floor((new Date() - levelStartTime) / 1000);
     try {
       await axios.post("http://localhost:5000/submitLevel2", {
@@ -175,27 +248,37 @@ const TugOfWar = () => {
     } finally {
       setIsSubmitting(false);
       setGameOver(true);
-    }
-  };
+    };
 
+  // Calculate minutes and seconds for the timer
   const minutes = Math.floor(timeLeft / 60);
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
-      <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">Tug of War Challenge</h1>
-      <p className="mb-2">Question {currentQuestion + 1} of {totalQuestions}</p>
-      <p className="text-lg text-center max-w-xl mb-4">
-        Answer all questions! The team with the highest score wins. If scores are tied, the fastest team wins!
+    <div className="relative flex flex-col items-center p-6 min-h-screen bg-black text-white">
+      {/* Player ID at top left corner */}
+      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {playerId}
+      </div>
+      <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
+        Tug of War Challenge
+      </h1>
+      <p className="mb-2">
+        Question {currentQuestion + 1} of {totalQuestions}
       </p>
-      
+      <p className="text-lg text-center max-w-xl mb-4">
+        Answer all questions! The team with the highest score wins. If scores
+        are tied, the fastest team wins!
+      </p>
+
       {/* Hidden timer element */}
       <p className="text-xl font-bold mb-4" style={{ display: "none" }}>
         Time Left: {minutes}:{seconds}
       </p>
-      
+
+      {/* Total Marks information */}
       <p className="text-xl font-bold mb-4">Total Marks: 10</p>
-      
+
       {/* Tug-of-War Animation */}
       <motion.div
         className="relative w-1/2 h-40 flex justify-between items-center mt-4"
@@ -241,9 +324,9 @@ const TugOfWar = () => {
           <div className="mt-4 flex justify-between">
             <button
               className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded"
-              onClick={() => {
-                if (currentQuestion > 0) setCurrentQuestion((prev) => prev - 1);
-              }}
+              onClick={() =>
+                setCurrentQuestion((prev) => Math.max(prev - 1, 0))
+              }
               disabled={currentQuestion === 0 || isSubmitting}
             >
               Previous
@@ -271,6 +354,5 @@ const TugOfWar = () => {
       </div>
     </div>
   );
-};
 
 export default TugOfWar;

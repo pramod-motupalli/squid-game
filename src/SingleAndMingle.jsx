@@ -9,6 +9,7 @@ const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual b
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
+  const [playerId, setPlayerId] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userCode, setUserCode] = useState({});
   const [output, setOutput] = useState("");
@@ -16,13 +17,19 @@ const SingleAndMingle = () => {
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
 
+  // Set player id on mount
+  useEffect(() => {
+    const username = localStorage.getItem("playerid");
+    setPlayerId(username || "Guest");
+  }, []);
+
   // Play background music on load
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
-    audio.play().catch((error) =>
-      console.error("Audio playback failed:", error)
-    );
+    audio
+      .play()
+      .catch((error) => console.error("Audio playback failed:", error));
   }, []);
 
   // Load questions from localStorage or select them once and store them
@@ -54,9 +61,14 @@ const SingleAndMingle = () => {
         },
       ];
       // Randomize once, then persist the selected questions (for example, pick 2)
-      const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+      const selectedQuestions = allQuestions
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 2);
       setQuestions(selectedQuestions);
-      localStorage.setItem("singleAndMingleQuestions", JSON.stringify(selectedQuestions));
+      localStorage.setItem(
+        "singleAndMingleQuestions",
+        JSON.stringify(selectedQuestions)
+      );
     }
   }, []);
 
@@ -120,7 +132,11 @@ const SingleAndMingle = () => {
   if (questions.length === 0) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full">
+    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full relative">
+      {/* Player ID at the top left corner */}
+      <div className="absolute top-4 left-4 bg-black px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {playerId}
+      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Debugging Battle
       </h1>
