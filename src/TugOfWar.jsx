@@ -34,8 +34,6 @@ const TugOfWar = () => {
 
   const [timeLeft, setTimeLeft] = useState(challengeDuration);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  // answers array holds answers for questions 1 to 10.
-  const [answers, setAnswers] = useState(Array(10).fill(null));
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
@@ -47,8 +45,6 @@ const TugOfWar = () => {
 
   const tugWarControls = useAnimation();
   const totalQuestions = 10;
-  
-  // Hardcoded questions array for Level2.
   const questions = [
     { question: "What is 5 + 3?", options: [6, 7, 8, 9], answer: 8, marks: 10 },
     {
@@ -157,27 +153,9 @@ const TugOfWar = () => {
     return () => clearInterval(interval);
   }, [targetTime, gameOver]);
 
-  // Timer: compute timeLeft based on stored levelStartTime.
+  // Continuous oscillation for rope animation.
   useEffect(() => {
-    if (!levelStartTime) return;
-    const updateTimer = () => {
-      const elapsed = Math.floor((new Date() - levelStartTime) / 1000);
-      const remaining = 900 - elapsed;
-      if (remaining <= 0) {
-        setTimeLeft(0);
-        handleFinalSubmit();
-      } else {
-        setTimeLeft(remaining);
-      }
-    };
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-    return () => clearInterval(timer);
-  }, [levelStartTime, gameOver]);
-
-  // Continuous rope oscillation.
-  useEffect(() => {
-    const oscillate = async () => {
+    const oscillateTugOfWar = async () => {
       while (!gameOver) {
         await tugWarControls.start({
           x: 10,
@@ -189,7 +167,7 @@ const TugOfWar = () => {
         });
       }
     };
-    oscillate();
+    oscillateTugOfWar();
   }, [gameOver, tugWarControls]);
 
   // When a user selects an answer, update state and save locally.
@@ -320,9 +298,6 @@ const TugOfWar = () => {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
-      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
-        Player ID: {localStorage.getItem("playerid") }
-      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
         Tug of War Challenge
       </h1>
@@ -330,13 +305,15 @@ const TugOfWar = () => {
         Question {currentQuestion + 1} of {totalQuestions}
       </p>
       <p className="text-lg text-center max-w-xl mb-4">
-        Answer all questions! The team with the highest score wins. If scores are tied, the fastest team wins!
+        Answer all questions! The team with the highest score wins. If scores
+        are tied, the fastest team wins!
       </p>
       {/* Display the real-time timer */}
       <p className="text-xl font-bold mb-4">
         Time Left: {minutes}:{seconds}
       </p>
       <p className="text-xl font-bold mb-4">Total Marks: 10</p>
+
       {/* Tug-of-War Animation */}
       <motion.div
         className="relative w-1/2 h-40 flex justify-between items-center mt-4"
@@ -364,6 +341,7 @@ const TugOfWar = () => {
         />
       </motion.div>
 
+      {/* Questions Section */}
       <div className="my-6 w-1/2 flex justify-center">
         <div className="bg-gray-800 p-4 rounded-lg text-center w-full">
           <p className="mt-2 text-xl">{questions[currentQuestion]?.question}</p>
