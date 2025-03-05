@@ -172,7 +172,7 @@ useEffect(() => {
           navigate("/Level2instructions");
         } else {
           setGameOver(true);
-          alert("Game over! You did not qualify. Please relogin to try again.");
+          alert("Game over!!!");
         }
       }
     }, 1000);
@@ -340,9 +340,12 @@ useEffect(() => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
         <h1 className="text-3xl font-bold mb-4">Game Over</h1>
-        <p className="mb-4">
-          Your time has ended. Please relogin to try again.
-        </p>
+        <button
+        onClick={() => navigate("/Thankyou")}
+        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
+      >
+        Thank You!!!
+      </button>
       </div>
     );
   }
