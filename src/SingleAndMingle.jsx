@@ -51,12 +51,12 @@ const SingleAndMingle = () => {
         },
         {
           prompt:
-            'Fix the bug in this function:\n#include <stdio.h>\nint main() {\n  printf("Hello, world!"); // Missing closing parenthesis fixed\n  return 0;\n}',
-          expected: "Hello, world!",
+            "write c program to print the trailing zeroes\nStart\nInitialize a variable count = 0 (to store the number of trailing zeroes).\nSet a divisor i = 5.\nLoop while n / i >= 1:\nAdd n / i to count (integer division).\nMultiply i by 5 (i = i * 5).\nEnd loop when n / i < 1.\nReturn count as the final number of trailing zeroes.\nn=100\nEnd",
+          expected: "24",
         },
         {
           prompt:
-            "Fix the bug in this function:\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+            "Complete the searching algorithm's code.\n Initialize low = 0 and high = n-1.\nRepeat while low <= high:\nFind the middle element: mid = (low + high) / 2.\nIf arr[mid] == target, return mid (element found).\nIf arr[mid] > target, search in the left half (high = mid - 1).\nIf arr[mid] < target, search in the right half (low = mid + 1).\nIf not found, return -1.\nint arr[] = {34, 12, 9, 56, 23, 78, 5, 45};\nint target = 23;",
           expected: "Swapped successfully\n",
         },
       ];
