@@ -51,7 +51,6 @@ const HomePage = () => {
             );
           }
         }
-
         if (data && data.playerId) {
           setPlayerId(data.playerId);
         } else {

@@ -9,6 +9,7 @@ import TugOfWar from "./TugOfWar.jsx";
 import Level3instructions from "./Level3instructions";
 import Symbols from "./Symbols.jsx";
 import SingleAndMingle from "./SingleAndMingle.jsx";
+import TugOfWarDisqualified from "./TugOfWarDisqualified.jsx";
 import ContinuousBloodStainEffect from "./ContinuousRedTrailEffect"; // Import the effect
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
