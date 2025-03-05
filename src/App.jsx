@@ -30,6 +30,7 @@ const App = () => {
         <Route path="/Level3instructions" element={<Level3instructions />} /> 
         <Route path="/Symbols" element={<Symbols />} />
         <Route path="/SingleAndMingle" element={<SingleAndMingle />} /> 
+        <Route path="/TugOfWarDisqualified" element={<TugOfWarDisqualified />} />
       </Routes>
     </Router>
   );
