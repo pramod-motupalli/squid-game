@@ -18,34 +18,13 @@ const Level2Instructions = () => {
 
       if (data) {
         console.log("Users with Level 1 completed:", data);
-        pairUsersIntoTeams(data);
+        navigate("/TugOfWar"); // Navigate to Level 2 page
       } else {
         console.error("Error fetching users:", data.message);
       }
     } catch (error) {
       console.error("Request failed:", error);
     }
-  };
-
-  const pairUsersIntoTeams = (users) => {
-    const teams = [];
-    let soloPlayer = null;
-
-    for (let i = 0; i < users.length; i += 2) {
-      if (i + 1 < users.length) {
-        teams.push({
-          team: `Team ${teams.length + 1}`,
-          members: [users[i], users[i + 1]],
-        });
-      } else {
-        soloPlayer = users[i]; // Last user plays solo
-      }
-    }
-
-    console.log("Paired Teams:", teams);
-    if (soloPlayer) console.log("Solo Player:", soloPlayer);
-
-    navigate("/TugOfWar"); // Navigate to the level2 and green light page
   };
 
   // Format time as MM:SS
@@ -89,25 +68,13 @@ const Level2Instructions = () => {
           Level 2: Tug of War (Aptitude & Logic Face-off)
         </h1>
         <p className="mt-4 text-lg">
-          Welcome to the Second level of the competition! Follow the
-          instructions carefully:
+          Welcome to the Second level of the competition! Follow the instructions carefully:
         </p>
         <ul className="mt-4 text-left space-y-2">
-          <li>🔹 The remaining pairs will be split into two teams.</li>
-          <li>
-            🔹 Both teams receive the same set of aptitude and logical reasoning
-            questions.
-          </li>
-          <li>
-            🔹 Correct answers move the virtual rope toward their team’s side.
-          </li>
-          <li>
-            🔹 The team that pulls the rope completely to their side wins the
-            round.
-          </li>
-          <li>
-            🔹 The winning team will be qualified to the next level of the game.
-          </li>
+          <li>🔹 Both teams receive the same set of aptitude and logical reasoning questions.</li>
+          <li>🔹 Correct answers move the virtual rope toward their team’s side.</li>
+          <li>🔹 The team that pulls the rope completely to their side wins the round.</li>
+          <li>🔹 The winning team will be qualified to the next level of the game.</li>
         </ul>
       </div>
     </div>

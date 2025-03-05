@@ -5,7 +5,9 @@ import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
 const squidGameMusic = "/images/SingleAndMingle.mp3";
-const BACKEND_API_URL = "http://localhost:5000/compile"; // Update with actual backend URL
+const BACKEND_COMPILE_URL = "http://localhost:5000/compile"; // For compiling code
+const BACKEND_SAVE_CODE_URL = "http://localhost:5000/savecode"; // For saving code to database
+const BACKEND_FETCH_CODE_URL = "http://localhost:5000/fetch-code"; // For fetching saved code
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
@@ -17,12 +19,7 @@ const SingleAndMingle = () => {
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
 
-  // Set player id on mount
-  useEffect(() => {
-    const username = localStorage.getItem("playerid");
-    setPlayerId(username || "Guest");
-  }, []);
-
+  const username=localStorage.getItem("username") 
   // Play background music on load
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
@@ -72,6 +69,37 @@ const SingleAndMingle = () => {
     }
   }, []);
 
+  // Fetch saved code from the database on mount
+  useEffect(() => {
+    async function fetchSavedCode() {
+      try {
+        // const response = await fetch(BACKEND_FETCH_CODE_URL,
+          
+        // );
+        const response = await fetch(BACKEND_FETCH_CODE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username}),
+        });
+        const data = await response.json();
+        // Assume data has fields: level3Q1 and level3Q2
+        console.log(data);
+        let savedCode = { ...userCode };
+        if (data.level3Q1) {
+          savedCode[0] = data.level3Q1;
+        }
+        if (data.level3Q2) {
+          savedCode[1] = data.level3Q2;
+        }
+        setUserCode(savedCode);
+      } catch (err) {
+        console.error("Error fetching saved code", err);
+      }
+    }
+    fetchSavedCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Clear output when switching questions
   useEffect(() => {
     if (questions.length > 0) {
@@ -101,7 +129,7 @@ const SingleAndMingle = () => {
   const handleCompileRun = async () => {
     setCompiling(true);
     try {
-      const response = await fetch(BACKEND_API_URL, {
+      const response = await fetch(BACKEND_COMPILE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,12 +145,38 @@ const SingleAndMingle = () => {
     setCompiling(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const expectedOutput = questions[currentQuestion].expected;
     if ((output || "").trim() === expectedOutput.trim()) {
       alert("Correct! You passed this challenge!");
       if (!completedQuestions.includes(currentQuestion)) {
         setCompletedQuestions([...completedQuestions, currentQuestion]);
+      }
+      
+      // Save the code to the database based on the question number
+      let questionField = "";
+      if (currentQuestion === 0) {
+        questionField = "level3Q1";
+      } else if (currentQuestion === 1) {
+        questionField = "level3Q2";
+      }
+      
+      if (questionField) {
+        try {
+          const response=await fetch(BACKEND_SAVE_CODE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username:username,
+              question: questionField,
+              code: userCode[currentQuestion] || ""
+            }),
+          });
+          console.log(response); 
+          console.log(`Saved code for ${questionField}`);
+        } catch (error) {
+          console.error("Error saving code:", error);
+        }
       }
     } else {
       alert("Incorrect output. Try again!");

@@ -12,6 +12,7 @@ import SingleAndMingle from "./SingleAndMingle.jsx";
 import TugOfWarDisqualified from "./TugOfWarDisqualified.jsx";
 import Thankyou from "./Thankyou.jsx";
 import ContinuousBloodStainEffect from "./ContinuousRedTrailEffect"; // Import the effect
+import PairingButton from "./pair.jsx";
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -26,6 +27,7 @@ const App = () => {
           element={isAuthenticated ? <HomePage /> : <LoginPage />}
         />
         <Route path="/HomePage" element={<HomePage />} />
+        <Route path="/pair" element={<PairingButton />} />
         <Route path="/level1-instructions" element={<Level1Instructions />} />
         <Route path="/level1/game" element={<RedLightGreenLight />} />
         <Route path="/Level2instructions" element={<Level2instructions />} />
