@@ -11,6 +11,7 @@ const BACKEND_FETCH_CODE_URL = "http://localhost:5000/fetch-code"; // For fetchi
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
+  const [playerId, setPlayerId] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userCode, setUserCode] = useState({});
   const [output, setOutput] = useState("");
@@ -23,9 +24,9 @@ const SingleAndMingle = () => {
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
-    audio.play().catch((error) =>
-      console.error("Audio playback failed:", error)
-    );
+    audio
+      .play()
+      .catch((error) => console.error("Audio playback failed:", error));
   }, []);
 
   // Load questions from localStorage or select them once and store them
@@ -47,19 +48,24 @@ const SingleAndMingle = () => {
         },
         {
           prompt:
-            'Fix the bug in this function:\n#include <stdio.h>\nint main() {\n  printf("Hello, world!"); // Missing closing parenthesis fixed\n  return 0;\n}',
-          expected: "Hello, world!",
+            "write c program to print the trailing zeroes\nStart\nInitialize a variable count = 0 (to store the number of trailing zeroes).\nSet a divisor i = 5.\nLoop while n / i >= 1:\nAdd n / i to count (integer division).\nMultiply i by 5 (i = i * 5).\nEnd loop when n / i < 1.\nReturn count as the final number of trailing zeroes.\nn=100\nEnd",
+          expected: "24",
         },
         {
           prompt:
-            "Fix the bug in this function:\nvoid swap(int a, int b) {\n  int temp = a;\n  a = b;\n  b = temp; // Values are not swapped outside the function\n}",
+            "Complete the searching algorithm's code.\n Initialize low = 0 and high = n-1.\nRepeat while low <= high:\nFind the middle element: mid = (low + high) / 2.\nIf arr[mid] == target, return mid (element found).\nIf arr[mid] > target, search in the left half (high = mid - 1).\nIf arr[mid] < target, search in the right half (low = mid + 1).\nIf not found, return -1.\nint arr[] = {34, 12, 9, 56, 23, 78, 5, 45};\nint target = 23;",
           expected: "Swapped successfully\n",
         },
       ];
       // Randomize once, then persist the selected questions (for example, pick 2)
-      const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+      const selectedQuestions = allQuestions
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 2);
       setQuestions(selectedQuestions);
-      localStorage.setItem("singleAndMingleQuestions", JSON.stringify(selectedQuestions));
+      localStorage.setItem(
+        "singleAndMingleQuestions",
+        JSON.stringify(selectedQuestions)
+      );
     }
   }, []);
 
@@ -180,7 +186,11 @@ const SingleAndMingle = () => {
   if (questions.length === 0) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full">
+    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full relative">
+      {/* Player ID at the top left corner */}
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {playerId}
+      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Debugging Battle
       </h1>

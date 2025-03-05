@@ -63,15 +63,22 @@ const RedLightGreenLight = () => {
         "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n}",
       expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello",
     },
+    // {
+    //   prompt:
+    //   "// Fix the bug in this code\n#include <stdio.h>\nvoid Fib(int n) {\n int f1= 0, f2 = 1, next;\nprintf('Fibonacci Series: %d %d', f1,f2);\nfor (int i = 2,i < n, i++) {\nnext = f1 + f2;\nprintf('%lld', next);\nf1 = f2;\nf2 = next;\n}\nprintf(''\n'');\n}\nint main() {\nint n = 10;\nFib(n);\nreturn 0;\n }",
+    //   expected: "Fibonacci Series:0 112358132134",
+    // },
     {
       prompt:
-        "// Fix the bug in this function\n #include <stdio.h>\nint main() {\n  int a = 5\n  int b = 3\n scan('%d %d', &a, &b);\n print('%d'a * b)\n return 0;\n}",
-      expected: "15",
+        "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=31847726;\nif (isPrime(num)){\nprinf('%d is a prime number.', number);\nelse{\nprntf('%d is not a prime number.', num);\n return 0;\n}",
+
+      expected: "31847726 is not a prime number.",
     },
     {
       prompt:
-        "// Fix the bug in this function\n Swapping of two number without using third variable\n #include<studio.h>\n void main(){\n int a=5,b=10\n a=b+a;\n b=a-b;\n a=a+b;\n printf('a= d b= %d',a,b);}",
-      expected: "a=10 b=5",
+        "// Fix the bug in this code\n#incude <stdoi.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhle (n > 0)\n{\nsum += n % (100/10); \nn =n/10; \n}\nreturn s;\nint man() {\nint num = 30213468; \n print('Sum of digits of %D is %D', num, sumOfDigits(num));\n return 0,\n}",
+
+      expected: "Sum of digits of 30213468 is 27",
     },
   ];
 
@@ -121,12 +128,8 @@ useEffect(() => {
             `http://localhost:5000/users/${username}`
           );
           const data = await response.json();
-          console.log(response);
-          console.log(data);
           if (data.won) {
             setWon(data.won);
-            console.log("heolo");
-            console.log(data.won);
           } else {
             setWon(100);
           }
@@ -353,6 +356,9 @@ useEffect(() => {
           : ""
       }`}
     >
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {localStorage.getItem("playerid") || "Guest"}
+      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Level 1: Red Light, Green Light (Debugging Battle)
       </h1>
