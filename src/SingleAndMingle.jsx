@@ -194,7 +194,7 @@ const SingleAndMingle = () => {
         </div>
       </div>
       <button
-        onClick={() => navigate("/thank-you")}
+        onClick={() => navigate("/Thankyou")}
         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
       >
         Thank You!!!
