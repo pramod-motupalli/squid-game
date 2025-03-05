@@ -24,7 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-04T23:56:00"); //Replace with admin-provid2ed timest3amp
+const adminStartTime = new Date("2025-03-05T23:56:00"); //Replace with admin-provid2ed timest3amp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -49,12 +49,14 @@ const RedLightGreenLight = () => {
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [isGreenLight, setIsGreenLight] = useState(true);
   const [gameOver, setGameOver] = useState(false);
-  const [codeMap, setCodeMap] = useState({});
+  // const [codeMap, setCodeMap] = useState({});
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [audio] = useState(() => new Audio(squidGameMusic));
 
+  const username=localStorage.getItem("username")
+  const [userCode, setUserCode] = useState({});
   const questions = [
     {
       prompt:
@@ -77,7 +79,38 @@ const RedLightGreenLight = () => {
   useEffect(() => {
     setExpectedOutput(questions[currentQuestion].expected);
   }, [currentQuestion]);
-
+useEffect(() => {
+    async function fetchSavedCode() {
+      try {
+        // const response = await fetch(BACKEND_FETCH_CODE_URL,
+          const username=localStorage.getItem("username")
+        // );
+        const response = await fetch("http://localhost:5000/fetch-code1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username}),
+        });
+        const data = await response.json();
+        // Assume data has fields: level3Q1 and level3Q2
+        console.log(data);
+        let savedCode1 = { ...userCode };
+        if (data.level1Q1) {
+          savedCode1[0] = data.level1Q1;
+        }
+        if (data.level1Q2) {
+          savedCode1[1] = data.level1Q2;
+        }
+        if (data.level1Q3) {
+          savedCode1[2] = data.level1Q3;
+        }
+        setUserCode(savedCode1);
+      } catch (err) {
+        console.error("Error fetching saved code", err);
+      }
+    }
+    fetchSavedCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Retrieve the won value from the backend
   useEffect(() => {
     const fetchWon = async () => {
@@ -184,7 +217,7 @@ const RedLightGreenLight = () => {
         return newWon;
       });
     }
-    setCodeMap((prev) => ({ ...prev, [currentQuestion]: value }));
+    setUserCode((prev) => ({ ...prev, [currentQuestion]: value }));
   };
 
   const handleNextQuestion = () => {
@@ -209,7 +242,7 @@ const RedLightGreenLight = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           language: "c",
-          code: codeMap[currentQuestion] || "",
+          code: userCode[currentQuestion] || "",
           stdin: "",
         }),
       });
@@ -223,29 +256,60 @@ const RedLightGreenLight = () => {
   };
 
   // On submission, update won via the database and mark the question as completed.
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Check if output matches expected output
     if (output.trim() === expectedOutput.trim()) {
+      // If the question hasn't been completed yet
       if (!completedQuestions.includes(currentQuestion)) {
         const newWon = won + 10;
         setWon(newWon);
         updateWonInDB(newWon);
         setCompletedQuestions((prev) => [...prev, currentQuestion]);
         alert(
-          `Correct! You earned 10 Won! Completed Questions: ${
-            completedQuestions.length + 1
-          }`
+          `Correct! You earned 10 Won! Completed Questions: ${completedQuestions.length + 1}`
         );
+  
+        // Determine the field name for the current question
+        let questionField = "";
+        if (currentQuestion === 0) {
+          questionField = "level1Q1";
+        } else if (currentQuestion === 1) {
+          questionField = "level1Q2";
+        }else if (currentQuestion === 2) {
+          questionField = "level1Q3";
+        }
+  
+        // Save code if questionField is determined
+        if (questionField) {
+          try {
+            const response = await fetch("http://localhost:5000/savecode1", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                username: username,
+                question: questionField,
+                code: userCode[currentQuestion] || "",
+              }),
+            });
+            console.log(response);
+            console.log(`Saved code for ${questionField}`);
+          } catch (error) {
+            console.error("Error saving code:", error);
+          }
+        }
       } else {
+        // Already completed question branch
         alert("You've already completed this question. Move to the next one!");
       }
     } else {
+      // When output doesn't match expected output
       const newWon = Math.max(won - 10, 0);
       setWon(newWon);
       updateWonInDB(newWon);
       alert("Incorrect output. You lost 10 Won!");
     }
   };
-
+  
   const markLevel1Complete = async () => {
     const username = localStorage.getItem("username");
     if (!username) {
@@ -331,7 +395,7 @@ const RedLightGreenLight = () => {
         </div>
         <div className="w-full lg:w-1/2">
           <CodeMirror
-            value={codeMap[currentQuestion] || ""}
+            value={userCode[currentQuestion] || ""}
             height="400px"
             width="100%"
             extensions={[cpp(), disableCopyPaste]}
