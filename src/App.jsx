@@ -9,6 +9,7 @@ import TugOfWar from "./TugOfWar.jsx";
 import Level3instructions from "./Level3instructions";
 import Symbols from "./Symbols.jsx";
 import SingleAndMingle from "./SingleAndMingle.jsx";
+import TugOfWarDisqualified from "./TugOfWarDisqualified.jsx";
 import Thankyou from "./Thankyou.jsx";
 import ContinuousBloodStainEffect from "./ContinuousRedTrailEffect"; // Import the effect
 import PairingButton from "./pair.jsx";
@@ -34,6 +35,8 @@ const App = () => {
         <Route path="/TugOfWar" element={<TugOfWar />} />
         <Route path="/Level3instructions" element={<Level3instructions />} />
         <Route path="/Symbols" element={<Symbols />} />
+        <Route path="/SingleAndMingle" element={<SingleAndMingle />} /> 
+        <Route path="/TugOfWarDisqualified" element={<TugOfWarDisqualified />} />
         <Route path="/SingleAndMingle" element={<SingleAndMingle />} />
         <Route path="/Thankyou" element={<Thankyou />} />
       </Routes>
