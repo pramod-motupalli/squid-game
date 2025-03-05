@@ -24,7 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-04T23:56:00"); //Replace with admin-provid2ed timest3amp
+const adminStartTime = new Date("2025-03-05T23:56:00"); //Replace with admin-provid2ed timest3amp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -68,15 +68,15 @@ const RedLightGreenLight = () => {
     // },
     {
       prompt:
-        "// Fix the bug in this code\n#include <stdoi.h>\nint isPrime(int n) {\n if (n < 2) return 0\nfor (int i = 2, i * i <= n; i++) {\nif (n % i == 0) return 0;}\nreturn 1;\n}\nint main() {\nint num = 483187726;\nprintf(%d is %s prime number., num, isPrime(num) ? '''   ''' : 'not a ');\nreturn 0;\n}",
+        "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=31847726;\nif (isPrime(num)){\nprinf('%d is a prime number.', number);\nelse{\nprntf('%d is not a prime number.', num);\n return 0;\n}",
 
-      expected: "483187726 is not a prime number",
+      expected: "31847726 is not a prime number.",
     },
     {
       prompt:
-        "// Fix the bug in this code\n#include <stdio.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhile (n > 0)\n{\nsum += n % 10; \nn =n/10; \n}\nreturn s;\nint main() {\nint num = 30213468; \n printf('Sum of digits of %d is %d', num, sumOfDigits(num));\n return 0,\n}",
+        "// Fix the bug in this code\n#incude <stdoi.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhle (n > 0)\n{\nsum += n % (100/10); \nn =n/10; \n}\nreturn s;\nint man() {\nint num = 30213468; \n print('Sum of digits of %D is %D', num, sumOfDigits(num));\n return 0,\n}",
 
-      expected: "9",
+      expected: "Sum of digits of 30213468 is 27",
     },
   ];
 
