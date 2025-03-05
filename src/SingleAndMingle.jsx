@@ -189,7 +189,7 @@ const SingleAndMingle = () => {
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full relative">
       {/* Player ID at the top left corner */}
       <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
-        Player ID: {playerId}
+        Player ID: {localStorage.getItem("playerid") }
       </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Debugging Battle

@@ -53,6 +53,7 @@ const HomePage = () => {
         }
         if (data && data.playerId) {
           setPlayerId(data.playerId);
+          localStorage.setItem("playerid", data.playerId); 
         } else {
           throw new Error("Invalid data format received");
         }

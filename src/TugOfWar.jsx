@@ -298,6 +298,9 @@ const TugOfWar = () => {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
+      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
+        Player ID: {localStorage.getItem("playerid") }
+      </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
         Tug of War Challenge
       </h1>
