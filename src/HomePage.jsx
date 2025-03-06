@@ -71,8 +71,8 @@ const HomePage = () => {
   return (
     <div className="home-container flex flex-col items-center justify-center p-4 bg-black w-full min-h-screen text-white relative">
       {/* Player ID Display (Top-Left Corner) */}
-      <div className="absolute top-4 left-4 bg-blue-800 text-white px-3 py-1 rounded-md text-sm sm:text-lg shadow-md">
-        Player ID: {playerId || "N/A"}
+      <div className="absolute top-4 left-4 text-white font-bold px-3 py-1 rounded-md text-sm sm:text-lg shadow-md">
+        Welcome, {playerId || "N/A"}
       </div>
 
       {/* Main Content Box */}
