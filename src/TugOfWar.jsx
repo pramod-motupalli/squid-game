@@ -72,8 +72,8 @@ const TugOfWar = () => {
 
   // Set player id on mount
   useEffect(() => {
-    const username = localStorage.getItem("playerid");
-    setPlayerId(username || "Guest");
+    const playerid = localStorage.getItem("playerid");
+    setPlayerId(playerid || "Guest");
   }, []);
 
   // Timer: counts down and auto-submits the current question when time runs out.

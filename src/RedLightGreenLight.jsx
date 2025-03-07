@@ -24,7 +24,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "http://localhost:5000/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-05T23:56:00"); //Replace with admin-provid2ed timest3amp
+const adminStartTime = new Date("2025-03-06T23:56:00"); //Replace with admin-provid2ed timest3amp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -277,11 +277,11 @@ const RedLightGreenLight = () => {
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
         <h1 className="text-3xl font-bold mb-4">Game Over</h1>
         <button
-        onClick={() => navigate("/Thankyou")}
-        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
-      >
-        Thank You!!!
-      </button>
+          onClick={() => navigate("/Thankyou")}
+          className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
+        >
+          Thank You!!!
+        </button>
       </div>
     );
   }

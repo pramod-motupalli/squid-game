@@ -19,8 +19,8 @@ const SingleAndMingle = () => {
 
   // Set player id on mount
   useEffect(() => {
-    const username = localStorage.getItem("playerid");
-    setPlayerId(username || "Guest");
+    const playerid = localStorage.getItem("playerid");
+    setPlayerId(playerid || "Guest");
   }, []);
 
   // Play background music on load
