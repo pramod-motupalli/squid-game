@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -33,12 +33,13 @@ const LoginPage = () => {
             },
             body: JSON.stringify({ username, password }),
           });
-      
+
           const data = await response.json();
-      
+
           if (data) {
             localStorage.setItem("username", username); // Store username in localStorage
             console.log("Login successful:", data);
+            
           } else {
             console.error("Login failed:", data.message);
           }
@@ -46,13 +47,27 @@ const LoginPage = () => {
           console.error("Request failed:", error);
         }
       };
-    
+
       if (data) {
         setMessage(`✅ Welcome, ${data.user.username}!`);
         localStorage.setItem("username", data.user.username);
+        console.log(data.user.level2);
         handleLogin(username, password);
-
-        navigate("/HomePage")
+        if (data.user.eliminated) {
+          navigate("/TugOfWarDisqualified");
+        } else {
+          if (data.user.level2) {
+            navigate("/TugOfWar");
+          } else {
+            if (data.user.level1) {
+              navigate("/level1/game");
+            }
+            else{
+              navigate("/HomePage");
+            }
+          }
+        }
+       
         // onLogin(data.user); // Pass user data to parent component if needed
       } else {
         setMessage(`❌ ${data.message}`);
@@ -63,11 +78,13 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <div
       className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat px-4 sm:px-6 lg:px-8 overflow-hidden"
-      style={{ backgroundImage: "url('/images/squid game landscape(pramod).png')" }}
+      style={{
+        backgroundImage: "url('/images/squid game landscape(pramod).png')",
+      }}
     >
       <div className="absolute inset-0 bg-black opacity-10 z-0"></div>
 
@@ -83,7 +100,9 @@ const LoginPage = () => {
           <Triangle size={50} className="text-white" />
           <Square size={50} className="text-white" />
         </div>
-        <h1 className="text-cyan-700 font-bold text-2xl sm:text-3xl mb-5">Login to Squid Game</h1>
+        <h1 className="text-cyan-700 font-bold text-2xl sm:text-3xl mb-5">
+          Login to Squid Game
+        </h1>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-left">
@@ -98,7 +117,9 @@ const LoginPage = () => {
             />
           </div>
           <div className="mb-4 text-left">
-            <label className="block mb-1 text-emerald-50 text-3xl">Password</label>
+            <label className="block mb-1 text-emerald-50 text-3xl">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Enter password"
@@ -122,7 +143,7 @@ const LoginPage = () => {
 
       <button
         onClick={() => setShowForm(!showForm)}
-        className="absolute bottom-10 bg-blue-400 text-black px-4 py-2 rounded cursor-pointer hover:bg-blue-500 z-10"
+        className="absolute bottom-10 bg-blue-400 text-black font-bold px-4 py-2 rounded cursor-pointer hover:bg-blue-500 z-10"
       >
         {showForm ? "Hide Login" : "Show Login"}
       </button>

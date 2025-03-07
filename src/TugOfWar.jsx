@@ -1,20 +1,41 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const TugOfWar = () => {
   const navigate = useNavigate();
-  const [playerId, setPlayerId] = useState("");
+
+  // Duration of the challenge in seconds (15 minutes)
+  const challengeDuration = 900;
+
+  const [challengeStartTime, setChallengeStartTime] = useState(null);
+  useEffect(() => {
+    function fetchChallengeStartTime() {
+      try {
+        const simulatedStartTime = new Date("2025-03-06T19:11:00");
+        setChallengeStartTime(simulatedStartTime);
+      } catch (error) {
+        console.error("Failed to fetch challenge start time:", error);
+      }
+    }
+    fetchChallengeStartTime();
+  }, []);
+
+  // Calculate the target time (challenge end time) when challengeStartTime is available.
+  const targetTime = challengeStartTime
+    ? challengeStartTime.getTime() + challengeDuration * 1000
+    : null;
+
+  const [timeLeft, setTimeLeft] = useState(challengeDuration);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
-  const [ropePosition, setRopePosition] = useState(0); // Position of the rope movement
+  const [ropePosition, setRopePosition] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [level2pair, setPairId] = useState("");
+  const [playerid, setPlayerId] = useState("");
   const tugWarControls = useAnimation();
   const totalQuestions = 10;
   const questions = [
@@ -70,21 +91,43 @@ const TugOfWar = () => {
     },
   ];
 
-  // Set player id on mount
+  // Load saved answer for the current question (if any)
   useEffect(() => {
-    const playerid = localStorage.getItem("playerid");
-    setPlayerId(playerid || "Guest");
+    const saved = localStorage.getItem(`answer-${currentQuestion}`);
+    if (saved) {
+      setSelectedAnswer(JSON.parse(saved));
+    } else {
+      setSelectedAnswer(null);
+    }
+  }, [currentQuestion]);
+
+  // Fetch pairId and playerId from the backend
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const username = localStorage.getItem("username");
+        const response = await fetch("http://localhost:5000/level2pair", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }),
+        });
+        const data = await response.json();
+        console.log("Server response:", data);
+        setPairId(data.level2pair);
+        setPlayerId(data.playerid);
+      } catch (error) {
+        console.error("Failed to fetch pair and player IDs:", error);
+      }
+    }
+    fetchUserData();
   }, []);
 
-  // Timer: counts down and auto-submits the current question when time runs out.
+  // Optionally, log updated pair and player IDs when they change.
   useEffect(() => {
-    if (timeLeft > 0 && !gameOver) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !gameOver) {
-      handleAnswerSubmission(true);
-    }
-  }, [timeLeft, gameOver]);
+    console.log("Updated level2pair:", level2pair);
+    console.log("Updated playerid:", playerid);
+  }, [level2pair, playerid]);
+
 
   // Continuous oscillation for rope animation.
   useEffect(() => {
@@ -103,112 +146,250 @@ const TugOfWar = () => {
     oscillateTugOfWar();
   }, [gameOver, tugWarControls]);
 
-  // Process answer submission for the current question.
-  // When isFinal is true (last question or overall time out), perform final submission.
-  const handleAnswerSubmission = useCallback(
-    async (isFinal = false) => {
-      if (isSubmitting) return;
-      setIsSubmitting(true);
-      setErrorMessage("");
+  // When a user selects an answer, update state and save locally.
+  const handleOptionSelect = (option) => {
+    setSelectedAnswer(option);
+    localStorage.setItem(`answer-${currentQuestion}`, JSON.stringify(option));
+  };
 
-      let localScore = score;
-      let localRopePosition = ropePosition;
-      const currentQ = questions[currentQuestion];
+  // Handle moving to the next question.
+  const handleNextQuestion = () => {
+    localStorage.setItem(
+      `answer-${currentQuestion}`,
+      JSON.stringify(selectedAnswer)
+    );
+    if (currentQuestion < totalQuestions - 1) {
+      setCurrentQuestion((prev) => prev + 1);
+    }
+  };
 
-      if (selectedAnswer === currentQ.answer) {
-        localScore += currentQ.marks;
-        localRopePosition += 50;
-      } else {
-        localRopePosition -= 50;
-      }
+  // Final submission: compute score, evaluate rope position, and decide navigation.
+  const handleFinalSubmit = useCallback(async () => {
+    localStorage.setItem(
+      `answer-${currentQuestion}`,
+      JSON.stringify(selectedAnswer)
+    );
+    setIsSubmitting(true);
+    setErrorMessage("");
 
-      setScore(localScore);
-      setRopePosition(localRopePosition);
-
-      tugWarControls.start({
-        x: localRopePosition,
-        transition: { type: "spring", stiffness: 100 },
-      });
-
-      setSelectedAnswer(null);
-
-      if (isFinal || currentQuestion === totalQuestions - 1) {
-        const submitTime = new Date().toISOString();
-        try {
-          const response = await axios.post(
-            "http://localhost:5000/submitTugOfWar",
-            {
-              pairId: "pair1",
-              playerId: "player1",
-              score: localScore,
-              timeRemaining: timeLeft,
-              submitTime,
-            },
-            {
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-
-          const data = response.data;
-          console.log("Server response:", data);
-
-          if (data.winner) {
-            if (data.winner === "player1") {
-              alert("You won this round!");
-            } else if (data.winner === "player2") {
-              alert("Your opponent won this round. Better luck next time!");
-            } else {
-              alert("It's a tie! Proceed to the next round.");
-            }
-            navigate("/Level3instructions", { state: { score: localScore } });
-          } else {
-            alert("Submission received. Waiting for your opponent's response.");
-          }
-        } catch (error) {
-          if (error.response) {
-            console.error("Server error:", error.response.data);
-            setErrorMessage(
-              error.response.data.message || "Server error occurred."
-            );
-          } else if (error.request) {
-            console.error("No response:", error.request);
-            setErrorMessage("No response from server. Please try again later.");
-          } else {
-            console.error("Request error:", error.message);
-            setErrorMessage("Error in request. Please try again.");
-          }
-        } finally {
-          setIsSubmitting(false);
-          setGameOver(true);
+    let calculatedScore = 0;
+    let calculatedRopePosition = 0;
+    questions.forEach((q, index) => {
+      const storedAnswer = localStorage.getItem(`answer-${index}`);
+      if (storedAnswer) {
+        const answer = JSON.parse(storedAnswer);
+        if (answer === q.answer) {
+          calculatedScore += q.marks;
         }
-      } else {
-        setCurrentQuestion((prev) => prev + 1);
-        setIsSubmitting(false);
       }
-    },
-    [
-      isSubmitting,
-      selectedAnswer,
-      currentQuestion,
-      questions,
-      ropePosition,
-      score,
-      tugWarControls,
-      navigate,
-      timeLeft,
-      totalQuestions,
-    ]
-  );
+    });
+    console.log("Calculated Score:", calculatedScore);
+    setScore(calculatedScore);
+    localStorage.setItem("score", calculatedScore);
 
-  // Calculate minutes and seconds for the timer
+    // Animate rope to its final position.
+    tugWarControls.start({
+      transition: { type: "spring", stiffness: 100 },
+    });
+
+    const submitTime = new Date().toISOString();
+    try {
+      const response = await fetch("http://localhost:5000/submitTugOfWar", {
+        method: "POST",
+        body: JSON.stringify({
+          playerid: localStorage.getItem("playerid"),
+          score: calculatedScore,
+          timeLeft,
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("Server response:", data);
+      try {
+        const Score = localStorage.getItem(score);
+        const playerid = localStorage.getItem("playerid");
+        if (!playerid) {
+          console.error("Player ID not found.");
+          return;
+        }
+        // const response1 = await fetch("http://localhost:5000/score1", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ playerid: playerid, level2Score: Score }),
+        // });
+        
+        const response = await fetch("http://localhost:5000/user1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ playerid }),
+        });
+        const playerData = await response.json();
+        console.log(playerData);
+        if (
+          playerData.user.level2pair === "solo player" &&
+          timeLeft === 0
+        ) {
+          console.log(localStorage.getItem("score"));
+          if (localStorage.getItem("score") > 0) {
+            navigate("/Level3instructions");
+          } else {
+            navigate("/TugOfWarDisqualified");
+          }
+          return;
+        }
+        const opponentId = playerData.user.level2pair;
+        console.log(opponentId);
+        
+          const oppResponse = await fetch("http://localhost:5000/user1", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ playerid: opponentId }),
+          });
+          const opponentData = await oppResponse.json();
+          console.log(opponentData);
+        
+        console.log("343");
+        console.log(timeLeft);
+        console.log(opponentData);
+        
+        if (playerData.user.level2 && opponentData.user.level2 && timeLeft===0) {
+          if (playerData.user.level2Score > opponentData.user.level2Score) {
+            navigate("/Level3instructions");
+          } else if (playerData.user.level2Score < opponentData.user.level2Score) {
+            console.log("ji");
+          } else {
+            if (playerData.user.level2Time > opponentData.user.level2Time) {
+              navigate("/Level3instructions");
+            } else {
+              console.log("hi");
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching level 2 data:", error);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+        setErrorMessage(
+          error.response.data.message || "Server error occurred."
+        );
+      } else if (error.request) {
+        console.error("No response:", error.request);
+        setErrorMessage("No response from server. Please try again later.");
+      } else {
+        console.error("Request error:", error.message);
+        setErrorMessage("Error in request. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+      setGameOver(true);
+    }
+  }, [
+    currentQuestion,
+    selectedAnswer,
+    questions,
+    timeLeft,
+    tugWarControls,
+    navigate,
+    playerid,
+    level2pair,
+  ]);
+
+  // Sync timer with real-life time using the targetTime.
+  useEffect(() => {
+    if (!targetTime) return; // Wait until challengeStartTime is loaded
+    const interval = setInterval(() => {
+      const remaining = Math.max(
+        0,
+        Math.floor((targetTime - Date.now()) / 1000)
+      );
+      setTimeLeft(remaining);
+      if (remaining === 0) {
+        clearInterval(interval);
+        // When time runs out, auto-submit the evaluated scores
+        handleFinalSubmit();
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [targetTime, handleFinalSubmit]);
+  useEffect(() => {
+    async function scores1() {
+      // try {
+      //   const Score = localStorage.getItem(score);
+      //   const playerid = localStorage.getItem("playerid");
+      //   if (!playerid) {
+      //     console.error("Player ID not found.");
+      //     return;
+      //   }
+      //   const response1 = await fetch("http://localhost:5000/score1", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ playerid: playerid, level2Score: Score }),
+      //   });
+        
+      //   const response = await fetch("http://localhost:5000/user1", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ playerid }),
+      //   });
+      //   const playerData = await response.json();
+      //   console.log(playerData);
+        
+      //   const opponentId = playerData.user.level2pair;
+      //   console.log(opponentId);
+      //   if (opponentId !== "solo player") {
+      //     const oppResponse = await fetch("http://localhost:5000/user1", {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({ playerid: opponentId }),
+      //     });
+      //     const opponentData = await oppResponse.json();
+      //     console.log(opponentData);
+      //   }
+      //   console.log("343");
+      //   console.log(timeLeft);
+      //   console.log(timeLeft === 900);
+      //   if (
+      //     playerData.user.level2pair === "solo player" &&
+      //     timeLeft === 0
+      //   ) {
+      //     console.log(localStorage.getItem("score"));
+      //     if (localStorage.getItem("score") > 0) {
+      //       navigate("/Level3instructions");
+      //     } else {
+      //       navigate("/TugOfWarDisqualified");
+      //     }
+      //     return;
+      //   }
+      //   if (playerData.user.level2 && opponentData.user.level2) {
+      //     if (playerData.user.level2Score > opponentData.user.level2Score) {
+      //       navigate("/Level3instructions");
+      //     } else if (playerData.user.level2Score < opponentData.user.level2Score) {
+      //       console.log("ji");
+      //     } else {
+      //       if (playerData.user.level2Time > opponentData.user.level2Time) {
+      //         navigate("/Level3instructions");
+      //       } else {
+      //         console.log("hi");
+      //       }
+      //     }
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching level 2 data:", error);
+      // }
+    }
+  
+    scores1();
+  }, [navigate]);
+
   const minutes = Math.floor(timeLeft / 60);
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   return (
-    <div className="relative flex flex-col items-center p-6 min-h-screen bg-black text-white">
-      {/* Player ID at top left corner */}
+    <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
       <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
-        Player ID: {playerId}
+        Player ID: {localStorage.getItem("playerid") || "Guest"}
       </div>
       <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
         Tug of War Challenge
@@ -220,16 +401,10 @@ const TugOfWar = () => {
         Answer all questions! The team with the highest score wins. If scores
         are tied, the fastest team wins!
       </p>
-
-      {/* Hidden timer element */}
-      <p className="text-xl font-bold mb-4" style={{ display: "none" }}>
-        Time Left: {minutes}:{seconds}
+      <p className="text-xl font-bold text-red-400 mb-4">
+        ⏳ Time Left: {minutes}:{seconds}
       </p>
 
-      {/* Total Marks information */}
-      <p className="text-xl font-bold mb-4">Total Marks: 10</p>
-
-      {/* Tug-of-War Animation */}
       <motion.div
         className="relative w-1/2 h-40 flex justify-between items-center mt-4"
         animate={tugWarControls}
@@ -256,7 +431,6 @@ const TugOfWar = () => {
         />
       </motion.div>
 
-      {/* Questions Section */}
       <div className="my-6 w-1/2 flex justify-center">
         <div className="bg-gray-800 p-4 rounded-lg text-center w-full">
           <p className="mt-2 text-xl">{questions[currentQuestion]?.question}</p>
@@ -267,7 +441,7 @@ const TugOfWar = () => {
                 className={`px-4 py-2 rounded text-white ${
                   selectedAnswer === option ? "bg-blue-600" : "bg-gray-700"
                 } hover:bg-blue-800`}
-                onClick={() => setSelectedAnswer(option)}
+                onClick={() => handleOptionSelect(option)}
                 disabled={isSubmitting}
               >
                 {option}
@@ -287,15 +461,15 @@ const TugOfWar = () => {
             {currentQuestion === totalQuestions - 1 ? (
               <button
                 className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
-                onClick={() => handleAnswerSubmission(true)}
+                onClick={handleFinalSubmit}
                 disabled={gameOver || isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                {isSubmitting ? "Submitting..." : "submit"}
               </button>
             ) : (
               <button
                 className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
-                onClick={() => handleAnswerSubmission(false)}
+                onClick={handleNextQuestion}
                 disabled={isSubmitting}
               >
                 Next
@@ -309,6 +483,9 @@ const TugOfWar = () => {
           >
             Next Level
           </button>
+          {errorMessage && (
+            <p className="text-red-500 mt-4 text-center">{errorMessage}</p>
+          )}
         </div>
       </div>
     </div>
