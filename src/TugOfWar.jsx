@@ -12,7 +12,7 @@ const TugOfWar = () => {
   useEffect(() => {
     function fetchChallengeStartTime() {
       try {
-        const simulatedStartTime = new Date("2025-03-06T19:11:00");
+        const simulatedStartTime = new Date("2025-03-13T9:45:00");
         setChallengeStartTime(simulatedStartTime);
       } catch (error) {
         console.error("Failed to fetch challenge start time:", error);
@@ -106,7 +106,7 @@ const TugOfWar = () => {
     async function fetchUserData() {
       try {
         const username = localStorage.getItem("username");
-        const response = await fetch("http://localhost:5000/level2pair", {
+        const response = await fetch("https://squidgamebackend.onrender.com/level2pair", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username }),
@@ -194,7 +194,7 @@ const TugOfWar = () => {
 
     const submitTime = new Date().toISOString();
     try {
-      const response = await fetch("http://localhost:5000/submitTugOfWar", {
+      const response = await fetch("https://squidgamebackend.onrender.com/submitTugOfWar", {
         method: "POST",
         body: JSON.stringify({
           playerid: localStorage.getItem("playerid"),
@@ -212,13 +212,13 @@ const TugOfWar = () => {
           console.error("Player ID not found.");
           return;
         }
-        // const response1 = await fetch("http://localhost:5000/score1", {
+        // const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
         //   method: "POST",
         //   headers: { "Content-Type": "application/json" },
         //   body: JSON.stringify({ playerid: playerid, level2Score: Score }),
         // });
         
-        const response = await fetch("http://localhost:5000/user1", {
+        const response = await fetch("https://squidgamebackend.onrender.com/user1", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ playerid }),
@@ -240,7 +240,7 @@ const TugOfWar = () => {
         const opponentId = playerData.user.level2pair;
         console.log(opponentId);
         
-          const oppResponse = await fetch("http://localhost:5000/user1", {
+          const oppResponse = await fetch("https://squidgamebackend.onrender.com/user1", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ playerid: opponentId }),
@@ -322,13 +322,13 @@ const TugOfWar = () => {
       //     console.error("Player ID not found.");
       //     return;
       //   }
-      //   const response1 = await fetch("http://localhost:5000/score1", {
+      //   const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
       //     method: "POST",
       //     headers: { "Content-Type": "application/json" },
       //     body: JSON.stringify({ playerid: playerid, level2Score: Score }),
       //   });
         
-      //   const response = await fetch("http://localhost:5000/user1", {
+      //   const response = await fetch("https://squidgamebackend.onrender.com/user1", {
       //     method: "POST",
       //     headers: { "Content-Type": "application/json" },
       //     body: JSON.stringify({ playerid }),
@@ -339,7 +339,7 @@ const TugOfWar = () => {
       //   const opponentId = playerData.user.level2pair;
       //   console.log(opponentId);
       //   if (opponentId !== "solo player") {
-      //     const oppResponse = await fetch("http://localhost:5000/user1", {
+      //     const oppResponse = await fetch("https://squidgamebackend.onrender.com/user1", {
       //       method: "POST",
       //       headers: { "Content-Type": "application/json" },
       //       body: JSON.stringify({ playerid: opponentId }),

@@ -8,7 +8,7 @@ const Level2Instructions = () => {
   const fetchLevel1CompletedUsers = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/users-with-level1-true",
+        "https://squidgamebackend.onrender.com/users-with-level1-true",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

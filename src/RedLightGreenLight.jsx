@@ -22,10 +22,10 @@ const disableCopyPaste = EditorView.domEventHandlers({
 });
 
 const squidGameMusic = "/public/images/squid game music.mpeg";
-const COMPILERX_API_URL = "http://localhost:5000/compile";
+const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025-03-06T19:16:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025-03-13T9:30:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -91,7 +91,7 @@ const RedLightGreenLight = () => {
     async function fetchSavedCode() {
       try {
         const username = localStorage.getItem("username");
-        const response = await fetch("http://localhost:5000/fetch-code1", {
+        const response = await fetch("https://squidgamebackend.onrender.com/fetch-code1", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username }),
@@ -122,7 +122,7 @@ const RedLightGreenLight = () => {
       const username = localStorage.getItem("username");
       if (username) {
         try {
-          const response = await fetch("http://localhost:5000/users1", {
+          const response = await fetch("https://squidgamebackend.onrender.com/users1", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username }),
@@ -145,7 +145,7 @@ const RedLightGreenLight = () => {
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (!username) return;
-    fetch("http://localhost:5000/updategamestate", {
+    fetch("https://squidgamebackend.onrender.com/updategamestate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username }),
@@ -159,7 +159,7 @@ const RedLightGreenLight = () => {
   const handleGameOver = useCallback(async () => {
     try {
       const username = localStorage.getItem("username");
-      const response = await fetch("http://localhost:5000/eliminateUser", {
+      const response = await fetch("https://squidgamebackend.onrender.com/eliminateUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, eliminated: true }),
@@ -231,7 +231,7 @@ const RedLightGreenLight = () => {
   const updateWonInDB = (newWon) => {
     const username = localStorage.getItem("username");
     if (!username) return;
-    fetch("http://localhost:5000/updatewon", {
+    fetch("https://squidgamebackend.onrender.com/updatewon", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, won: newWon }),
@@ -318,7 +318,7 @@ const RedLightGreenLight = () => {
         }
         if (questionField) {
           try {
-            const response = await fetch("http://localhost:5000/savecode1", {
+            const response = await fetch("https://squidgamebackend.onrender.com/savecode1", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -354,7 +354,7 @@ const RedLightGreenLight = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:5000/updatelevel", {
+      const response = await fetch("https://squidgamebackend.onrender.com/updatelevel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, level1: true }),

@@ -23,7 +23,7 @@ const HomePage = () => {
 
       try {
         // Send a POST request with the username in the request body
-        const response = await fetch(`http://localhost:5000/api/player`, {
+        const response = await fetch(`https://squidgamebackend.onrender.com/api/player`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

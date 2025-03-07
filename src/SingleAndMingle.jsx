@@ -5,9 +5,9 @@ import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
 
 const squidGameMusic = "/images/SingleAndMingle.mp3";
-const BACKEND_COMPILE_URL = "http://localhost:5000/compile"; // For compiling code
-const BACKEND_SAVE_CODE_URL = "http://localhost:5000/savecode"; // For saving code to database
-const BACKEND_FETCH_CODE_URL = "http://localhost:5000/fetch-code"; // For fetching saved code
+const BACKEND_COMPILE_URL = "https://squidgamebackend.onrender.com/compile"; // For compiling code
+const BACKEND_SAVE_CODE_URL = "https://squidgamebackend.onrender.com/savecode"; // For saving code to database
+const BACKEND_FETCH_CODE_URL = "https://squidgamebackend.onrender.com/fetch-code"; // For fetching saved code
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const SingleAndMingle = () => {
 
   // Timer: Synchronize against a fixed deadline
   useEffect(() => {
-    const targetTime = new Date("2025-03-06T12:36:00"); // Maintain ending timeline
+    const targetTime = new Date("2025-03-13T10:05:00"); // Maintain ending timeline
 
     const computeTimeLeft = () => {
       const now = new Date();
@@ -215,7 +215,7 @@ const SingleAndMingle = () => {
     const marksGained = completedQuestions.length * 50;
   
     try {
-      const response = await fetch("http://localhost:5000/finalsubmit", {
+      const response = await fetch("https://squidgamebackend.onrender.com/finalsubmit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
