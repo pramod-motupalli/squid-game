@@ -36,7 +36,7 @@ const SingleAndMingle = () => {
 
   // Timer: Synchronize against a fixed deadline
   useEffect(() => {
-    const targetTime = new Date("2025-03-13T10:05:00"); // Maintain ending timeline
+    const targetTime = new Date("2025-03-13 10:05:00"); // Maintain ending timeline
 
     const computeTimeLeft = () => {
       const now = new Date();
