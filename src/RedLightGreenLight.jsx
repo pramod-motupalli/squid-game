@@ -25,7 +25,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/08 12:35:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/08 16:10:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -37,7 +37,12 @@ const RedLightGreenLight = () => {
   const [bloodAlert, setBloodAlert] = useState(null);
 
   // Helper to show our custom alert
-  const showBloodAlert = (message, onClose, buttonText = "OK", title = "Blood Bath Alert!") => {
+  const showBloodAlert = (
+    message,
+    onClose,
+    buttonText = "OK",
+    title = "Blood Bath Alert!"
+  ) => {
     setBloodAlert({ message, onClose, buttonText, title });
   };
 
@@ -91,11 +96,14 @@ const RedLightGreenLight = () => {
     async function fetchSavedCode() {
       try {
         const username = localStorage.getItem("username");
-        const response = await fetch("https://squidgamebackend.onrender.com/fetch-code1", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username }),
-        });
+        const response = await fetch(
+          "https://squidgamebackend.onrender.com/fetch-code1",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username }),
+          }
+        );
         const data = await response.json();
         console.log(data);
         let savedCode1 = { ...userCode };
@@ -122,11 +130,14 @@ const RedLightGreenLight = () => {
       const username = localStorage.getItem("username");
       if (username) {
         try {
-          const response = await fetch("https://squidgamebackend.onrender.com/users1", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username }),
-          });
+          const response = await fetch(
+            "https://squidgamebackend.onrender.com/users1",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username }),
+            }
+          );
           const data = await response.json();
           console.log(data.user.won);
           setWon(data.user.won || 100);
@@ -159,11 +170,14 @@ const RedLightGreenLight = () => {
   const handleGameOver = useCallback(async () => {
     try {
       const username = localStorage.getItem("username");
-      const response = await fetch("https://squidgamebackend.onrender.com/eliminateUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, eliminated: true }),
-      });
+      const response = await fetch(
+        "https://squidgamebackend.onrender.com/eliminateUser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, eliminated: true }),
+        }
+      );
       if (response.ok) {
         navigate("/Thankyou");
       } else {
@@ -207,7 +221,6 @@ const RedLightGreenLight = () => {
     handleGameOver,
     showBloodAlert,
   ]);
-
 
   // Manage red/green light transitions and audio playback.
   useEffect(() => {
@@ -298,7 +311,9 @@ const RedLightGreenLight = () => {
         updateWonInDB(newWon);
         setCompletedQuestions((prev) => [...prev, currentQuestion]);
         showBloodAlert(
-          `Correct! You earned 10 Won! Completed Questions: ${completedQuestions.length + 1}`,
+          `Correct! You earned 10 Won! Completed Questions: ${
+            completedQuestions.length + 1
+          }`,
           () => {},
           "Continue",
           "Slaughter of Success!"
@@ -318,15 +333,18 @@ const RedLightGreenLight = () => {
         }
         if (questionField) {
           try {
-            const response = await fetch("https://squidgamebackend.onrender.com/savecode1", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                username: username,
-                question: questionField,
-                code: userCode[currentQuestion] || "",
-              }),
-            });
+            const response = await fetch(
+              "https://squidgamebackend.onrender.com/savecode1",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  username: username,
+                  question: questionField,
+                  code: userCode[currentQuestion] || "",
+                }),
+              }
+            );
             console.log(response);
             console.log(`Saved code for ${questionField}`);
           } catch (error) {
@@ -354,11 +372,14 @@ const RedLightGreenLight = () => {
       return;
     }
     try {
-      const response = await fetch("https://squidgamebackend.onrender.com/updatelevel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, level1: true }),
-      });
+      const response = await fetch(
+        "https://squidgamebackend.onrender.com/updatelevel",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, level1: true }),
+        }
+      );
       const data = await response.json();
       if (data) {
         navigate("/Level2instructions");
@@ -485,7 +506,9 @@ const RedLightGreenLight = () => {
       {bloodAlert && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
           <div className="bg-red-800 border-4 border-red-500 p-8 rounded-lg shadow-xl text-center animate-pulse">
-            <h2 className="text-3xl font-bold text-white mb-4">{bloodAlert.title}</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">
+              {bloodAlert.title}
+            </h2>
             <p className="text-xl text-white">{bloodAlert.message}</p>
             <button
               className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded"
