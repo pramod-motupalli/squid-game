@@ -232,7 +232,7 @@ const TugOfWar = () => {
         ) {
           console.log(localStorage.getItem("score"));
           if (localStorage.getItem("score") > 0) {
-            navigate("/Level3instructions");
+            navigate("/Symbols");
           } else {
             navigate("/TugOfWarDisqualified");
           }
