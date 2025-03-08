@@ -309,8 +309,8 @@ const TugOfWar = () => {
         }),
         headers: { "Content-Type": "application/json" },
       });
-      const data = await response.json();
-      console.log("Server response:", data);
+      const playerData = await response.json();
+      console.log("Server response:", playerData);
       try {
         const Score = localStorage.getItem(score);
         const playerid = localStorage.getItem("playerid");
