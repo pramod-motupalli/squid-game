@@ -25,7 +25,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/08 12:15:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/08 12:35:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -214,7 +214,7 @@ const RedLightGreenLight = () => {
     const interval = setInterval(() => {
       setIsGreenLight(false);
       audio.play().catch((error) => console.log("Audio play blocked:", error));
-      const redLightDuration = 31; // exactly 31 seconds
+      const redLightDuration = 5; // exactly 31 seconds
       setTimeout(() => {
         setIsGreenLight(true);
         audio.pause();
