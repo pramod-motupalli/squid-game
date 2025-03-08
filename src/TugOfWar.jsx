@@ -351,10 +351,12 @@ const TugOfWar = () => {
                 );
                 const playerData = await response.json();
                 console.log(playerData);
+                console.log(timeLeft)
                 if (
                     playerData.user.level2pair === "solo player" &&
                     timeLeft === 0
                 ) {
+                    // console.log(timeLeft)
                     console.log(localStorage.getItem("score"));
                     if (localStorage.getItem("score") > 0) {
                         navigate("/Symbols");
