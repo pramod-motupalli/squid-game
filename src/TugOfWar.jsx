@@ -335,6 +335,7 @@ const TugOfWar = () => {
                     console.error("Player ID not found.");
                     return;
                 }
+                console.log(playerid)
                 // const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
                 //   method: "POST",
                 //   headers: { "Content-Type": "application/json" },
