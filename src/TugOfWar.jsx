@@ -329,11 +329,8 @@ const TugOfWar = () => {
             const data = await response.json();
             console.log("Server response:", data);
             try {
-                console.log("Hello")
                 const Score = localStorage.getItem("score");
-                console.log("hi")
                 const playerid = localStorage.getItem("playerid");
-                console.log("Hey")
                 if (!playerid) {
                     console.error("Player ID not found.");
                     return;
@@ -355,7 +352,6 @@ const TugOfWar = () => {
                 );
                 const playerData = await response.json();
                 console.log(playerData);
-                console.log(timeLeft)
                 if (
                     playerData.user.level2pair === "solo player" &&
                     timeLeft === 0
@@ -363,7 +359,7 @@ const TugOfWar = () => {
                     // console.log(timeLeft)
                     console.log(localStorage.getItem("score"));
                     if (localStorage.getItem("score") > 0) {
-                        navigate("/Symbols");
+                        navigate("Level3instructions");
                     } else {
                         navigate("/TugOfWarDisqualified");
                     }
@@ -396,7 +392,7 @@ const TugOfWar = () => {
                         playerData.user.level2Score >
                         opponentData.user.level2Score
                     ) {
-                        navigate("/Symbols");
+                        navigate("Level3instructions");
                     } else if (
                         playerData.user.level2Score <
                         opponentData.user.level2Score
@@ -407,7 +403,7 @@ const TugOfWar = () => {
                             playerData.user.level2Time >
                             opponentData.user.level2Time
                         ) {
-                            navigate("/Symbols");
+                            navigate("Level3instructions");
                         } else {
                             console.log("hi");
                         }
@@ -504,7 +500,7 @@ const TugOfWar = () => {
             //   ) {
             //     console.log(localStorage.getItem("score"));
             //     if (localStorage.getItem("score") > 0) {
-            //       navigate("/Symbols");
+            //       navigate("Level3instructions");
             //     } else {
             //       navigate("/TugOfWarDisqualified");
             //     }
@@ -512,12 +508,12 @@ const TugOfWar = () => {
             //   }
             //   if (playerData.user.level2 && opponentData.user.level2) {
             //     if (playerData.user.level2Score > opponentData.user.level2Score) {
-            //       navigate("/Symbols");
+            //       navigate("Level3instructions");
             //     } else if (playerData.user.level2Score < opponentData.user.level2Score) {
             //       console.log("ji");
             //     } else {
             //       if (playerData.user.level2Time > opponentData.user.level2Time) {
-            //         navigate("/Symbols");
+            //         navigate("Level3instructions");
             //       } else {
             //         console.log("hi");
             //       }
@@ -633,7 +629,7 @@ const TugOfWar = () => {
                         )}
                     </div>
                     <button
-                        onClick={() => navigate("/Symbols")}
+                        onClick={() => navigate("Level3instructions")}
                         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
                         disabled={isSubmitting}
                     >
