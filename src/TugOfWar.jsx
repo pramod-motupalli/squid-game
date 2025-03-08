@@ -359,7 +359,7 @@ const TugOfWar = () => {
                     // console.log(timeLeft)
                     console.log(localStorage.getItem("score"));
                     if (localStorage.getItem("score") > 0) {
-                        navigate("Level3instructions");
+                        navigate("/Level3instructions");
                     } else {
                         navigate("/TugOfWarDisqualified");
                     }
@@ -392,7 +392,7 @@ const TugOfWar = () => {
                         playerData.user.level2Score >
                         opponentData.user.level2Score
                     ) {
-                        navigate("Level3instructions");
+                        navigate("/Level3instructions");
                     } else if (
                         playerData.user.level2Score <
                         opponentData.user.level2Score
@@ -403,7 +403,7 @@ const TugOfWar = () => {
                             playerData.user.level2Time >
                             opponentData.user.level2Time
                         ) {
-                            navigate("Level3instructions");
+                            navigate("/Level3instructions");
                         } else {
                             console.log("hi");
                         }
@@ -500,7 +500,7 @@ const TugOfWar = () => {
             //   ) {
             //     console.log(localStorage.getItem("score"));
             //     if (localStorage.getItem("score") > 0) {
-            //       navigate("Level3instructions");
+            //       navigate("/Level3instructions");
             //     } else {
             //       navigate("/TugOfWarDisqualified");
             //     }
@@ -508,12 +508,12 @@ const TugOfWar = () => {
             //   }
             //   if (playerData.user.level2 && opponentData.user.level2) {
             //     if (playerData.user.level2Score > opponentData.user.level2Score) {
-            //       navigate("Level3instructions");
+            //       navigate("/Level3instructions");
             //     } else if (playerData.user.level2Score < opponentData.user.level2Score) {
             //       console.log("ji");
             //     } else {
             //       if (playerData.user.level2Time > opponentData.user.level2Time) {
-            //         navigate("Level3instructions");
+            //         navigate("/Level3instructions");
             //       } else {
             //         console.log("hi");
             //       }
@@ -629,7 +629,7 @@ const TugOfWar = () => {
                         )}
                     </div>
                     <button
-                        onClick={() => navigate("Level3instructions")}
+                        onClick={() => navigate("/Level3instructions")}
                         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
                         disabled={isSubmitting}
                     >
