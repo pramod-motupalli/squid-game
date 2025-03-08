@@ -329,8 +329,11 @@ const TugOfWar = () => {
             const data = await response.json();
             console.log("Server response:", data);
             try {
+                console.log("Hello")
                 const Score = localStorage.getItem("score");
+                console.log("hi")
                 const playerid = localStorage.getItem("playerid");
+                console.log("Hey")
                 if (!playerid) {
                     console.error("Player ID not found.");
                     return;
