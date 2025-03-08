@@ -23,7 +23,13 @@ const SingleAndMingle = () => {
   // Custom blood-themed alert state
   const [bloodAlert, setBloodAlert] = useState(null);
   // Helper to show our custom alert modal; variant can be 'final' for final submission alerts.
-  const showBloodAlert = (title, message, buttonText, onClose, variant = "") => {
+  const showBloodAlert = (
+    title,
+    message,
+    buttonText,
+    onClose,
+    variant = ""
+  ) => {
     setBloodAlert({ title, message, buttonText, onClose, variant });
   };
 
@@ -31,7 +37,9 @@ const SingleAndMingle = () => {
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
-    audio.play().catch((error) => console.error("Audio playback failed:", error));
+    audio
+      .play()
+      .catch((error) => console.error("Audio playback failed:", error));
   }, []);
 
   // Timer: Synchronize against a fixed deadline
@@ -62,13 +70,13 @@ const SingleAndMingle = () => {
       const allQuestions = [
         {
           prompt:
-            "Fix the bug in this function:\nint add(int a, int b) {\n  return c - b; // Incorrect operation\n}",
-          expected: "15\n",
+            "// Function to convert a string to lowercase \n //the string is SquidGame.CreSenCe2k25",
+          expected: "squidgame.cresence2k25",
         },
         {
           prompt:
-            "Write a C program to print the first 10 terms of the Fibonacci \n  series using both loops and recursion.",
-          expected: "0 1 1 2 3 5 8 13 21 34",
+            "//Subtract product and sum of digits \nInitialize product to 1.Initialize sum to 0.\nWhile n is greater than 0 do:\nLet digit be the remainder when n is divided by 10.\nMultiply product by digit.\nAdd digit to sum.\nUpdate n by performing integer division by 10.\nEnd While\nReturn the difference: product - sum.\nvalue=31726.",
+          expected: "233",
         },
         {
           prompt:
@@ -85,7 +93,10 @@ const SingleAndMingle = () => {
         .sort(() => 0.5 - Math.random())
         .slice(0, 2);
       setQuestions(selectedQuestions);
-      localStorage.setItem("singleAndMingleQuestions", JSON.stringify(selectedQuestions));
+      localStorage.setItem(
+        "singleAndMingleQuestions",
+        JSON.stringify(selectedQuestions)
+      );
     }
   }, []);
 
@@ -213,7 +224,7 @@ const SingleAndMingle = () => {
     if (!confirmSubmit) return;
 
     const marksGained = completedQuestions.length * 50;
-  
+
     try {
       const response = await fetch("http://localhost:5000/finalsubmit", {
         method: "POST",
@@ -334,7 +345,11 @@ const SingleAndMingle = () => {
       {/* Custom Blood-Bath Alert Modal */}
       {bloodAlert && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-          <div className={`bg-red-900 border-4 border-red-700 p-8 rounded-lg text-center animate-pulse ${bloodAlert.variant === "final" ? "shadow-2xl" : ""}`}>
+          <div
+            className={`bg-red-900 border-4 border-red-700 p-8 rounded-lg text-center animate-pulse ${
+              bloodAlert.variant === "final" ? "shadow-2xl" : ""
+            }`}
+          >
             <h2 className="text-3xl font-bold text-white mb-4">
               {bloodAlert.title}
             </h2>
