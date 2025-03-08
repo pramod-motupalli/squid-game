@@ -8,7 +8,7 @@ export default function ThankYou() {
     const eliminateUser = async () => {
       try {
         const username = localStorage.getItem("username");
-        const response = await fetch("http://localhost:5000/eliminateUser", {
+        const response = await fetch("https://squidgamebackend.onrender.com/eliminateUser", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, eliminated: true }),

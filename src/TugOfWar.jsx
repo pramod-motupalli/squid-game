@@ -12,7 +12,8 @@ const TugOfWar = () => {
   useEffect(() => {
     function fetchChallengeStartTime() {
       try {
-        const simulatedStartTime = new Date("2025-03-06T19:11:00");
+        const simulatedStartTime = new Date("2025/03/08 12:25:00");
+
         setChallengeStartTime(simulatedStartTime);
       } catch (error) {
         console.error("Failed to fetch challenge start time:", error);
@@ -39,57 +40,162 @@ const TugOfWar = () => {
   const tugWarControls = useAnimation();
   const totalQuestions = 10;
   const questions = [
-    { question: "What is 5 + 3?", options: [6, 7, 8, 9], answer: 8, marks: 10 },
     {
-      question: "Which number is prime?",
-      options: [9, 10, 11, 12],
-      answer: 11,
-      marks: 10,
+      question: "If January 1, 2024 is a Monday, what day of the week will October 31, 2024 be?",
+      options: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      answer: "Thursday",
+      marks: 10
+    },
+    // {
+    //   question: "Raman is confident of speaking English ______ six months, as he has been practicing regularly ____ the last three weeks.",
+    //   options: ["during, for", "for, since", "for, in", "within, for"],
+    //   answer: "within, for",
+    //   marks: 10
+    // },
+    {
+      question: "A train traveling at 60 km/hr departs a station at 8:00 AM. A second train traveling at 80 km/hr leaves the same station at 8:30 AM in the same direction. At what time will the second train catch up with the first?",
+      options: ["9:30 AM", "10:00 AM", "10:15 AM", "10:30 AM"],
+      answer: "10:00 AM",
+      marks: 10
+    },
+    // {
+    //   question: "In a family, R is the son of S. S is the sister of T, and T is the mother of U. U is the wife of V. What is the relation of V to S?",
+    //   options: ["Nephew-in-law", "Cousin-in-law", "Son-in-law", "Brother-in-law"],
+    //   answer: "Nephew-in-law",
+    //   marks: 10
+    // },
+    // {
+    //   question: "Select the word that best completes the analogy: 'Luminous is to radiant as tenebrous is to ______.'",
+    //   options: ["gloomy", "vivid", "bright", "sparkling"],
+    //   answer: "gloomy",
+    //   marks: 10
+    // },
+     {
+
+       question: "Find the next term in the sequence: 7G, 11K, 13Q, 17U, ___, given that the numeric parts are consecutive prime numbers and the letters are obtained by alternately adding 4 and 6 to the previous term’s letter position (with A=1, Z=26).",
+       options: ["19A", "19B", "19C", "19D"],
+       "answer": "19A",
+       marks: 10
+      },
+    // {
+    //   question: "If 12 men can build a wall in 15 days, how many days will it take 20 men to build the same wall?",
+    //   options: [9, 10, 12, 15],
+    //   answer: 9,
+    //   marks: 5
+    // },
+    // {
+    //   question: "A mixture contains milk and water in the ratio 3:2. If 10 litres of water are added to 25 litres of this mixture, what is the new ratio of milk to water?",
+    //   options: ["3:7", "3:11", "1:2", "1:3"],
+    //   answer: "3:11",
+    //   marks: 10
+    // },
+    // {  
+    //   question: "Two alloys contain copper and zinc in the ratios 4:1 and 3:2 respectively. In what ratio should the two alloys be mixed so that the resulting alloy has copper and zinc in the ratio 17:7?",
+    //   options: ["13:11", "11:13", "4:3", "3:4"],
+    //   answer: "13:11",
+    //   marks: 10
+    // },
+    // {
+    //   question: "What is the derivative of f(x) = (2x^3 - 5x + 1)^2 with respect to x?",
+    //   options: [
+    //     "2(2x^3 - 5x + 1)(6x^2 - 5)",
+    //     "2(6x^2 - 5)",
+    //     "(2x^3 - 5x + 1)(6x^2 - 5)",
+    //     "4x^2(6x^2 - 5)"
+    //   ],
+    //   answer: "2(2x^3 - 5x + 1)(6x^2 - 5)",
+    //   marks: 10
+    // },
+    // {
+    //   question: "If 5 machines produce 5 widgets in 5 minutes, how many minutes will 100 machines take to produce 100 widgets?",
+    //   options: [5, 10, 15, 20],
+    //   answer: 5,
+    //   marks: 10
+    // },
+    {
+      question: "A school's student council has 12 members. How many different subcommittees of 4 can be formed?",
+      options: [495, 330, 210, 120],
+      answer: 495,
+      marks: 10
+    },
+    // {
+    //   question: "If 60 men can complete a task in 10 days, how many days will 40 men take to complete the same task?",
+    //   options: [10, 12, 15, 20],
+    //   answer: 15,
+    //   marks: 10
+    // },
+    {
+      question: "Consider the sentences: (i) Everybody in the class is prepared for the exam. (ii) Babu invited Danish to his home because he enjoys playing chess. Which observation is correct?",
+      options: [
+        "(i) is grammatically correct and (ii) is unambiguous",
+        "(i) is grammatically incorrect and (ii) is unambiguous",
+        "(i) is grammatically correct and (ii) is ambiguous",
+        "(i) is grammatically incorrect and (ii) is ambiguous"
+      ],
+      answer: "(i) is grammatically correct and (ii) is ambiguous",
+      marks: 10
+    },
+    // {
+    //   question: "Select the term that best completes the analogy: 'Taylor Swift : Grammy Awards as Serena Williams : ______', emphasizing their pinnacle achievements in their respective fields.",
+    //   options: ["Olympic gold medals", "Grand Slam titles", "World Championship titles", "Career earnings"],
+    //   answer: "Grand Slam titles",
+    //   marks: 10
+    // },
+    {
+      question: "Directions: Refer to the following data: In a survey of 100 students, 60 like Mathematics, 45 like Science, and 30 like both subjects. How many students like only Science?",
+      options: ["15", "30", "45", "60"],
+      answer: "15",
+      marks: 10
     },
     {
-      question: "What is 7 x 6?",
-      options: [40, 42, 44, 48],
-      answer: 42,
-      marks: 10,
+      question: "In a family, if A is the sister of B, B is married to C, and C is the sister of D, who is the mother of E, what is the relation of A to E?",
+      options: ["Aunt", "Cousin", "Sister", "Grandmother"],
+      answer: "Aunt",
+      marks: 10
     },
     {
-      question: "Find the missing number: 2, 4, ?, 8, 10",
-      options: [5, 6, 7, 9],
-      answer: 6,
-      marks: 10,
+      question: "Directions: From town A, travel 3 km east, then 4 km north, then 5 km west, and finally 2 km south to reach town B. In which direction from town A is town B located?",
+      options: ["North-West", "North-East", "South-West", "South-East"],
+      answer: "North-West",
+      marks: 10
     },
+    // {
+    //   question: "If 12 men can build a wall in 15 days, how many days will it take 20 men to build the same wall?",
+    //   options: [9, 10, 12, 15],
+    //   answer: 9,
+    //   marks: 10
+    // },
+    // {
+    //   question: "If January 1, 2025 is a Wednesday, what day of the week will December 31, 2025 fall on?",
+    //   options: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+    //   answer: "Wednesday",
+    //   marks: 10
+    // },
+    // {
+    //   question: "A train traveling at 60 km/hr departs a station at 8:00 AM. A second train traveling at 80 km/hr leaves the same station at 8:30 AM in the same direction. At what time will the second train catch up with the first?",
+    //   options: ["9:30 AM", "10:00 AM", "10:15 AM", "10:30 AM"],
+    //   answer: "10:00 AM",
+    //   marks: 10
+    // },
     {
-      question: "What is the square root of 64?",
-      options: [6, 7, 8, 9],
-      answer: 8,
-      marks: 10,
+      question: "In a family, if A is the daughter of B, B has two children, A and C. C is married to D, and they have a daughter E. What is the relation of E to A?",
+      options: ["Sister", "Cousin", "Niece", "Aunt"],
+      answer: "Niece",
+      marks: 10
     },
+    // {
+    //   question: "A tank is filled by two pipes A and B. Pipe A can fill the tank in 12 hours, and pipe B can fill it in 18 hours. How long will it take to fill the tank if both pipes are used together?",
+    //   options: ["7.2 hours", "8 hours", "9 hours", "10 hours"],
+    //   answer: "7.2 hours",
+    //   marks: 10
+    // },
     {
-      question: "If x = 5, what is x^2?",
-      options: [10, 15, 20, 25],
-      answer: 25,
-      marks: 10,
+      question: "A book costs Rs. 250. A discount of 10% is given on the marked price, and an additional discount of 5% is offered on the sale price. What is the final price of the book?",
+      options: ["Rs. 210", "Rs. 213.75", "Rs. 220", "Rs. 225"],
+      answer: "Rs. 213.75",
+      marks: 10
     },
-    { question: "Solve: 15 - 7", options: [6, 7, 8, 9], answer: 8, marks: 10 },
-    {
-      question: "Which is an even number?",
-      options: [11, 13, 16, 19],
-      answer: 16,
-      marks: 10,
-    },
-    {
-      question: "What is 4! (4 factorial)?",
-      options: [12, 24, 36, 48],
-      answer: 24,
-      marks: 10,
-    },
-    {
-      question: "Which shape has 6 sides?",
-      options: ["Triangle", "Pentagon", "Hexagon", "Octagon"],
-      answer: "Hexagon",
-      marks: 10,
-    },
-  ];
+  ]
 
   // Load saved answer for the current question (if any)
   useEffect(() => {
@@ -106,7 +212,7 @@ const TugOfWar = () => {
     async function fetchUserData() {
       try {
         const username = localStorage.getItem("username");
-        const response = await fetch("http://localhost:5000/level2pair", {
+        const response = await fetch("https://squidgamebackend.onrender.com/level2pair", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username }),
@@ -194,7 +300,7 @@ const TugOfWar = () => {
 
     const submitTime = new Date().toISOString();
     try {
-      const response = await fetch("http://localhost:5000/submitTugOfWar", {
+      const response = await fetch("https://squidgamebackend.onrender.com/submitTugOfWar", {
         method: "POST",
         body: JSON.stringify({
           playerid: localStorage.getItem("playerid"),
@@ -212,13 +318,13 @@ const TugOfWar = () => {
           console.error("Player ID not found.");
           return;
         }
-        // const response1 = await fetch("http://localhost:5000/score1", {
+        // const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
         //   method: "POST",
         //   headers: { "Content-Type": "application/json" },
         //   body: JSON.stringify({ playerid: playerid, level2Score: Score }),
         // });
         
-        const response = await fetch("http://localhost:5000/user1", {
+        const response = await fetch("https://squidgamebackend.onrender.com/user1", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ playerid }),
@@ -231,7 +337,7 @@ const TugOfWar = () => {
         ) {
           console.log(localStorage.getItem("score"));
           if (localStorage.getItem("score") > 0) {
-            navigate("/Level3instructions");
+            navigate("/Symbols");
           } else {
             navigate("/TugOfWarDisqualified");
           }
@@ -240,7 +346,7 @@ const TugOfWar = () => {
         const opponentId = playerData.user.level2pair;
         console.log(opponentId);
         
-          const oppResponse = await fetch("http://localhost:5000/user1", {
+          const oppResponse = await fetch("https://squidgamebackend.onrender.com/user1", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ playerid: opponentId }),
@@ -254,12 +360,12 @@ const TugOfWar = () => {
         
         if (playerData.user.level2 && opponentData.user.level2 && timeLeft===0) {
           if (playerData.user.level2Score > opponentData.user.level2Score) {
-            navigate("/Level3instructions");
+            navigate("/Symbols");
           } else if (playerData.user.level2Score < opponentData.user.level2Score) {
             console.log("ji");
           } else {
             if (playerData.user.level2Time > opponentData.user.level2Time) {
-              navigate("/Level3instructions");
+              navigate("/Symbols");
             } else {
               console.log("hi");
             }
@@ -322,13 +428,13 @@ const TugOfWar = () => {
       //     console.error("Player ID not found.");
       //     return;
       //   }
-      //   const response1 = await fetch("http://localhost:5000/score1", {
+      //   const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
       //     method: "POST",
       //     headers: { "Content-Type": "application/json" },
       //     body: JSON.stringify({ playerid: playerid, level2Score: Score }),
       //   });
         
-      //   const response = await fetch("http://localhost:5000/user1", {
+      //   const response = await fetch("https://squidgamebackend.onrender.com/user1", {
       //     method: "POST",
       //     headers: { "Content-Type": "application/json" },
       //     body: JSON.stringify({ playerid }),
@@ -339,7 +445,7 @@ const TugOfWar = () => {
       //   const opponentId = playerData.user.level2pair;
       //   console.log(opponentId);
       //   if (opponentId !== "solo player") {
-      //     const oppResponse = await fetch("http://localhost:5000/user1", {
+      //     const oppResponse = await fetch("https://squidgamebackend.onrender.com/user1", {
       //       method: "POST",
       //       headers: { "Content-Type": "application/json" },
       //       body: JSON.stringify({ playerid: opponentId }),
@@ -356,7 +462,7 @@ const TugOfWar = () => {
       //   ) {
       //     console.log(localStorage.getItem("score"));
       //     if (localStorage.getItem("score") > 0) {
-      //       navigate("/Level3instructions");
+      //       navigate("/Symbols");
       //     } else {
       //       navigate("/TugOfWarDisqualified");
       //     }
@@ -364,12 +470,12 @@ const TugOfWar = () => {
       //   }
       //   if (playerData.user.level2 && opponentData.user.level2) {
       //     if (playerData.user.level2Score > opponentData.user.level2Score) {
-      //       navigate("/Level3instructions");
+      //       navigate("/Symbols");
       //     } else if (playerData.user.level2Score < opponentData.user.level2Score) {
       //       console.log("ji");
       //     } else {
       //       if (playerData.user.level2Time > opponentData.user.level2Time) {
-      //         navigate("/Level3instructions");
+      //         navigate("/Symbols");
       //       } else {
       //         console.log("hi");
       //       }
@@ -477,7 +583,7 @@ const TugOfWar = () => {
             )}
           </div>
           <button
-            onClick={() => navigate("/Level3instructions")}
+            onClick={() => navigate("/Symbols")}
             className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
             disabled={isSubmitting}
           >

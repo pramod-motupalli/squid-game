@@ -16,7 +16,7 @@ const LoginPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("https://squidgamebackend.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -26,7 +26,7 @@ const LoginPage = () => {
       console.log(data);
       const handleLogin = async (username, password) => {
         try {
-          const response = await fetch("http://localhost:5000/login", {
+          const response = await fetch("https://squidgamebackend.onrender.com/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -57,10 +57,10 @@ const LoginPage = () => {
           navigate("/TugOfWarDisqualified");
         } else {
           if (data.user.level2) {
-            navigate("/TugOfWar");
+            navigate("/SingleAndMingle");
           } else {
             if (data.user.level1) {
-              navigate("/level1/game");
+              navigate("/TugOfWar");
             }
             else{
               navigate("/HomePage");
