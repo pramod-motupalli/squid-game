@@ -261,7 +261,7 @@ const TugOfWar = () => {
   // Handle moving to the next question.
   const handleNextQuestion = () => {
     localStorage.setItem(
-     `answer-${currentQuestion}`,
+      `answer-${currentQuestion}`,
       JSON.stringify(selectedAnswer)
     );
     if (currentQuestion < totalQuestions - 1) {
@@ -272,7 +272,7 @@ const TugOfWar = () => {
   // Final submission: compute score, evaluate rope position, and decide navigation.
   const handleFinalSubmit = useCallback(async () => {
     localStorage.setItem(
-     `answer-${currentQuestion}`,
+      `answer-${currentQuestion}`,
       JSON.stringify(selectedAnswer)
     );
     setIsSubmitting(true);
@@ -309,8 +309,8 @@ const TugOfWar = () => {
         }),
         headers: { "Content-Type": "application/json" },
       });
-      const playerData = await response.json();
-      console.log("Server response:", playerData);
+      const data = await response.json();
+      console.log("Server response:", data);
       try {
         const Score = localStorage.getItem(score);
         const playerid = localStorage.getItem("playerid");
