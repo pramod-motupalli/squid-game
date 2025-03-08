@@ -35,6 +35,13 @@ const TugOfWar = () => {
       marks: 10,
     },
     {
+      question: "A tank is filled by two pipes A and B. Pipe A can fill the tank in 12 hours, and pipe B can fill it in 18 hours. How long will it take to fill the tank if both pipes are used together?",
+      options: ["7.2 hours", "8 hours", "9 hours", "10 hours"],
+      answer: "7.2 hours",
+      marks: 10,
+    },
+  
+    {
       question:
         "Find the next term in the sequence: 7G, 11K, 13Q, 17U, ___, given that the numeric parts are consecutive prime numbers and the letters are obtained by alternately adding 4 and 6 to the previous term’s letter position (with A=1, Z=26).",
       options: ["19A", "19B", "19C", "19D"],
@@ -230,6 +237,16 @@ const TugOfWar = () => {
           return;
         }
         // Fetch current user data
+       
+
+        if (playerData.user.level2pair === "solo player" && timeLeft === 0) {
+          if (parseInt(storedScore, 10) > 0) {
+            navigate("/Symbols");
+          } else {
+            navigate("/TugOfWarDisqualified");
+          }
+          return;
+        }
         const userResponse = await fetch(
           "https://squidgamebackend.onrender.com/user1",
           {
@@ -240,15 +257,6 @@ const TugOfWar = () => {
         );
         const playerData = await userResponse.json();
         console.log(playerData);
-
-        if (playerData.user.level2pair === "solo player" && timeLeft === 0) {
-          if (parseInt(storedScore, 10) > 0) {
-            navigate("/Symbols");
-          } else {
-            navigate("/TugOfWarDisqualified");
-          }
-          return;
-        }
         const opponentId = playerData.user.level2pair;
         console.log("Opponent ID:", opponentId);
 
