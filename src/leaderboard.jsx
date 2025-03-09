@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 function LeaderBoard() {
-  // State to hold users fetched from the API
-  const [users, setUsers] = useState([]);
+  // State to hold users (as an object) fetched from the API
+  const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,10 +21,9 @@ function LeaderBoard() {
           throw new Error("Network response was not ok: " + text);
         }
         const data = await response.json();
-        console.log(data);
-        // If data is an array, use it directly; if it's an object, convert its values into an array.
-        const usersArray = Array.isArray(data) ? data : Object.values(data);
-        setUsers(usersArray);
+        console.log("Fetched data:", data);
+        // Store data as an object (assuming data is an object with user keys)
+        setUsers(data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -49,23 +48,29 @@ function LeaderBoard() {
       </div>
     );
 
+  // Convert the JSON object to an array of [key, user] pairs
+  const userEntries = Object.entries(users);
+  // Filter only those users who are eliminated
+  const eliminatedEntries = userEntries.filter(([key, user]) => user.eliminated);
+
   return (
     <div className="w-screen h-screen overflow-hidden flex items-center justify-center bg-black">
-      {/* Hexagon Container */}
       <div
         className="w-[80vmin] h-[80vmin] bg-gray-800 flex flex-wrap justify-center items-center
           clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)]"
       >
-        {users.map((user, index) =>
-          user.eliminated ? (
+        {eliminatedEntries.length > 0 ? (
+          eliminatedEntries.map(([key, user]) => (
             <div
-              key={index}
+              key={key}
               className="w-36 h-36 m-2 flex items-center justify-center border-2 border-white text-white font-bold
                 clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)]"
             >
               {user.playerid}
             </div>
-          ) : null
+          ))
+        ) : (
+          <div className="text-white">No eliminated users found.</div>
         )}
       </div>
     </div>
