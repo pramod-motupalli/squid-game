@@ -96,7 +96,7 @@ const HomePage = () => {
           text-base md:text-lg
         "
       >
-        <div className="text-blue-400 font-extrabold bg-gradient-to-r from-green-500 to-red-500 bg-clip-text text-transparent text-lg md:text-2xl">Welcome,</div>
+        <div className="font-extrabold bg-gradient-to-r from-green-500 to-red-500 bg-clip-text text-transparent text-lg md:text-2xl">Welcome,</div>
         {playerId || "N/A"}
       </div>
 
@@ -256,7 +256,7 @@ encouraging knowledge sharing, problem-solving, and technical excellence.
                 <div
                   className="
                     min-w-full relative 
-                    h-72 sm:h-96 md:h-auto md:aspect-[4/5] 
+                    h=72 sm:h-96 md:h-auto w-64 md:aspect-[4/5] 
                     bg-no-repeat bg-center bg-cover
                   "
                   style={{ backgroundImage: "url('/images/pramodSG.jpg')" }}
