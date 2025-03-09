@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Hexagon } from "lucide-react";
 
 function LeaderBoard() {
   // State to hold users as an object fetched from the API
@@ -55,18 +56,16 @@ function LeaderBoard() {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 to-blue-500 p-4">
       <h1 className="text-white text-4xl font-extrabold mb-8 drop-shadow-lg">LeaderBoard</h1>
-      <div
-        className="w-[80vmin] h-[80vmin] bg-gray-800 flex flex-wrap justify-center items-center relative
-          clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)] shadow-2xl"
-      >
+      <div className="w-[80vmin] h-[80vmin] bg-gray-800 flex flex-wrap justify-center items-center relative shadow-2xl">
         {nonEliminatedEntries.length > 0 ? (
           nonEliminatedEntries.map(([key, user]) => (
-            <div
-              key={key}
-              className="w-36 h-36 m-2 flex items-center justify-center border-2 border-white text-white font-bold
-                clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)] transform transition duration-300 hover:scale-110 shadow-lg"
-            >
-              {user.playerid}
+            <div key={key} className="relative w-36 h-36 m-2 transform transition duration-300 hover:scale-110">
+              {/* Render Hexagon icon from lucide-react */}
+              <Hexagon className="w-full h-full stroke-white fill-transparent" />
+              {/* Overlay player's id */}
+              <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
+                {user.playerid}
+              </div>
             </div>
           ))
         ) : (
