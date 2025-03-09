@@ -149,8 +149,15 @@ const HomePage = () => {
               <p>
                 <b className="text-blue-500">Cresence2K25: A National-Level Tech Fest</b>
                 <br />
-                Organized by JNTU GV's CSE department, this event unites tech enthusiasts
-                nationwide.
+                CRESENCE is a technical symposium organized by the students from the
+Department of Computer Science & Engineering, JNTU Vizianagaram. Designed
+around an immersive space theme, the fest serves as a dynamic platform for
+students to explore emerging technologies, enhance technical competencies, and
+engage in collaborative innovation. The symposium features a diverse range of
+technical events, coding challenges, hackathons, workshops, and expert sessions,
+alongside cultural engagements that foster a holistic learning experience.
+CRESENCE aims to bridge the gap between academia and industry by
+encouraging knowledge sharing, problem-solving, and technical excellence.
               </p>
             </div>
           )}
