@@ -21,7 +21,7 @@ const disableCopyPaste = EditorView.domEventHandlers({
   },
 });
 
-const squidGameMusic = "/public/images/squid game music.mpeg";
+const squidGameMusic = "/public/images/squid game music.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
