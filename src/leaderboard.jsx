@@ -10,7 +10,8 @@ function LeaderBoard() {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await fetch("https://localhost:5000/api/players", {
+          
+        const response = await fetch("https://squidgamebackend.onrender.com/api/players", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
