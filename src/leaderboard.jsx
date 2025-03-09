@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 function LeaderBoard() {
-  // State to hold players fetched from the API
-  const [players, setPlayers] = useState([]);
+  // State to hold users fetched from the API
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch players from the backend on mount
+  // Fetch users from the backend on mount
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchUsers = async () => {
       try {
-          
         const response = await fetch("https://squidgamebackend.onrender.com/api/players", {
           method: "GET",
           headers: {
@@ -22,18 +21,19 @@ function LeaderBoard() {
           throw new Error("Network response was not ok: " + text);
         }
         const data = await response.json();
-        console.log(data)
-        // Expecting the API to return { players: [...] }
-        setPlayers(data.players);
+        console.log(data);
+        // If data is an array, use it directly; if it's an object, convert its values into an array.
+        const usersArray = Array.isArray(data) ? data : Object.values(data);
+        setUsers(usersArray);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching players:", err);
+        console.error("Error fetching users:", err);
         setError(err.message);
         setLoading(false);
       }
     };
 
-    fetchPlayers();
+    fetchUsers();
   }, []);
 
   if (loading)
@@ -56,14 +56,14 @@ function LeaderBoard() {
         className="w-[80vmin] h-[80vmin] bg-gray-800 flex flex-wrap justify-center items-center
           clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)]"
       >
-        {players.map((player, index) =>
-          player.eliminate ? (
+        {users.map((user, index) =>
+          user.eliminated ? (
             <div
               key={index}
               className="w-36 h-36 m-2 flex items-center justify-center border-2 border-white text-white font-bold
                 clip-[polygon(25%_6.7%,_75%_6.7%,_100%_50%,_75%_93.3%,_25%_93.3%,_0%_50%)]"
             >
-              {player.id}
+              {user.playerid}
             </div>
           ) : null
         )}
