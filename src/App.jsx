@@ -13,6 +13,7 @@ import TugOfWarDisqualified from "./TugOfWarDisqualified.jsx";
 import Thankyou from "./Thankyou.jsx";
 import ContinuousBloodStainEffect from "./ContinuousRedTrailEffect"; // Import the effect
 import PairingButton from "./pair.jsx";
+import LeaderBoard from "./leaderboard.jsx";
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/TugOfWarDisqualified" element={<TugOfWarDisqualified />} />
         <Route path="/SingleAndMingle" element={<SingleAndMingle />} />
         <Route path="/Thankyou" element={<Thankyou />} />
+        <Route path="/LeaderBoard" element={<LeaderBoard />} />
       </Routes>
     </Router>
   );

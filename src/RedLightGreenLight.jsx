@@ -25,7 +25,7 @@ const squidGameMusic = "/public/images/squid game music.mpeg";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/08 16:10:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/13 10:00:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -71,7 +71,7 @@ const RedLightGreenLight = () => {
   const questions = [
     {
       prompt:
-        "// Fix the bug in this function\n#include <stdio.h>\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n}",
+        "// Fix the bug in this function\n#include (studio.h)\nint main() {\n  for(i=0;i<10;i+)\n{\nprint('Hello')}\n  return 0;\n",
       expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello",
     },
     {
@@ -415,15 +415,15 @@ const RedLightGreenLight = () => {
       }`}
     >
       {/* Player ID at the top left corner */}
-      <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
-        Player ID: {localStorage.getItem("playerid") || "Guest"}
+      <div className="absolute top-4 text-2xl left-4 font-extrabold px-8 py-4 rounded-mdfont-extrabold bg-gradient-to-r from-red-400 via-green-500 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
+        {localStorage.getItem("playerid") || "Guest"}
       </div>
       {/* Timer positioned at the top right corner */}
-      <div className="absolute top-4 right-4 px-8 py-4 rounded-md text-red-400 font-bold text-xl">
+      <div className="absolute top-4 right-4 px-8 py-4 rounded-md text-red-400  font-bold text-xl">
         ⏳ Time Left: {Math.floor(timeLeft / 60)}:
         {(timeLeft % 60).toString().padStart(2, "0")}
       </div>
-      <h1 className="text-2xl md:text-4xl font-bold mb-6 text-center">
+      <h1 className="text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent drop-shadow-lg mb-6 text-center">
         Level 1: Red Light, Green Light
       </h1>
       <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-4 lg:space-y-0 lg:space-x-4 relative">
@@ -439,7 +439,7 @@ const RedLightGreenLight = () => {
             </div>
           )}
           <pre
-            className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none"
+            className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none shadow-[0_0_31px_rgba(255,0,0,0.9)]"
             onContextMenu={(e) => e.preventDefault()}
             onCopy={(e) => e.preventDefault()}
             style={{ userSelect: "none", cursor: "default" }}
@@ -464,14 +464,16 @@ const RedLightGreenLight = () => {
           </div>
         </div>
         <div className="w-full lg:w-1/2">
-          <CodeMirror
-            value={userCode[currentQuestion] || ""}
-            height="400px"
-            width="100%"
-            extensions={[cpp(), disableCopyPaste]}
-            theme={dracula}
-            onChange={handleCodeChange}
-          />
+          <div className="shadow-[0_0_31px_rgba(255,0,0,0.9)] rounded-md">
+            <CodeMirror
+              value={userCode[currentQuestion] || ""}
+              height="400px"
+              width="100%"
+              extensions={[cpp(), disableCopyPaste]}
+              theme={dracula}
+              onChange={handleCodeChange}
+            />
+          </div>
           <div className="flex mt-2 space-x-2">
             <button
               onClick={handleCompileRun}
@@ -486,7 +488,7 @@ const RedLightGreenLight = () => {
               Submit
             </button>
           </div>
-          <pre className="bg-gray-800 p-4 rounded-md w-full overflow-auto mt-4 text-sm md:text-base">
+          <pre className="bg-gray-800 p-4 rounded-md w-full overflow-auto mt-4 text-sm md:text-base shadow-[0_0_25px_rgba(0,255,255,0.6)]">
             Output: {compiling ? "Compiling..." : output}
           </pre>
         </div>
