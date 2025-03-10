@@ -327,7 +327,7 @@ useEffect(() => {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      finalSubmission();
+      handleFinalSubmit();
     }
   }, [timeLeft, finalSubmission]);
 
