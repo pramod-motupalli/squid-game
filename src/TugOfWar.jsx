@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/10 12:35:00");
+                const simulatedStartTime = new Date("2025/03/10 14:20:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -611,13 +611,16 @@ const TugOfWar = () => {
                             Previous
                         </button>
                         {currentQuestion === totalQuestions - 1 ? (
-                            <button
-                                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
-                                onClick={handleFinalSubmit}
-                                disabled={gameOver || isSubmitting}
-                            >
-                                {isSubmitting ? "Submitting..." : "submit"}
-                            </button>
+                           <button
+                           onClick={() => {
+                             window.alert("Submission successful!");
+                             handleFinalSubmit();
+                           }}
+                           style={{ backgroundColor: isSubmitted ? "grey" : "red" }}
+                           disabled={isSubmitting || isSubmitted}
+                         >
+                           {isSubmitted ? "Submitted" : "Submit"}
+                         </button>
                         ) : (
                             <button
                                 className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
