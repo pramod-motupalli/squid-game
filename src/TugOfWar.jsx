@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/10 13:52:00");
+                const simulatedStartTime = new Date("2025/03/10 12:35:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -122,7 +122,7 @@ const TugOfWar = () => {
             marks: 10,
         },
         // {
-        //   question: "If 60 men can complete a task in 10 days, how many days will 40 men take to complete the same task?",
+        //   question: "If 60 men can complete a task in 10 days, how many days will it take 40 men to complete the same task?",
         //   options: [10, 12, 15, 20],
         //   answer: 15,
         //   marks: 10
@@ -694,7 +694,7 @@ useEffect(() => {
                             <button
                                 className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
                                 onClick={handleNextQuestion}
-                                disabled={isSubmitting}
+                                // disabled={isSubmitting}
                             >
                                 Next
                             </button>
