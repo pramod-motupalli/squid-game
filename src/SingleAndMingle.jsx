@@ -324,10 +324,9 @@ useEffect(() => {
       );
     }
   };
-const t=0;
+
   useEffect(() => {
-    t+=1;
-    if (timeLeft === 0 && t==1) {
+    if (timeLeft === 0) {
       handleFinalSubmit();
     }
   }, [timeLeft, handleFinalSubmit]);
