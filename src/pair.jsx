@@ -4,7 +4,7 @@ const PairingButton = () => {
   const handlePairing = async () => {
     try {
       const response = await fetch("https://squidgamebackend.onrender.com/pair-users", {
-        method: "POST", // Adjust the method if needed
+        method: "GET", // Adjust the method if needed
         headers: { "Content-Type": "application/json" }
       });
       const data = await response.json();
