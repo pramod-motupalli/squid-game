@@ -26,7 +26,7 @@ const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/10 12:00:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/10 12:20:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -84,11 +84,11 @@ const RedLightGreenLight = () => {
         "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=31847726;\nif (isPrime(num)){\nprinf('%d is a prime number.', number);\nelse{\nprntf('%d is not a prime number.', num);\n return 0;\n}",
       expected: "31847726 is not a prime number.",
     },
-    {
-      prompt:
-        "// Fix the bug in this code\n#incude <stdoi.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhle (n > 0)\n{\nsum += n % (100/10); \nn =n/10; \n}\nreturn s;\nint man() {\nint num = 30213468; \n print('Sum of digits of %D is %D', num, sumOfDigits(num));\n return 0,\n}",
-      expected: "Sum of digits of 30213468 is 27",
-    },
+    // {
+    //   prompt:
+    //     "// Fix the bug in this code\n#incude <stdoi.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhle (n > 0)\n{\nsum += n % (100/10); \nn =n/10; \n}\nreturn s;\nint man() {\nint num = 30213468; \n print('Sum of digits of %D is %D', num, sumOfDigits(num));\n return 0,\n}",
+    //   expected: "Sum of digits of 30213468 is 27",
+    // },
   ];
 
   // Update expected output when current question changes
