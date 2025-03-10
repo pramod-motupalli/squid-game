@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
-import { useNavigate } from "react-router-dom";
 import { EditorView } from "@codemirror/view";
 import { motion, useAnimation } from "framer-motion";
 
@@ -31,7 +30,6 @@ const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
 const RedLightGreenLight = () => {
-  const navigate = useNavigate();
   const tugWarControls = useAnimation();
 
   // Custom blood alert state
@@ -187,7 +185,7 @@ const RedLightGreenLight = () => {
       );
       const data = await response.json();
       if (data) {
-        navigate("/Level2instructions");
+        window.open("/Level2instructions", "_self");
       } else {
         console.error("Error updating level:", data.message);
       }
@@ -222,15 +220,7 @@ const RedLightGreenLight = () => {
       }
     }, 1000);
     return () => clearInterval(timerInterval);
-  }, [
-    targetTime,
-    completedQuestions,
-    questions.length,
-    won,
-    navigate,
-    handleGameOver,
-    showBloodAlert,
-  ]);
+  }, [targetTime, completedQuestions, questions.length, won, showBloodAlert]);
 
   // Manage red/green light transitions and audio playback using the audioRef.
   useEffect(() => {
@@ -292,7 +282,8 @@ const RedLightGreenLight = () => {
       setOutput("");
     }
   };
-useEffect(() => {
+
+  useEffect(() => {
     const fetchPlayerId = async () => {
       const username = localStorage.getItem("username");
       if (!username) {
@@ -300,7 +291,6 @@ useEffect(() => {
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(
           "https://squidgamebackend.onrender.com/api/player",
@@ -312,12 +302,10 @@ useEffect(() => {
             body: JSON.stringify({ username }),
           }
         );
-
         if (!response.ok) {
           const text = await response.text();
           throw new Error("Network response was not ok: " + text);
         }
-
         const contentType = response.headers.get("content-type");
         let data;
         if (contentType && contentType.includes("application/json")) {
@@ -345,9 +333,9 @@ useEffect(() => {
         setLoading(false);
       }
     };
-
     fetchPlayerId();
   }, []);
+
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
@@ -447,7 +435,7 @@ useEffect(() => {
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
         <h1 className="text-3xl font-bold mb-4">Game Over</h1>
         <button
-          onClick={() => navigate("/Thankyou")}
+          onClick={() => window.open("/Thankyou", "_self")}
           className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 text-white"
         >
           Thank You!!!
