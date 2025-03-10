@@ -285,41 +285,44 @@ const RedLightGreenLight = () => {
 
   useEffect(() => {
     const fetchPlayerId = async () => {
+      // Optionally, indicate that loading has started.
+      setLoading(true);
+  
       const username = localStorage.getItem("username");
       if (!username) {
         setError("Username not found in localStorage");
-        setLoading(false);
+        // setLoading(false);
         return;
       }
+  
       try {
-        const response = await fetch(
-          "https://squidgamebackend.onrender.com/api/player",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username }),
-          }
-        );
+        const response = await fetch("https://squidgamebackend.onrender.com/api/player", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username }),
+        });
+  
         if (!response.ok) {
-          const text = await response.text();
-          throw new Error("Network response was not ok: " + text);
+          const errorText = await response.text();
+          throw new Error(`Network response was not ok: ${errorText}`);
         }
-        const contentType = response.headers.get("content-type");
+  
+        // Default contentType to an empty string if not provided.
+        const contentType = response.headers.get("content-type") || "";
         let data;
-        if (contentType && contentType.includes("application/json")) {
+        if (contentType.includes("application/json")) {
           data = await response.json();
         } else {
           const rawText = await response.text();
           try {
             data = JSON.parse(rawText);
           } catch (parseError) {
-            throw new Error(
-              "Failed to parse JSON from response: " + parseError.message
-            );
+            throw new Error("Failed to parse JSON from response: " + parseError.message);
           }
         }
+  
         if (data && data.playerId) {
           setPlayerId(data.playerId);
           localStorage.setItem("playerid", data.playerId);
@@ -333,9 +336,10 @@ const RedLightGreenLight = () => {
         setLoading(false);
       }
     };
+  
     fetchPlayerId();
   }, []);
-
+  
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);

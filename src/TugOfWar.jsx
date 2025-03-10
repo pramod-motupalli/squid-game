@@ -132,7 +132,7 @@ const TugOfWar = () => {
         // },
         {
             question:
-                "Find the next term in the sequence: 7G, 11K, 13Q, 17U, ___, given that the numeric parts are consecutive prime numbers and the letters are obtained by alternately adding 4 and 6 to the previous term’s letter position (with A=1, Z=26).",
+                "Find the next term in the sequence: 7G, 11K, 13Q, 17U, ___,  (with A=1, Z=26).",
             options: ["19A", "19B", "19C", "19D"],
             answer: "19A",
             marks: 10,
