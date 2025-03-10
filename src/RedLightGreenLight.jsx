@@ -26,7 +26,7 @@ const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/13 10:00:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/10 12:00:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -67,6 +67,8 @@ const RedLightGreenLight = () => {
   const [compiling, setCompiling] = useState(false);
   const username = localStorage.getItem("username");
   const [userCode, setUserCode] = useState({});
+  // New state to track if the code has been run.
+  const [hasRun, setHasRun] = useState(false);
 
   // Create a ref for the audio element.
   const audioRef = useRef(null);
@@ -92,6 +94,8 @@ const RedLightGreenLight = () => {
   // Update expected output when current question changes
   useEffect(() => {
     setExpectedOutput(questions[currentQuestion].expected);
+    // Reset run status on question change.
+    setHasRun(false);
   }, [currentQuestion]);
 
   // Fetch saved code from the database on mount
@@ -274,6 +278,8 @@ const RedLightGreenLight = () => {
         return newWon;
       });
     }
+    // Reset hasRun status on code change
+    setHasRun(false);
     setUserCode((prev) => ({ ...prev, [currentQuestion]: value }));
   };
 
@@ -305,6 +311,8 @@ const RedLightGreenLight = () => {
       });
       const result = await response.json();
       setOutput(result.output || "Error in execution");
+      // Mark that the code has been run.
+      setHasRun(true);
     } catch (error) {
       console.error("Error compiling:", error);
       setOutput("Compilation Error");
@@ -498,6 +506,7 @@ const RedLightGreenLight = () => {
             <button
               onClick={handleSubmit}
               className="px-4 py-2 bg-yellow-500 hover:bg-amber-600 text-white rounded"
+              disabled={!hasRun}
             >
               Submit
             </button>
@@ -511,13 +520,6 @@ const RedLightGreenLight = () => {
         Current Won:{" "}
         <span className="font-bold text-yellow-400">{won} Won</span>
       </p>
-      <button
-        onClick={markLevel1Complete}
-        className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
-      >
-        Next Level
-      </button>
-
       {/* Custom Blood Alert Modal */}
       {bloodAlert && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">

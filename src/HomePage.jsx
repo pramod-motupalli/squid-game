@@ -21,12 +21,12 @@ const HomePage = () => {
   };
 
   // Static player data for slides
-  const playerNames = [
-    "Pramod Motupalli",
-    "Snehitha Mankena",
-    "Bhavani Maradapu"
-  ];
-  const playerIds = ["Player531", "Player526", "Player572"];
+  // const playerNames = [
+  //   "Pramod Motupalli",
+  //   "Snehitha Mankena",
+  //   "Bhavani Maradapu"
+  // ];
+  // const playerIds = ["Player531", "Player526", "Player572"];
 
   // Fetch the player ID from the API endpoint
   useEffect(() => {

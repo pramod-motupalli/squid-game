@@ -3,11 +3,28 @@ import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { useNavigate } from "react-router-dom";
+import { EditorView } from "@codemirror/view";
+
+// Disable cut, copy and paste in the editor.
+const disableCopyPaste = EditorView.domEventHandlers({
+  copy: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  cut: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+  paste: (event, view) => {
+    event.preventDefault();
+    return true;
+  },
+});
 
 const squidGameMusic = "/images/SingleAndMingle.mp3";
-const BACKEND_COMPILE_URL = "https://squidgamebackend.onrender.com/compile"; // For compiling code
-const BACKEND_SAVE_CODE_URL = "https://squidgamebackend.onrender.com/savecode"; // For saving code to database
-const BACKEND_FETCH_CODE_URL = "https://squidgamebackend.onrender.com/fetch-code"; // For fetching saved code
+const BACKEND_COMPILE_URL = "https://squidgamebackend.onrender.com/compile";
+const BACKEND_SAVE_CODE_URL = "https://squidgamebackend.onrender.com/savecode";
+const BACKEND_FETCH_CODE_URL = "https://squidgamebackend.onrender.com/fetch-code";
 
 const SingleAndMingle = () => {
   const navigate = useNavigate();
@@ -18,22 +35,17 @@ const SingleAndMingle = () => {
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [bloodAlert, setBloodAlert] = useState(null);
+  // New state to track if the code has been run.
+  const [hasRun, setHasRun] = useState(false);
   const username = localStorage.getItem("username");
 
-  // Custom blood-themed alert state
-  const [bloodAlert, setBloodAlert] = useState(null);
-  // Helper to show our custom alert modal; variant can be 'final' for final submission alerts.
-  const showBloodAlert = (
-    title,
-    message,
-    buttonText,
-    onClose,
-    variant = ""
-  ) => {
+  // Helper to show our custom alert modal.
+  const showBloodAlert = (title, message, buttonText, onClose, variant = "") => {
     setBloodAlert({ title, message, buttonText, onClose, variant });
   };
 
-  // Play background music on load
+  // Play background music on load.
   useEffect(() => {
     const audio = new Audio(squidGameMusic);
     audio.loop = true;
@@ -42,10 +54,9 @@ const SingleAndMingle = () => {
       .catch((error) => console.error("Audio playback failed:", error));
   }, []);
 
-  // Timer: Synchronize against a fixed deadline
+  // Timer: Synchronize against a fixed deadline.
   useEffect(() => {
-    const targetTime = new Date("2025-03-13 10:55:00"); // Maintain ending timeline
-
+    const targetTime = new Date("2025-03-10 12:50:00");
     const computeTimeLeft = () => {
       const now = new Date();
       const diff = Math.floor((targetTime - now) / 1000);
@@ -53,15 +64,13 @@ const SingleAndMingle = () => {
     };
 
     setTimeLeft(computeTimeLeft());
-
     const interval = setInterval(() => {
       setTimeLeft(computeTimeLeft());
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
-  // Load questions from localStorage or select them once and store them
+  // Load questions from localStorage or select them once and store them.
   useEffect(() => {
     const storedQuestions = localStorage.getItem("singleAndMingleQuestions");
     if (storedQuestions) {
@@ -86,7 +95,7 @@ const SingleAndMingle = () => {
         {
           prompt:
             "Complete the searching algorithm's code.\n Initialize low = 0 and high = n-1.\nRepeat while low <= high:\nFind the middle element: mid = (low + high) / 2.\nIf arr[mid] == target, return mid (element found).\nIf arr[mid] > target, search in the left half (high = mid - 1).\nIf arr[mid] < target, search in the right half (low = mid + 1).\nIf not found, return -1.\nint arr[] = {34, 12, 9, 56, 23, 78, 5, 45};\nint target = 23;",
-          expected: "Swapped successfully\n",
+          expected: "3",
         },
       ];
       const selectedQuestions = allQuestions
@@ -100,7 +109,7 @@ const SingleAndMingle = () => {
     }
   }, []);
 
-  // Fetch saved code from the database on mount
+  // Fetch saved code from the database on mount.
   useEffect(() => {
     async function fetchSavedCode() {
       try {
@@ -126,14 +135,16 @@ const SingleAndMingle = () => {
     fetchSavedCode();
   }, []);
 
-  // Clear output when switching questions
+  // Clear output when switching questions.
   useEffect(() => {
     if (questions.length > 0) {
       setOutput("");
     }
   }, [currentQuestion, questions]);
 
+  // Update code and reset the run status.
   const handleCodeChange = (value) => {
+    setHasRun(false);
     setUserCode((prevCode) => ({
       ...prevCode,
       [currentQuestion]: value,
@@ -164,6 +175,8 @@ const SingleAndMingle = () => {
       });
       const result = await response.json();
       setOutput(result.output || "Error in execution");
+      // Mark that the code has been run.
+      setHasRun(true);
     } catch (error) {
       console.error("Error compiling:", error);
       setOutput("Compilation Error");
@@ -210,21 +223,16 @@ const SingleAndMingle = () => {
         }
       }
     } else {
-      showBloodAlert(
-        "Crimson Defeat!",
-        "Incorrect output. Try again!",
-        "Retry"
-      );
+      showBloodAlert("Crimson Defeat!", "Incorrect output. Try again!", "Retry");
     }
   };
 
-  // Final submission handler: confirm, update backend, and customize final alert.
+  // Final submission handler.
   const handleFinalSubmit = async () => {
     const confirmSubmit = window.confirm("Are you sure you want to submit?");
     if (!confirmSubmit) return;
 
     const marksGained = completedQuestions.length * 50;
-
     try {
       const response = await fetch("https://squidgamebackend.onrender.com/finalsubmit", {
         method: "POST",
@@ -242,7 +250,7 @@ const SingleAndMingle = () => {
           "Your final submission is successful. Prepare to meet your fate...",
           "Proceed",
           () => navigate("/Thankyou"),
-          "final" // Pass variant as 'final'
+          "final"
         );
       } else {
         console.error("Final submission failed.");
@@ -262,7 +270,7 @@ const SingleAndMingle = () => {
     }
   };
 
-  // Format timeLeft as mm:ss
+  // Format timeLeft as mm:ss.
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const formattedTime = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -271,11 +279,11 @@ const SingleAndMingle = () => {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white w-full relative">
-      {/* Player ID at the top left corner */}
+      {/* Player ID */}
       <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
         Player ID: {localStorage.getItem("playerid")}
       </div>
-      {/* Timer at the top right corner with hourglass symbol */}
+      {/* Timer */}
       <div className="absolute top-4 right-4 px-8 py-4 rounded-md text-red-400 font-bold text-xl">
         ⏳ Time Left: {formattedTime}
       </div>
@@ -312,7 +320,7 @@ const SingleAndMingle = () => {
             value={userCode[currentQuestion] || ""}
             height="400px"
             width="100%"
-            extensions={[cpp()]}
+            extensions={[cpp(), disableCopyPaste]}
             theme={dracula}
             onChange={handleCodeChange}
           />
@@ -326,6 +334,7 @@ const SingleAndMingle = () => {
             <button
               onClick={handleSubmit}
               className="px-4 py-2 bg-yellow-500 hover:bg-amber-600 text-white rounded"
+              disabled={!hasRun}
             >
               Submit
             </button>

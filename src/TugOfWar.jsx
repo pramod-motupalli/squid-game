@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/13 10:15:00");
+                const simulatedStartTime = new Date("2025/03/10 12:15:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -628,7 +628,7 @@ const TugOfWar = () => {
                             </button>
                         )}
                     </div>
-                    <button
+                    {/* <button
                         onClick={() => window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self")}
                         className="mt-6 px-6 py-3 text-lg font-bold rounded bg-teal-500 hover:bg-teal-700 text-white"
                         disabled={isSubmitting}
@@ -639,7 +639,7 @@ const TugOfWar = () => {
                         <p className="text-red-500 mt-4 text-center">
                             {errorMessage}
                         </p>
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>
