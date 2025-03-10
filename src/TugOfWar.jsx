@@ -285,7 +285,6 @@ const TugOfWar = () => {
 
     // Final submission: compute score, evaluate rope position, and decide navigation.
     const handleFinalSubmit = useCallback(async () => {
-        window.alert("Submission successful!");
         localStorage.setItem(
             `answer-${currentQuestion}`,
             JSON.stringify(selectedAnswer)
@@ -614,7 +613,10 @@ const TugOfWar = () => {
                         {currentQuestion === totalQuestions -1 ? (
                             <button
                                 className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
-                                onClick={handleFinalSubmit}
+                                onClick={() => {
+                                    window.alert("Submission successful!");
+                                    handleFinalSubmit();
+                                  }}
                                 
                                 disabled={gameOver || isSubmitting}
                             >
