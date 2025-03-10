@@ -594,15 +594,15 @@ const TugOfWar = () => {
         scores1();
     }, [navigate]);
     const handleSubmit = useCallback(async () => {
+        // Save the selected answer for the current question.
         localStorage.setItem(
             `answer-${currentQuestion}`,
             JSON.stringify(selectedAnswer)
         );
         setIsSubmitting(true);
         setErrorMessage("");
-
+    
         let calculatedScore = 0;
-        let calculatedRopePosition = 0;
         questions.forEach((q, index) => {
             const storedAnswer = localStorage.getItem(`answer-${index}`);
             if (storedAnswer) {
@@ -615,13 +615,15 @@ const TugOfWar = () => {
         console.log("Calculated Score:", calculatedScore);
         setScore(calculatedScore);
         localStorage.setItem("score", calculatedScore);
-
-        // Animate rope to its final position.
-        tugWarControls.start({
+    
+        // Animate rope to its final position and wait for the animation to complete.
+        await tugWarControls.start({
             transition: { type: "spring", stiffness: 100 },
         });
-
+    
+        // Optionally, capture the submit time if needed later.
         const submitTime = new Date().toISOString();
+        
         try {
             const response = await fetch(
                 "https://squidgamebackend.onrender.com/buttonsubmitTugOfWar",
@@ -635,21 +637,15 @@ const TugOfWar = () => {
                     headers: { "Content-Type": "application/json" },
                 }
             );
-        } catch (error) {
-            if (error.response) {
-                console.error("Server error:", error.response.data);
-                setErrorMessage(
-                    error.response.data.message || "Server error occurred."
-                );
-            } else if (error.request) {
-                console.error("No response:", error.request);
-                setErrorMessage(
-                    "No response from server. Please try again later."
-                );
-            } else {
-                console.error("Request error:", error.message);
-                setErrorMessage("Error in request. Please try again.");
+    
+            // Check if the response is not OK.
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Server error occurred.");
             }
+        } catch (error) {
+            console.error("Error submitting:", error.message);
+            setErrorMessage(error.message || "An error occurred. Please try again later.");
         } finally {
             setIsSubmitting(false);
             setGameOver(true);
@@ -660,10 +656,8 @@ const TugOfWar = () => {
         questions,
         timeLeft,
         tugWarControls,
-        navigate,
-        playerid,
-        level2pair,
     ]);
+    
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = String(timeLeft % 60).padStart(2, "0");
