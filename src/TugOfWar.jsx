@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 const TugOfWar = () => {
     const navigate = useNavigate();
-
+    const disableCopy = (e) => {
+        e.preventDefault();
+    };
     // Duration of the challenge in seconds (15 minutes)
     const challengeDuration = 900;
 
@@ -663,7 +665,7 @@ const TugOfWar = () => {
     const seconds = String(timeLeft % 60).padStart(2, "0");
 
     return (
-        <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white">
+        <div className="flex flex-col items-center p-6 min-h-screen bg-black text-white"onCopy={disableCopy}>
             <div className="absolute top-4 left-4 px-8 py-4 rounded-md text-yellow-400 font-bold text-xl">
                 Player ID: {localStorage.getItem("playerid") || "Guest"}
             </div>
@@ -707,8 +709,8 @@ const TugOfWar = () => {
                 />
             </motion.div>
 
-            <div className="my-6 w-1/2 flex justify-center">
-                <div className="bg-gray-800 p-4 rounded-lg text-center w-full">
+            <div className="my-6 w-1/2 flex justify-center"onCopy={disableCopy}>
+                <div className="bg-gray-800 p-4 rounded-lg text-center w-full"onCopy={disableCopy}>
                     <p className="mt-2 text-xl">
                         {questions[currentQuestion]?.question}
                     </p>
