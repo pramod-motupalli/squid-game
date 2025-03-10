@@ -84,11 +84,7 @@ const RedLightGreenLight = () => {
         "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=31847726;\nif (isPrime(num)){\nprinf('%d is a prime number.', number);\nelse{\nprntf('%d is not a prime number.', num);\n return 0;\n}",
       expected: "31847726 is not a prime number.",
     },
-    // {
-    //   prompt:
-    //     "// Fix the bug in this code\n#incude <stdoi.h>\nint sumOfDigits(int n) {\nint sum = 0;\nwhle (n > 0)\n{\nsum += n % (100/10); \nn =n/10; \n}\nreturn s;\nint man() {\nint num = 30213468; \n print('Sum of digits of %D is %D', num, sumOfDigits(num));\n return 0,\n}",
-    //   expected: "Sum of digits of 30213468 is 27",
-    // },
+    // Additional questions can be added here.
   ];
 
   // Update expected output when current question changes
@@ -173,28 +169,34 @@ const RedLightGreenLight = () => {
       .catch((err) => console.error("Error updating game state:", err));
   }, [currentQuestion, completedQuestions]);
 
-  // Real-time timer sync using admin-provided targetTime.
-  const handleGameOver = useCallback(async () => {
+  // Function to mark level 1 complete and navigate to Level2instructions.
+  const markLevel1Complete = async () => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      console.error("No username found in localStorage");
+      return;
+    }
     try {
-      const username = localStorage.getItem("username");
       const response = await fetch(
-        "https://squidgamebackend.onrender.com/eliminateUser",
+        "https://squidgamebackend.onrender.com/updatelevel",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, eliminated: true }),
+          body: JSON.stringify({ username, level1: true }),
         }
       );
-      if (response.ok) {
-        navigate("/Thankyou");
+      const data = await response.json();
+      if (data) {
+        navigate("/Level2instructions");
       } else {
-        console.error("Failed to mark user as eliminated.");
+        console.error("Error updating level:", data.message);
       }
     } catch (error) {
-      console.error("Error updating elimination status:", error);
+      console.error("Request failed:", error);
     }
-  }, [navigate]);
+  };
 
+  // Real-time timer sync using admin-provided targetTime.
   useEffect(() => {
     const timerInterval = setInterval(() => {
       const newTimeLeft = Math.max(
@@ -204,11 +206,12 @@ const RedLightGreenLight = () => {
       setTimeLeft(newTimeLeft);
       if (newTimeLeft === 0) {
         clearInterval(timerInterval);
+        // If all questions are completed and player has sufficient won, mark level complete.
         if (completedQuestions.length === questions.length && won >= 70) {
-          navigate("/Level2instructions");
+          markLevel1Complete();
         } else {
           setGameOver(true);
-          // When alert is acknowledged, handleGameOver is called
+          // When alert is acknowledged, handleGameOver is called.
           showBloodAlert(
             "Game over!!!",
             handleGameOver,
@@ -381,32 +384,6 @@ const RedLightGreenLight = () => {
       setWon(newWon);
       updateWonInDB(newWon);
       showBloodAlert("Incorrect output. You lost 10 Won!", () => {});
-    }
-  };
-
-  const markLevel1Complete = async () => {
-    const username = localStorage.getItem("username");
-    if (!username) {
-      console.error("No username found in localStorage");
-      return;
-    }
-    try {
-      const response = await fetch(
-        "https://squidgamebackend.onrender.com/updatelevel",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, level1: true }),
-        }
-      );
-      const data = await response.json();
-      if (data) {
-        navigate("/Level2instructions");
-      } else {
-        console.error("Error updating level:", data.message);
-      }
-    } catch (error) {
-      console.error("Request failed:", error);
     }
   };
 
