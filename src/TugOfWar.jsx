@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/10 15:47:00");
+                const simulatedStartTime = new Date("2025/03/10 15:59:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
