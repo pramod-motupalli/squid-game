@@ -324,15 +324,14 @@ useEffect(() => {
       );
     }
   };
-
-  const hasSubmitted = useRef(false);
-
+const t=0;
   useEffect(() => {
-    if (timeLeft === 0 && !hasSubmitted.current) {
+    t+=1;
+    if (timeLeft === 0 && t==1) {
       handleFinalSubmit();
-      hasSubmitted.current = true;
     }
   }, [timeLeft, handleFinalSubmit]);
+
   // Format timeLeft as mm:ss.
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
