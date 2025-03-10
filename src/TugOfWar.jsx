@@ -335,7 +335,7 @@ const TugOfWar = () => {
                     console.error("Player ID not found.");
                     return;
                 }
-                console.log(playerid)
+                console.log(playerid);
                 // const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
                 //   method: "POST",
                 //   headers: { "Content-Type": "application/json" },
@@ -359,9 +359,15 @@ const TugOfWar = () => {
                     // console.log(timeLeft)
                     console.log(localStorage.getItem("score"));
                     if (localStorage.getItem("score") > 0) {
-                        window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/Level3instructions",
+                            "_self"
+                        );
                     } else {
-                        window.open("https://squidgame2k25.vercel.app/TugOfWarDisqualified", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/TugOfWarDisqualified",
+                            "_self"
+                        );
                     }
                     return;
                 }
@@ -392,7 +398,10 @@ const TugOfWar = () => {
                         playerData.user.level2Score >
                         opponentData.user.level2Score
                     ) {
-                        window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/Level3instructions",
+                            "_self"
+                        );
                     } else if (
                         playerData.user.level2Score <
                         opponentData.user.level2Score
@@ -403,7 +412,10 @@ const TugOfWar = () => {
                             playerData.user.level2Time >
                             opponentData.user.level2Time
                         ) {
-                            window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                            window.open(
+                                "https://squidgame2k25.vercel.app/Level3instructions",
+                                "_self"
+                            );
                         } else {
                             console.log("hi");
                         }
@@ -612,12 +624,18 @@ const TugOfWar = () => {
                         </button>
                         {currentQuestion === totalQuestions - 1 ? (
                             <button
-                                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
-                                onClick={handleFinalSubmit}
-                                
-                                disabled={gameOver || isSubmitting}
+                                onClick={() => {
+                                    window.alert("Submission successful!");
+                                    handleFinalSubmit();
+                                }}
+                                style={{
+                                    backgroundColor: isSubmitted
+                                        ? "grey"
+                                        : "red",
+                                }}
+                                disabled={isSubmitting || isSubmitted}
                             >
-                                {isSubmitting ? "Submitting..." : "submit"}
+                                {isSubmitted ? "Submitted" : "Submit"}
                             </button>
                         ) : (
                             <button
