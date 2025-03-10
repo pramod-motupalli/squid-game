@@ -485,7 +485,7 @@ const RedLightGreenLight = () => {
             </div>
           )}
           <pre
-            className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none shadow-[0_0_31px_rgba(255,0,0,0.9)]"
+            className="bg-gray-800 p-4 rounded-md w-full overflow-auto mb-4 text-sm md:text-base select-none shadow-[0_0_31px_rgba(255,255,0,0.9)]"
             onContextMenu={(e) => e.preventDefault()}
             onCopy={(e) => e.preventDefault()}
             style={{ userSelect: "none", cursor: "default" }}
@@ -510,7 +510,7 @@ const RedLightGreenLight = () => {
           </div>
         </div>
         <div className="w-full lg:w-1/2">
-          <div className="shadow-[0_0_31px_rgba(255,0,0,0.9)] rounded-md">
+          <div className="shadow-[0_0_31px_rgba(255,255,0,0.6)] rounded-md">
             <CodeMirror
               value={userCode[currentQuestion] || ""}
               height="400px"
@@ -547,13 +547,13 @@ const RedLightGreenLight = () => {
       {/* Custom Blood Alert Modal */}
       {bloodAlert && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-          <div className="bg-red-800 border-4 border-red-500 p-8 rounded-lg shadow-xl text-center animate-pulse">
+          <div className="bg-green-700 border-4 border-green-500 p-8 rounded-lg shadow-xl text-center animate-pulse">
             <h2 className="text-3xl font-bold text-white mb-4">
               {bloodAlert.title}
             </h2>
             <p className="text-xl text-white">{bloodAlert.message}</p>
             <button
-              className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded"
+              className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
               onClick={() => {
                 setBloodAlert(null);
                 bloodAlert.onClose && bloodAlert.onClose();

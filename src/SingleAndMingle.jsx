@@ -410,7 +410,7 @@ useEffect(() => {
       {bloodAlert && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
           <div
-            className={`bg-red-900 border-4 border-red-700 p-8 rounded-lg text-center animate-pulse ${
+            className={`bg-green-900 border-4 border-breen-700 p-8 rounded-lg text-center animate-pulse ${
               bloodAlert.variant === "final" ? "shadow-2xl" : ""
             }`}
           >
@@ -423,7 +423,7 @@ useEffect(() => {
                 setBloodAlert(null);
                 if (bloodAlert.onClose) bloodAlert.onClose();
               }}
-              className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded"
+              className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
             >
               {bloodAlert.buttonText}
             </button>
