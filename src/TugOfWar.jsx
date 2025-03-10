@@ -291,6 +291,7 @@ const TugOfWar = () => {
                 console.log("Server response:", data);
                 setPairId(data.level2pair);
                 setPlayerId(data.playerid);
+                localStorage.setItem("playerid",playerid);
             } catch (error) {
                 console.error("Failed to fetch pair and player IDs:", error);
             }
