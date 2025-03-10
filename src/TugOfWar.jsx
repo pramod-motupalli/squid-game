@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/10 16:40:00");
+                const simulatedStartTime = new Date("2025/03/10 16:00:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -21,7 +21,63 @@ const TugOfWar = () => {
         }
         fetchChallengeStartTime();
     }, []);
+    useEffect(() => {
+        const fetchPlayerId = async () => {
+            const username = localStorage.getItem("username");
+            if (!username) {
+                setError("Username not found in localStorage");
+                // setLoading(false);
+                return;
+            }
 
+            try {
+                const response = await fetch(
+                    "https://squidgamebackend.onrender.com/api/player",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ username }),
+                    }
+                );
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error("Network response was not ok: " + text);
+                }
+
+                const contentType = response.headers.get("content-type");
+                let data;
+                if (contentType && contentType.includes("application/json")) {
+                    data = await response.json();
+                } else {
+                    const rawText = await response.text();
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (parseError) {
+                        throw new Error(
+                            "Failed to parse JSON from response: " +
+                                parseError.message
+                        );
+                    }
+                }
+                if (data && data.playerId) {
+                    setPlayerId(data.playerId);
+                    localStorage.setItem("playerid", data.playerId);
+                } else {
+                    throw new Error("Invalid data format received");
+                }
+            } catch (err) {
+                console.error("Error fetching player ID:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPlayerId();
+    }, []);
     // Calculate the target time (challenge end time) when challengeStartTime is available.
     const targetTime = challengeStartTime
         ? challengeStartTime.getTime() + challengeDuration * 1000
@@ -321,7 +377,6 @@ const TugOfWar = () => {
                     body: JSON.stringify({
                         playerid: localStorage.getItem("playerid"),
                         score: calculatedScore,
-                        timeLeft,
                     }),
                     headers: { "Content-Type": "application/json" },
                 }
@@ -335,7 +390,7 @@ const TugOfWar = () => {
                     console.error("Player ID not found.");
                     return;
                 }
-                console.log(playerid)
+                console.log(playerid);
                 // const response1 = await fetch("https://squidgamebackend.onrender.com/score1", {
                 //   method: "POST",
                 //   headers: { "Content-Type": "application/json" },
@@ -359,9 +414,15 @@ const TugOfWar = () => {
                     // console.log(timeLeft)
                     console.log(localStorage.getItem("score"));
                     if (localStorage.getItem("score") > 0) {
-                        window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/Level3instructions",
+                            "_self"
+                        );
                     } else {
-                        window.open("https://squidgame2k25.vercel.app/TugOfWarDisqualified", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/TugOfWarDisqualified",
+                            "_self"
+                        );
                     }
                     return;
                 }
@@ -392,7 +453,10 @@ const TugOfWar = () => {
                         playerData.user.level2Score >
                         opponentData.user.level2Score
                     ) {
-                        window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                        window.open(
+                            "https://squidgame2k25.vercel.app/Level3instructions",
+                            "_self"
+                        );
                     } else if (
                         playerData.user.level2Score <
                         opponentData.user.level2Score
@@ -403,7 +467,10 @@ const TugOfWar = () => {
                             playerData.user.level2Time >
                             opponentData.user.level2Time
                         ) {
-                            window.open("https://squidgame2k25.vercel.app/Level3instructions", "_self");
+                            window.open(
+                                "https://squidgame2k25.vercel.app/Level3instructions",
+                                "_self"
+                            );
                         } else {
                             console.log("hi");
                         }
@@ -526,6 +593,71 @@ const TugOfWar = () => {
 
         scores1();
     }, [navigate]);
+    const handleSubmit = useCallback(async () => {
+        // Save the selected answer for the current question.
+        localStorage.setItem(
+            `answer-${currentQuestion}`,
+            JSON.stringify(selectedAnswer)
+        );
+        setIsSubmitting(true);
+        setErrorMessage("");
+    
+        let calculatedScore = 0;
+        questions.forEach((q, index) => {
+            const storedAnswer = localStorage.getItem(`answer-${index}`);
+            if (storedAnswer) {
+                const answer = JSON.parse(storedAnswer);
+                if (answer === q.answer) {
+                    calculatedScore += q.marks;
+                }
+            }
+        });
+        console.log("Calculated Score:", calculatedScore);
+        setScore(calculatedScore);
+        localStorage.setItem("score", calculatedScore);
+    
+        // Animate rope to its final position and wait for the animation to complete.
+        await tugWarControls.start({
+            transition: { type: "spring", stiffness: 100 },
+        });
+    
+        // Optionally, capture the submit time if needed later.
+        const submitTime = new Date().toISOString();
+        
+        try {
+            const response = await fetch(
+                "https://squidgamebackend.onrender.com/buttonsubmitTugOfWar",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        playerid: localStorage.getItem("playerid"),
+                        score: calculatedScore,
+                        timeLeft,
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+    
+            // Check if the response is not OK.
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Server error occurred.");
+            }
+        } catch (error) {
+            console.error("Error submitting:", error.message);
+            setErrorMessage(error.message || "An error occurred. Please try again later.");
+        } finally {
+            setIsSubmitting(false);
+            setGameOver(true);
+        }
+    }, [
+        currentQuestion,
+        selectedAnswer,
+        questions,
+        timeLeft,
+        tugWarControls,
+    ]);
+    
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -610,14 +742,13 @@ const TugOfWar = () => {
                         >
                             Previous
                         </button>
-                        {currentQuestion === totalQuestions -1 ? (
+                        {currentQuestion === totalQuestions - 1 ? (
                             <button
                                 className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
                                 onClick={() => {
                                     window.alert("Submission successful!");
-                                    handleFinalSubmit();
-                                  }}
-                                
+                                    handleSubmit();
+                                }}
                                 disabled={gameOver || isSubmitting}
                             >
                                 {isSubmitting ? "Submitting..." : "submit"}
