@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
@@ -21,7 +21,8 @@ const disableCopyPaste = EditorView.domEventHandlers({
   },
 });
 
-const squidGameMusic = "/public/images/squidgamemusic.mp3";
+// Update the path: files in the public folder can be referenced directly from root.
+const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
@@ -64,9 +65,11 @@ const RedLightGreenLight = () => {
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [compiling, setCompiling] = useState(false);
-  const [audio] = useState(() => new Audio(squidGameMusic));
   const username = localStorage.getItem("username");
   const [userCode, setUserCode] = useState({});
+
+  // Create a ref for the audio element.
+  const audioRef = useRef(null);
 
   const questions = [
     {
@@ -222,23 +225,31 @@ const RedLightGreenLight = () => {
     showBloodAlert,
   ]);
 
-  // Manage red/green light transitions and audio playback.
+  // Manage red/green light transitions and audio playback using the audioRef.
   useEffect(() => {
     const interval = setInterval(() => {
       setIsGreenLight(false);
-      audio.play().catch((error) => console.log("Audio play blocked:", error));
-      const redLightDuration = 5; // exactly 31 seconds
+      if (audioRef.current) {
+        audioRef.current
+          .play()
+          .catch((error) => console.log("Audio play blocked:", error));
+      }
+      const redLightDuration = 5; // duration in seconds
       setTimeout(() => {
         setIsGreenLight(true);
-        audio.pause();
-        audio.currentTime = 0;
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
       }, redLightDuration * 1000);
     }, 30000);
     return () => {
       clearInterval(interval);
-      audio.pause();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     };
-  }, [audio]);
+  }, []);
 
   // Update the won value in the database.
   const updateWonInDB = (newWon) => {
@@ -414,6 +425,9 @@ const RedLightGreenLight = () => {
           : ""
       }`}
     >
+      {/* Audio tag for playing the squid game music */}
+      <audio ref={audioRef} src={squidGameMusic} preload="auto" style={{ display: "none" }} />
+
       {/* Player ID at the top left corner */}
       <div className="absolute top-4 text-2xl left-4 font-extrabold px-8 py-4 rounded-mdfont-extrabold bg-gradient-to-r from-red-400 via-green-500 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
         {localStorage.getItem("playerid") || "Guest"}
