@@ -448,8 +448,6 @@ const TugOfWar = () => {
                 console.log(opponentData);
 
                 if (
-                    (playerData.user.level2 ||
-                    opponentData.user.level2) &&
                     timeLeft === 0
                 ) {
                     if (
