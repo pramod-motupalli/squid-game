@@ -12,7 +12,7 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
-                const simulatedStartTime = new Date("2025/03/10 15:28:00");
+                const simulatedStartTime = new Date("2025/03/10 15:39:00");
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -376,7 +376,6 @@ useEffect(() => {
                     body: JSON.stringify({
                         playerid: localStorage.getItem("playerid"),
                         score: calculatedScore,
-                        timeLeft,
                     }),
                     headers: { "Content-Type": "application/json" },
                 }
@@ -497,6 +496,7 @@ useEffect(() => {
         level2pair,
     ]);
 
+
     // Sync timer with real-life time using the targetTime.
     useEffect(() => {
         if (!targetTime) return; // Wait until challengeStartTime is loaded
@@ -581,6 +581,77 @@ useEffect(() => {
 
         scores1();
     }, [navigate]);
+const handleSubmit = useCallback(async () => {
+        localStorage.setItem(
+            `answer-${currentQuestion}`,
+            JSON.stringify(selectedAnswer)
+        );
+        setIsSubmitting(true);
+        setErrorMessage("");
+
+        let calculatedScore = 0;
+        let calculatedRopePosition = 0;
+        questions.forEach((q, index) => {
+            const storedAnswer = localStorage.getItem(`answer-${index}`);
+            if (storedAnswer) {
+                const answer = JSON.parse(storedAnswer);
+                if (answer === q.answer) {
+                    calculatedScore += q.marks;
+                }
+            }
+        });
+        console.log("Calculated Score:", calculatedScore);
+        setScore(calculatedScore);
+        localStorage.setItem("score", calculatedScore);
+
+        // Animate rope to its final position.
+        tugWarControls.start({
+            transition: { type: "spring", stiffness: 100 },
+        });
+
+        const submitTime = new Date().toISOString();
+        try {
+            const response = await fetch(
+                "https://squidgamebackend.onrender.com/buttonsubmitTugOfWar",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        playerid: localStorage.getItem("playerid"),
+                        score: calculatedScore,
+                        timeLeft,
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+        } catch (error) {
+            if (error.response) {
+                console.error("Server error:", error.response.data);
+                setErrorMessage(
+                    error.response.data.message || "Server error occurred."
+                );
+            } else if (error.request) {
+                console.error("No response:", error.request);
+                setErrorMessage(
+                    "No response from server. Please try again later."
+                );
+            } else {
+                console.error("Request error:", error.message);
+                setErrorMessage("Error in request. Please try again.");
+            }
+        } finally {
+            setIsSubmitting(false);
+            setGameOver(true);
+        }
+    }, [
+        currentQuestion,
+        selectedAnswer,
+        questions,
+        timeLeft,
+        tugWarControls,
+        navigate,
+        playerid,
+        level2pair,
+    ]);
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -670,7 +741,7 @@ useEffect(() => {
                                 className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
                                 onClick={() => {
                                     window.alert("Submission successful!");
-                                    handleFinalSubmit();
+                                    handleSubmit();
                                   }}
                                 
                                 disabled={gameOver || isSubmitting}
