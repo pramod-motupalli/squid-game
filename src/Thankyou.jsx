@@ -5,6 +5,10 @@ export default function ThankYou() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    localStorage.clear();
+  }, []);
+
+  useEffect(() => {
     const eliminateUser = async () => {
       try {
         const username = localStorage.getItem("username");
