@@ -69,7 +69,62 @@ const SingleAndMingle = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+useEffect(() => {
+    const fetchPlayerId = async () => {
+      const username = localStorage.getItem("username");
+      if (!username) {
+        setError("Username not found in localStorage");
+        setLoading(false);
+        return;
+      }
 
+      try {
+        const response = await fetch(
+          "https://squidgamebackend.onrender.com/api/player",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username }),
+          }
+        );
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error("Network response was not ok: " + text);
+        }
+
+        const contentType = response.headers.get("content-type");
+        let data;
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          const rawText = await response.text();
+          try {
+            data = JSON.parse(rawText);
+          } catch (parseError) {
+            throw new Error(
+              "Failed to parse JSON from response: " + parseError.message
+            );
+          }
+        }
+        if (data && data.playerId) {
+          setPlayerId(data.playerId);
+          localStorage.setItem("playerid", data.playerId);
+        } else {
+          throw new Error("Invalid data format received");
+        }
+      } catch (err) {
+        console.error("Error fetching player ID:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlayerId();
+  }, []);
   // Load questions from localStorage or select them once and store them.
   useEffect(() => {
     const storedQuestions = localStorage.getItem("singleAndMingleQuestions");
