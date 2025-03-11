@@ -325,11 +325,6 @@ useEffect(() => {
     }
   };
 
-  useEffect(() => {
-    if (timeLeft === 0) {
-      handleFinalSubmit();
-    }
-  }, [timeLeft, handleFinalSubmit]);
 
   // Format timeLeft as mm:ss.
   const minutes = Math.floor(timeLeft / 60);
