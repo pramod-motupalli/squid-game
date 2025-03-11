@@ -53,7 +53,7 @@ const Level2Instructions = () => {
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4"
       style={{
-        backgroundImage: "url('public/images/Tugofwarbg.jpg')",
+        backgroundImage: "url('/images/Tugofwarbg.jpg')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}
