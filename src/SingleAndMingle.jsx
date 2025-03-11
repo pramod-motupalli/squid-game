@@ -56,7 +56,7 @@ const SingleAndMingle = () => {
 
   // Timer: Synchronize against a fixed deadline.
   useEffect(() => {
-    const targetTime = new Date("2025-03-10 21:02:00");
+    const targetTime = new Date("2025-03-11 14:05:00");
     const computeTimeLeft = () => {
       const now = new Date();
       const diff = Math.floor((targetTime - now) / 1000);
@@ -325,11 +325,6 @@ useEffect(() => {
     }
   };
 
-  useEffect(() => {
-    if (timeLeft === 0) {
-      handleFinalSubmit();
-    }
-  }, [timeLeft, handleFinalSubmit]);
 
   // Format timeLeft as mm:ss.
   const minutes = Math.floor(timeLeft / 60);

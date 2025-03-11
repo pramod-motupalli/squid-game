@@ -14,7 +14,11 @@ const TugOfWar = () => {
     useEffect(() => {
         function fetchChallengeStartTime() {
             try {
+<<<<<<< HEAD
                 const simulatedStartTime = new Date("2025/03/10 23:57:00");
+=======
+                const simulatedStartTime = new Date("2025/03/11 14:19:00");
+>>>>>>> e67a8d275c520fdde8efd8c45b3ed9eee74706b9
 
                 setChallengeStartTime(simulatedStartTime);
             } catch (error) {
@@ -526,7 +530,7 @@ const TugOfWar = () => {
                 Math.floor((targetTime - Date.now()) / 1000)
             );
             setTimeLeft(remaining);
-            if (remaining === 0) {
+            if (remaining <= 0) {
                 clearInterval(interval);
                 // When time runs out, auto-submit the evaluated scores
                 handleFinalSubmit();
