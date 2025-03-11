@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Level1Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
+  const [timeLeft, setTimeLeft] = useState(2*60); // Timer in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {
