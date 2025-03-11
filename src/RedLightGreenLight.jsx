@@ -25,11 +25,7 @@ const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-<<<<<<< HEAD
-const adminStartTime = new Date("2025/03/10 23:47:00"); // Replace with admin-provided timestamp
-=======
-const adminStartTime = new Date("2025/03/11 14:20:00"); // Replace with admin-provided timestamp
->>>>>>> e67a8d275c520fdde8efd8c45b3ed9eee74706b9
+const adminStartTime = new Date("2025/03/11 15:25:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
