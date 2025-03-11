@@ -526,7 +526,7 @@ const TugOfWar = () => {
                 Math.floor((targetTime - Date.now()) / 1000)
             );
             setTimeLeft(remaining);
-            if (remaining === 0) {
+            if (remaining <= 0) {
                 clearInterval(interval);
                 // When time runs out, auto-submit the evaluated scores
                 handleFinalSubmit();
