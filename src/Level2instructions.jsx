@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 const Level2Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
+  const initialTime = 3; // Timer in seconds
+  const [timeLeft, setTimeLeft] = useState(initialTime);
 
+  // Fetch Level 1 completed users
   const fetchLevel1CompletedUsers = async () => {
     try {
       const response = await fetch(
@@ -35,16 +37,27 @@ const Level2Instructions = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          fetchLevel1CompletedUsers(); // Trigger API call when timer ends
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const storedTime = localStorage.getItem("level2StartTime");
+    const startTime = storedTime ? parseInt(storedTime, 10) : Date.now();
+    
+    if (!storedTime) {
+      localStorage.setItem("level2StartTime", startTime);
+    }
+
+    const updateTimer = () => {
+      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+      const remainingTime = Math.max(initialTime - elapsedTime, 0);
+      setTimeLeft(remainingTime);
+
+      if (remainingTime === 0) {
+        clearInterval(timer);
+        localStorage.removeItem("level2StartTime");
+        fetchLevel1CompletedUsers();
+      }
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, []);
@@ -53,7 +66,7 @@ const Level2Instructions = () => {
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4"
       style={{
-        backgroundImage: "url('public/images/Tugofwarbg.jpg')",
+        backgroundImage: "url('/images/Tugofwarbg.jpg')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}

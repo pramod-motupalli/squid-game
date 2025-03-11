@@ -3,19 +3,31 @@ import { useNavigate } from "react-router-dom";
 
 const Level1Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(2*60); // Timer in seconds
+  const initialTime = 2 * 60; // Timer in seconds (2 minutes)
+  const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate("/Level1/game"); // Navigate when time is up
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const storedTime = localStorage.getItem("level1StartTime");
+    const startTime = storedTime ? parseInt(storedTime, 10) : Date.now();
+
+    if (!storedTime) {
+      localStorage.setItem("level1StartTime", startTime);
+    }
+
+    const updateTimer = () => {
+      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+      const remainingTime = Math.max(initialTime - elapsedTime, 0);
+      setTimeLeft(remainingTime);
+
+      if (remainingTime === 0) {
+        clearInterval(timer);
+        localStorage.removeItem("level1StartTime");
+        navigate("/Level1/game");
+      }
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, [navigate]);
@@ -31,7 +43,7 @@ const Level1Instructions = () => {
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4"
       style={{
-        backgroundImage: "url('public/images/Redlight.jpg')",
+        backgroundImage: "url('/images/RedLight.jpg')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}

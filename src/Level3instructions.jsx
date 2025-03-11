@@ -3,19 +3,31 @@ import { useNavigate } from "react-router-dom";
 
 const Level3Instructions = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(3); // Timer in seconds
+  const initialTime = 3; // Timer in seconds
+  const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate("/Symbols"); // Navigate to the next level and green light page when time is up
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const storedTime = localStorage.getItem("level3StartTime");
+    const startTime = storedTime ? parseInt(storedTime, 10) : Date.now();
+
+    if (!storedTime) {
+      localStorage.setItem("level3StartTime", startTime);
+    }
+
+    const updateTimer = () => {
+      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+      const remainingTime = Math.max(initialTime - elapsedTime, 0);
+      setTimeLeft(remainingTime);
+
+      if (remainingTime === 0) {
+        clearInterval(timer);
+        localStorage.removeItem("level3StartTime");
+        navigate("/Symbols");
+      }
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, [navigate]);
