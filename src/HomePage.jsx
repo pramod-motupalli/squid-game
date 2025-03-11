@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("intro");
   const [playerId, setPlayerId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -8,6 +10,10 @@ const HomePage = () => {
 
   // Slider state for three static cards
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Admin timer: fixed start time
+  const adminStartTime = new Date("2025/03/11 14:20:00").getTime();
+  const [adminTimeLeft, setAdminTimeLeft] = useState(adminStartTime - Date.now());
 
   // Slider navigation functions
   const nextSlide = () => {
@@ -84,9 +90,36 @@ const HomePage = () => {
     fetchPlayerId();
   }, []);
 
+  // Admin timer useEffect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const timeLeft = adminStartTime - now;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        navigate("/level1-instructions"); // Navigate when admin timer hits 0
+      } else {
+        setAdminTimeLeft(timeLeft);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [navigate, adminStartTime]);
+
+  // Format admin time in HH:MM:SS format
+  const formatAdminTime = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
+  };
+
   return (
     <div className="home-container flex flex-col items-center justify-center p-4 bg-black w-full min-h-screen text-white relative">
-      {/* Player ID Display - Responsive positioning */}
+      {/* Player ID Display */}
       <div
         className="
           absolute top-8 left-4 md:top-4 md:left-4 
@@ -98,6 +131,11 @@ const HomePage = () => {
           Welcome,
         </div>
         {playerId || "N/A"}
+      </div>
+
+      {/* Admin Timer Display */}
+      <div className="absolute top-8 right-4 md:top-4 md:right-4 text-white font-bold px-3 py-1 rounded-md shadow-md text-base md:text-lg">
+        Admin Timer: {formatAdminTime(adminTimeLeft)}
       </div>
 
       {/* Main Content Box (Tabs Section) */}
@@ -210,9 +248,7 @@ const HomePage = () => {
                     key={index}
                     className="rule-box bg-white/5 p-4 rounded-lg shadow-md text-center border border-white/10 w-full sm:w-[30%]"
                   >
-                    <b className="text-lg text-blue-500">
-                      {level.title}
-                    </b>
+                    <b className="text-lg text-blue-500">{level.title}</b>
                     <ul className="text-left pl-4 mt-2">
                       {level.rules.map((rule, i) => (
                         <li key={i}>{rule}</li>
@@ -296,16 +332,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Next Button: Visible Only When "Rules" Tab is Active */}
-      {activeTab === "rules" && (
-        <button
-          onClick={() => window.open("/level1-instructions", "_self")}
-          className="relative mt-4 bg-blue-700 text-white px-6 py-3 text-sm sm:text-lg rounded-md hover:bg-blue-900"
-        >
-          Next
-        </button>
-      )}
     </div>
   );
 };
