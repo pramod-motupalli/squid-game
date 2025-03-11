@@ -320,7 +320,7 @@ const RedLightGreenLight = () => {
     useEffect(() => {
         const fetchPlayerId = async () => {
             // Optionally, indicate that loading has started.
-            setLoading(true);
+            // setLoading(true);
 
             const username = localStorage.getItem("username");
             if (!username) {
@@ -375,7 +375,9 @@ const RedLightGreenLight = () => {
                 console.error("Error fetching player ID:", err);
                 setError(err.message);
             } finally {
-                setLoading(false);
+                console.error("Error fetching player ID:", err);
+                setError(err.message);
+                // setLoading(false);
             }
         };
 
