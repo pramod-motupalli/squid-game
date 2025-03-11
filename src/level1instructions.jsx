@@ -31,7 +31,7 @@ const Level1Instructions = () => {
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4"
       style={{
-        backgroundImage: "url('public/images/Redlight.jpg')",
+        backgroundImage: "url('public/images/RedLight.jpg')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}
