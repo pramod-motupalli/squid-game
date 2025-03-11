@@ -25,7 +25,7 @@ const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/11 13:20:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/11 14:20:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -36,19 +36,19 @@ const RedLightGreenLight = () => {
         return savedSubmit1 ? JSON.parse(savedSubmit1) : false;
       });
     
-      const [submit2, setSubmit2] = useState(() => {
+    const [submit2, setSubmit2] = useState(() => {
         const savedSubmit2 = localStorage.getItem('submit2');
         return savedSubmit2 ? JSON.parse(savedSubmit2) : false;
       });
     
-      // Optionally, sync state changes back to localStorage
-      useEffect(() => {
+    // Optionally, sync state changes back to localStorage
+    useEffect(() => {
         localStorage.setItem('submit1', JSON.stringify(submit1));
-      }, [submit1]);
+    }, [submit1]);
     
-      useEffect(() => {
+    useEffect(() => {
         localStorage.setItem('submit2', JSON.stringify(submit2));
-      }, [submit2]);
+    }, [submit2]);
     
     // Custom blood alert state
     const [bloodAlert, setBloodAlert] = useState(null);
@@ -76,6 +76,19 @@ const RedLightGreenLight = () => {
     );
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [completedQuestions, setCompletedQuestions] = useState([]);
+    
+    // NEW: Persist completedQuestions using localStorage to prevent re-submission after refresh
+    useEffect(() => {
+        const storedCompleted = localStorage.getItem("completedQuestions");
+        if (storedCompleted) {
+            setCompletedQuestions(JSON.parse(storedCompleted));
+        }
+    }, []);
+    
+    useEffect(() => {
+        localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
+    }, [completedQuestions]);
+
     const [isGreenLight, setIsGreenLight] = useState(true);
     const [gameOver, setGameOver] = useState(false);
     const [output, setOutput] = useState("");
@@ -223,7 +236,7 @@ const RedLightGreenLight = () => {
                 // If all questions are completed and player has sufficient won, mark level complete.
                 if (
                     completedQuestions.length === questions.length &&
-                    won >= 70
+                    won >= 60
                 ) {
                     markLevel1Complete();
                 } else {
@@ -287,7 +300,7 @@ const RedLightGreenLight = () => {
     const handleCodeChange = (value) => {
         if (!isGreenLight) {
             setWon((prevWon) => {
-                const newWon = Math.max(prevWon - 2, 0);
+                const newWon = Math.max(prevWon - 1, 0);
                 updateWonInDB(newWon);
                 return newWon;
             });
@@ -404,7 +417,14 @@ const RedLightGreenLight = () => {
     const handleSubmit = async () => {
         if (output.trim() === expectedOutput.trim()) {
             if (!completedQuestions.includes(currentQuestion)) {
-                
+                if (completedQuestions.length) {
+                    setSubmit1(true)
+                    localStorage.setItem("submit1", submit1);
+                } else {
+                    setSubmit2(true)
+                    localStorage.setItem("submit2", submit2);
+                }
+
                 const newWon = won + 10;
                 setWon(newWon);
                 updateWonInDB(newWon);
@@ -511,6 +531,8 @@ const RedLightGreenLight = () => {
             <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-4 lg:space-y-0 lg:space-x-4 relative">
                 <div className="w-full lg:w-1/2 relative">
                     <p className="text-lg font-bold">Question:</p>
+                    {/* NEW: Display the current question index */}
+                    <p className="text-sm">Question {currentQuestion + 1} of {questions.length}</p>
                     {!isGreenLight && (
                         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-80 z-50">
                             <img
