@@ -25,7 +25,7 @@ const squidGameMusic = "/images/squidgamemusic.mp3";
 const COMPILERX_API_URL = "https://squidgamebackend.onrender.com/compile";
 
 // Admin-provided start time and game duration (in seconds)
-const adminStartTime = new Date("2025/03/11 15:25:00"); // Replace with admin-provided timestamp
+const adminStartTime = new Date("2025/03/11 14:20:00"); // Replace with admin-provided timestamp
 const gameDuration = 600; // Game duration in seconds
 const targetTime = new Date(adminStartTime.getTime() + gameDuration * 1000);
 
@@ -111,10 +111,10 @@ const RedLightGreenLight = () => {
             prompt: "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=26318477;\nif (isPrime(num)){\nprinf('%d is a prime number', number);\nelse{\nprntf('%d is not a prime number', num);\n return 0;\n}",
             expected: "26318477 is not a prime number",
         },
-        // {
-        //     prompt:"#incdude <stdio.h>\nint man() {\nin year = 12345678;\n if ((year % 4 = 0 && year % 100 != 0) || (year % 400 == 0)) {\nprint('%D is a leap year', year);\n} else {\n prntf('%D is not a leap year', year);\n}\nreturn 0;\n}",
-        //     expected: "12345678 is not a leap year",
-        // }
+        {
+            prompt:"#incdude <stdio.h>\nint man() {\nin year = 12345678;\n if ((year % 4 = 0 && year % 100 != 0) || (year % 400 == 0)) {\nprint('%D is a leap year', year);\n} else {\n prntf('%D is not a leap year', year);\n}\nreturn 0;\n}",
+            expected: "12345678 is not a leap year",
+        }
         // Additional questions can be added here.
     ];
 
