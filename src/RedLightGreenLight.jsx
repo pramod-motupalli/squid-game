@@ -108,7 +108,7 @@ const RedLightGreenLight = () => {
             expected: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHello",
         },
         {
-            prompt: "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=26318477;\nif (isPrime(num)){\nprinf('%d is a prime number', number);\nelse{\nprntf('%d is not a prime number', num);\n return 0;\n}",
+            prompt: "// Fix the bug in this code\ninclude <stduio.h>\nint isPrime(it num) {\nif (num < 2) return 0, \nfor ( i = 2, i * i <= num; i+) {\nif (num % i == 0) return 0,\n}\n return 1;\n}\nint main() {\nint number=3126     8477;\nif (isPrime(num)){\nprinf('%d is a prime number', number);\nelse{\nprntf('%d is not a prime number', num);\n return 0;\n}",
             expected: "31268477 is not a prime number",
         },
         {
