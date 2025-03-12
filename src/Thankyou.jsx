@@ -5,13 +5,10 @@ export default function ThankYou() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.clear();
-  }, []);
+    const username = localStorage.getItem("username");
 
-  useEffect(() => {
     const eliminateUser = async () => {
       try {
-        const username = localStorage.getItem("username");
         const response = await fetch("https://squidgamebackend.onrender.com/eliminateUser", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -22,11 +19,14 @@ export default function ThankYou() {
         }
       } catch (error) {
         console.error("Error updating elimination status:", error);
+      } finally {
+        // Clear localStorage only after the elimination API call is done.
+        localStorage.clear();
       }
     };
 
     eliminateUser();
-  }, [navigate]);
+  }, []);
 
   return (
     <div
