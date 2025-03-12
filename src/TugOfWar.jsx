@@ -212,7 +212,7 @@ const TugOfWar = () => {
         },
         {
             question:
-                "In a family, if A is the sister of B, B is married to C, and C is the sister of D, who is the mother of E, what is the relation of A to E?",
+                "In a family, if A is the sister of B, B is married to C, and C is the sister of D, D is the mother of E, what is the relation of A to E?",
             options: ["Aunt", "Cousin", "Sister", "Grandmother"],
             answer: "Aunt",
             marks: 10,

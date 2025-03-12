@@ -134,8 +134,8 @@ const HomePage = () => {
       </div>
 
       {/* Admin Timer Display */}
-      <div className="absolute top-8 right-4 md:top-4 md:right-4 text-white font-bold px-3 py-1 rounded-md shadow-md text-base md:text-lg">
-        Admin Timer: {formatAdminTime(adminTimeLeft)}
+      <div className="font-extrabold bg-gradient-to-r from-green-500 to-red-500 bg-clip-text text-transparent text-lg md:text-2xlabsolute top-8 right-4 md:top-4 md:right-4px-3 py-1 rounded-md shadow-md md:text-lg">
+        Death call in: {formatAdminTime(adminTimeLeft)}
       </div>
 
       {/* Main Content Box (Tabs Section) */}
