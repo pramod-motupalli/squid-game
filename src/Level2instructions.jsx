@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Level2Instructions = () => {
   const navigate = useNavigate();
-  const initialTime = 3; // Timer in seconds
+  const initialTime = 2 * 60; // Timer in seconds (2 minutes)
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   // Fetch Level 1 completed users
@@ -44,7 +44,7 @@ const Level2Instructions = () => {
       localStorage.setItem("level2StartTime", startTime);
     }
 
-    const updateTimer = () => {
+    const timer = setInterval(() => {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
       const remainingTime = Math.max(initialTime - elapsedTime, 0);
       setTimeLeft(remainingTime);
@@ -54,13 +54,10 @@ const Level2Instructions = () => {
         localStorage.removeItem("level2StartTime");
         fetchLevel1CompletedUsers();
       }
-    };
-
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
+    }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [initialTime, navigate]);
 
   return (
     <div
