@@ -53,10 +53,10 @@ const SingleAndMingle = () => {
       .play()
       .catch((error) => console.error("Audio playback failed:", error));
   }, []);
-
+  const targetTime = new Date("2025-03-13 11:21:00");
   // Timer: Synchronize against a fixed deadline.
   useEffect(() => {
-    const targetTime = new Date("2025-03-13 00:00:00");
+    
     const computeTimeLeft = () => {
       const now = new Date();
       const diff = Math.floor((targetTime - now) / 1000);
