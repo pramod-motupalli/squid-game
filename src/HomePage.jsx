@@ -12,7 +12,7 @@ const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Admin timer: fixed start time
-  const adminStartTime = new Date("2025/03/12 8:55:00").getTime();
+  const adminStartTime = new Date("2025/03/12 23:20:00").getTime();
   const [adminTimeLeft, setAdminTimeLeft] = useState(adminStartTime - Date.now());
 
   // Slider navigation functions
@@ -97,7 +97,8 @@ const HomePage = () => {
       const timeLeft = adminStartTime - now;
       if (timeLeft <= 0) {
         clearInterval(timer);
-        navigate("/level1-instructions"); // Navigate when admin timer hits 0
+        window.open("/level1-instructions", "_self");
+        // Navigate when admin timer hits 0
       } else {
         setAdminTimeLeft(timeLeft);
       }
