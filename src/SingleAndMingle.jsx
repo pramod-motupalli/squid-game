@@ -77,7 +77,7 @@ useEffect(() => {
       const username = localStorage.getItem("username");
       if (!username) {
         setError("Username not found in localStorage");
-        setLoading(false);
+        // setLoading(false);
         return;
       }
 
@@ -113,7 +113,7 @@ useEffect(() => {
           }
         }
         if (data && data.playerId) {
-          setPlayerId(data.playerId);
+          // setPlayerId(data.playerId);
           localStorage.setItem("playerid", data.playerId);
         } else {
           throw new Error("Invalid data format received");
@@ -122,7 +122,7 @@ useEffect(() => {
         console.error("Error fetching player ID:", err);
         setError(err.message);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
