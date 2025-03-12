@@ -15,7 +15,7 @@ export default function ThankYou() {
         const response = await fetch("https://squidgamebackend.onrender.com/eliminateUser", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, eliminated: true }),
+          body: JSON.stringify({ username }),
         });
         if (!response.ok) {
           console.error("Failed to update elimination status");
