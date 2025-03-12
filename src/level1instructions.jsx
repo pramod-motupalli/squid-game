@@ -14,6 +14,8 @@ const Level1Instructions = () => {
       localStorage.setItem("level1StartTime", startTime);
     }
 
+    let timer; // Declare timer here so it can be accessed inside updateTimer
+
     const updateTimer = () => {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
       const remainingTime = Math.max(initialTime - elapsedTime, 0);
@@ -27,7 +29,7 @@ const Level1Instructions = () => {
     };
 
     updateTimer();
-    const timer = setInterval(updateTimer, 1000);
+    timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, [navigate]);
