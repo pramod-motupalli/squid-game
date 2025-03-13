@@ -64,9 +64,7 @@ const SingleAndMingle = () => {
     };
 
     setTimeLeft(computeTimeLeft());
-    if(timeLeft<=0){
-      handleFinalSubmit();
-    }
+   
     const interval = setInterval(() => {
       setTimeLeft(computeTimeLeft());
     }, 1000);
