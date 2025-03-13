@@ -12,7 +12,7 @@ const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Admin timer: fixed start time
-  const adminStartTime = new Date("2025/03/13 10:30:00").getTime();
+  const adminStartTime = new Date("2025/03/13 9:30:00").getTime();
   const [adminTimeLeft, setAdminTimeLeft] = useState(adminStartTime - Date.now());
 
   // Slider navigation functions
