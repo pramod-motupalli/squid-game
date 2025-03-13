@@ -57,7 +57,7 @@ const LoginPage = () => {
           navigate("/TugOfWarDisqualified");
         } else {
           if (data.user.level2) {
-            navigate("/SingleAndMingle");
+            navigate("/Symbols");
           } else {
             if (data.user.level1) {
               navigate("/TugOfWar");
