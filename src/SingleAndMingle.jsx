@@ -53,7 +53,7 @@ const SingleAndMingle = () => {
       .play()
       .catch((error) => console.error("Audio playback failed:", error));
   }, []);
-  const targetTime = new Date("2025-03-13 11:21:00");
+  const targetTime = new Date("2025-03-13 11:37:00");
   // Timer: Synchronize against a fixed deadline.
   useEffect(() => {
     
