@@ -61,9 +61,9 @@ const Level3Instructions = () => {
           Welcome to the final level! Follow the instructions carefully:
         </p>
         <ul className="mt-4 text-left space-y-2">
-          <li>🔹 Each pair will receive an algorithm and pseudo code.</li>
-          <li>🔹 The team should predict the suitable data structure to solve it.</li>
-          <li>🔹 The team must analyze and complete the given pseudo code.</li>
+          <li>🔹 Each pair will receive an algorithm.</li>
+          <li>🔹 The team should predict the suitable data structure to solve it and use it.</li>
+          <li>🔹 The team must analyze and complete the given algorithm.</li>
           <li>
             🔹 The teams that correctly implement them will be declared the winners.
           </li>
